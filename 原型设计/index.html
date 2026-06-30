@@ -1,0 +1,1338 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>折叠方向盘仿真数据管理原型</title>
+  <style>
+    :root {
+      --bg: #f6f7f9;
+      --panel: #ffffff;
+      --panel-soft: #f0f4f8;
+      --text: #17202a;
+      --muted: #637083;
+      --line: #d9e0e8;
+      --strong-line: #aeb9c6;
+      --blue: #276ef1;
+      --blue-soft: #e8f0ff;
+      --green: #168a4a;
+      --green-soft: #e6f6ed;
+      --amber: #b26a00;
+      --amber-soft: #fff1d6;
+      --red: #c73b3b;
+      --red-soft: #ffe7e7;
+      --gray-soft: #edf0f4;
+      --shadow: 0 18px 45px rgba(24, 39, 75, 0.08);
+      --radius: 8px;
+      font-family: Inter, "SF Pro Display", "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      min-width: 1160px;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: 64px 1fr;
+    }
+
+    .topbar {
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      background: #ffffff;
+      border-bottom: 1px solid var(--line);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 460px;
+    }
+
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      background: #1d2939;
+      color: #ffffff;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 17px;
+      line-height: 1.1;
+      letter-spacing: 0;
+    }
+
+    .brand p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .search {
+      width: 280px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      height: 38px;
+      padding: 0 12px;
+      border: 1px solid var(--line);
+      background: #fbfcfe;
+      border-radius: 8px;
+    }
+
+    .search input {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      outline: 0;
+      color: var(--text);
+    }
+
+    .role-switch {
+      display: flex;
+      gap: 4px;
+      padding: 4px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfcfe;
+    }
+
+    .role-switch button {
+      border: 0;
+      background: transparent;
+      color: var(--muted);
+      padding: 7px 11px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .role-switch button.active {
+      color: var(--text);
+      background: #ffffff;
+      box-shadow: 0 1px 4px rgba(24, 39, 75, 0.12);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 268px minmax(620px, 1fr) 380px;
+      gap: 16px;
+      padding: 16px;
+      height: calc(100vh - 64px);
+    }
+
+    .sidebar,
+    .workspace,
+    .detail {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      min-height: 0;
+      box-shadow: var(--shadow);
+    }
+
+    .sidebar {
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .panel-head {
+      padding: 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .panel-head h2,
+    .detail h2 {
+      margin: 0;
+      font-size: 15px;
+      letter-spacing: 0;
+    }
+
+    .panel-head p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .project-list {
+      padding: 12px;
+      display: grid;
+      gap: 8px;
+      overflow: auto;
+    }
+
+    .project-item {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      background: #ffffff;
+    }
+
+    .project-item.active {
+      border-color: var(--blue);
+      background: var(--blue-soft);
+    }
+
+    .project-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .project-meta {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.55;
+    }
+
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      padding: 0 12px 12px;
+    }
+
+    .kpi {
+      min-height: 76px;
+      padding: 11px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfcfe;
+    }
+
+    .kpi span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .kpi strong {
+      display: block;
+      margin-top: 8px;
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr) 220px;
+      overflow: hidden;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .toolbar-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .toolbar-title {
+      font-size: 15px;
+      font-weight: 800;
+    }
+
+    .segmented {
+      display: flex;
+      gap: 4px;
+      padding: 4px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfcfe;
+    }
+
+    .segmented button {
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--muted);
+      padding: 7px 10px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .segmented button.active {
+      color: var(--text);
+      background: #ffffff;
+      box-shadow: 0 1px 4px rgba(24, 39, 75, 0.12);
+    }
+
+    .icon-btn,
+    .primary-btn,
+    .ghost-btn {
+      height: 36px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: #ffffff;
+      color: var(--text);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      padding: 0 12px;
+      white-space: nowrap;
+    }
+
+    .icon-btn {
+      width: 36px;
+      padding: 0;
+    }
+
+    .primary-btn {
+      background: var(--blue);
+      color: #ffffff;
+      border-color: var(--blue);
+    }
+
+    .ghost-btn:hover,
+    .icon-btn:hover,
+    .segmented button:hover,
+    .role-switch button:hover {
+      background: var(--panel-soft);
+    }
+
+    .tree-stage {
+      position: relative;
+      min-height: 0;
+      overflow: auto;
+      background:
+        linear-gradient(#eef2f7 1px, transparent 1px),
+        linear-gradient(90deg, #eef2f7 1px, transparent 1px);
+      background-size: 28px 28px;
+    }
+
+    .tree-canvas {
+      position: relative;
+      width: 1180px;
+      height: 690px;
+      transform-origin: top left;
+      transition: transform 160ms ease;
+    }
+
+    .links {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+    }
+
+    .link {
+      fill: none;
+      stroke: var(--strong-line);
+      stroke-width: 2;
+    }
+
+    .node {
+      position: absolute;
+      width: 196px;
+      min-height: 116px;
+      border: 1px solid var(--line);
+      border-left: 5px solid var(--blue);
+      border-radius: 8px;
+      padding: 11px 11px 10px;
+      background: #ffffff;
+      box-shadow: 0 12px 26px rgba(24, 39, 75, 0.1);
+      cursor: pointer;
+      transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease, opacity 140ms ease;
+    }
+
+    .node:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 32px rgba(24, 39, 75, 0.14);
+    }
+
+    .node.active {
+      border-color: var(--blue);
+      outline: 3px solid rgba(39, 110, 241, 0.16);
+    }
+
+    .node.dimmed {
+      opacity: 0.28;
+    }
+
+    .node.recommended {
+      border-left-color: var(--green);
+    }
+
+    .node.failed {
+      border-left-color: var(--red);
+    }
+
+    .node.running {
+      border-left-color: var(--amber);
+    }
+
+    .node.archived {
+      border-left-color: #7c8794;
+    }
+
+    .node-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .node-code {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+    }
+
+    .node-title {
+      margin-top: 4px;
+      font-size: 13px;
+      line-height: 1.3;
+      font-weight: 800;
+    }
+
+    .node-check {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--blue);
+      flex: 0 0 auto;
+      cursor: pointer;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .metric {
+      min-height: 39px;
+    }
+
+    .metric span {
+      color: var(--muted);
+      display: block;
+      font-size: 11px;
+    }
+
+    .metric strong {
+      display: block;
+      margin-top: 3px;
+      font-size: 14px;
+    }
+
+    .node-footer {
+      margin-top: 9px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 24px;
+      padding: 0 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .badge.green {
+      color: var(--green);
+      background: var(--green-soft);
+    }
+
+    .badge.blue {
+      color: var(--blue);
+      background: var(--blue-soft);
+    }
+
+    .badge.amber {
+      color: var(--amber);
+      background: var(--amber-soft);
+    }
+
+    .badge.red {
+      color: var(--red);
+      background: var(--red-soft);
+    }
+
+    .badge.gray {
+      color: #53606f;
+      background: var(--gray-soft);
+    }
+
+    .delta {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .detail {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      overflow: hidden;
+    }
+
+    .detail-body {
+      padding: 16px;
+      overflow: auto;
+    }
+
+    .selected-heading {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+
+    .selected-heading h3 {
+      margin: 0;
+      font-size: 20px;
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    .selected-heading p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .detail-section {
+      padding: 15px 0;
+      border-top: 1px solid var(--line);
+    }
+
+    .detail-section:first-of-type {
+      border-top: 0;
+      padding-top: 0;
+    }
+
+    .detail-section h4 {
+      margin: 0 0 10px;
+      font-size: 13px;
+      color: #344054;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .stat {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      min-height: 76px;
+      background: #fbfcfe;
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .stat strong {
+      display: block;
+      margin-top: 7px;
+      font-size: 22px;
+      line-height: 1;
+    }
+
+    .stat small {
+      display: block;
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .kv {
+      display: grid;
+      gap: 8px;
+    }
+
+    .kv-row {
+      display: grid;
+      grid-template-columns: 92px 1fr;
+      gap: 12px;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .kv-row span {
+      color: var(--muted);
+    }
+
+    .file-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .file-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px 11px;
+      background: #fbfcfe;
+      font-size: 13px;
+    }
+
+    .file-item span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .mini-chart {
+      height: 118px;
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+      padding: 12px 12px 8px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfcfe;
+    }
+
+    .bar-wrap {
+      flex: 1;
+      height: 94px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 6px;
+    }
+
+    .bar {
+      width: 100%;
+      max-width: 42px;
+      background: var(--blue);
+      border-radius: 6px 6px 2px 2px;
+      min-height: 8px;
+    }
+
+    .bar-label {
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .compare {
+      border-top: 1px solid var(--line);
+      overflow: hidden;
+      background: #ffffff;
+    }
+
+    .compare-head {
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .compare-head h3 {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .compare-table {
+      height: 169px;
+      overflow: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+
+    th,
+    td {
+      height: 42px;
+      padding: 0 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--line);
+      white-space: nowrap;
+    }
+
+    th {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      color: var(--muted);
+      background: #fbfcfe;
+      font-weight: 700;
+    }
+
+    td.num,
+    th.num {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .empty {
+      height: 128px;
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    @media (max-width: 1200px) {
+      body {
+        min-width: 1000px;
+      }
+
+      .layout {
+        grid-template-columns: 230px minmax(560px, 1fr) 340px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">FS</div>
+        <div>
+          <h1>折叠方向盘仿真数据管理</h1>
+          <p>结构方案演化树 · 模态分析结果追溯 · 多方案横向对比</p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <label class="search">
+          <span aria-hidden="true">⌕</span>
+          <input id="searchInput" type="search" placeholder="搜索方案、变更、结论">
+        </label>
+        <div class="role-switch" aria-label="角色切换">
+          <button class="active" type="button">仿真工程师</button>
+          <button type="button">结构工程师</button>
+        </div>
+      </div>
+    </header>
+
+    <main class="layout">
+      <aside class="sidebar">
+        <div class="panel-head">
+          <h2>项目总览</h2>
+          <p>把每一次结构修改和对应仿真结果挂到同一棵方案树上。</p>
+        </div>
+        <div class="project-list">
+          <section class="project-item active">
+            <div class="project-title">
+              <span>FSW-01 折叠方向盘</span>
+              <span class="badge green">推荐冻结</span>
+            </div>
+            <div class="project-meta">
+              分析类型：模态 / 刚度<br>
+              基准版本：V1.0 · 当前候选：C2<br>
+              最近更新：2026-06-30 14:20
+            </div>
+          </section>
+          <section class="project-item">
+            <div class="project-title">
+              <span>FSW-02 锁止支架</span>
+              <span class="badge amber">仿真中</span>
+            </div>
+            <div class="project-meta">
+              分析类型：模态<br>
+              方案节点：5 · 结果：3
+            </div>
+          </section>
+        </div>
+        <div class="kpi-strip">
+          <div class="kpi">
+            <span>方案节点</span>
+            <strong id="kpiVariants">9</strong>
+          </div>
+          <div class="kpi">
+            <span>已完成仿真</span>
+            <strong id="kpiDone">8</strong>
+          </div>
+          <div class="kpi">
+            <span>最高一阶模态</span>
+            <strong>47.8Hz</strong>
+          </div>
+          <div class="kpi">
+            <span>推荐方案</span>
+            <strong>3</strong>
+          </div>
+        </div>
+      </aside>
+
+      <section class="workspace">
+        <div class="toolbar">
+          <div class="toolbar-left">
+            <div class="toolbar-title">方案迭代与仿真结果图谱</div>
+            <div class="segmented" aria-label="过滤方案状态">
+              <button class="active" type="button" data-filter="all">全部</button>
+              <button type="button" data-filter="recommended">推荐</button>
+              <button type="button" data-filter="failed">淘汰</button>
+              <button type="button" data-filter="running">仿真中</button>
+            </div>
+          </div>
+          <div class="toolbar-left">
+            <button class="icon-btn" id="zoomOut" type="button" title="缩小">−</button>
+            <button class="icon-btn" id="zoomIn" type="button" title="放大">＋</button>
+            <button class="ghost-btn" id="resetView" type="button">重置视图</button>
+            <button class="primary-btn" type="button">上传新方案</button>
+          </div>
+        </div>
+
+        <div class="tree-stage" id="treeStage">
+          <div class="tree-canvas" id="treeCanvas">
+            <svg class="links" width="1180" height="690" viewBox="0 0 1180 690" aria-hidden="true" id="linkSvg"></svg>
+            <div id="nodesLayer"></div>
+          </div>
+        </div>
+
+        <section class="compare">
+          <div class="compare-head">
+            <h3>已选方案对比</h3>
+            <button class="ghost-btn" id="clearCompare" type="button">清空选择</button>
+          </div>
+          <div class="compare-table" id="compareTable"></div>
+        </section>
+      </section>
+
+      <aside class="detail">
+        <div class="panel-head">
+          <h2>方案详情</h2>
+          <p>点击树节点查看数模、仿真任务、报告和关键力学属性。</p>
+        </div>
+        <div class="detail-body" id="detailBody"></div>
+      </aside>
+    </main>
+  </div>
+
+  <script>
+    const variants = [
+      {
+        id: "v1",
+        parent: null,
+        code: "V1.0",
+        title: "基础折叠方向盘总成",
+        status: "archived",
+        statusText: "基准",
+        x: 70,
+        y: 285,
+        first: 36.4,
+        second: 61.2,
+        third: 88.0,
+        mass: 1.75,
+        stiffness: 100,
+        owner: "结构工程组",
+        model: "FSW_BASE_V1.step",
+        report: "modal_baseline_v1.pdf",
+        change: "量产初始结构，作为后续优化的模态基准。",
+        conclusion: "一阶模态低于 40 Hz 目标，锁止支架与轮辐连接区域需要加强。",
+        task: "SIM-2026-031",
+        files: ["FSW_BASE_V1.step", "modal_baseline_v1.pdf", "mode_shape_v1.mp4"]
+      },
+      {
+        id: "a",
+        parent: "v1",
+        code: "A",
+        title: "轮辐加强筋加厚",
+        status: "done",
+        statusText: "已完成",
+        x: 340,
+        y: 80,
+        first: 39.2,
+        second: 65.0,
+        third: 91.1,
+        mass: 1.84,
+        stiffness: 111,
+        owner: "李工",
+        model: "FSW_A_RIB_THICK.step",
+        report: "modal_A_report.pdf",
+        change: "三处轮辐加强筋厚度由 2.0mm 调整为 2.8mm。",
+        conclusion: "一阶模态提升，但质量增加明显，继续拆分为位置调整和减重两个分支。",
+        task: "SIM-2026-036",
+        files: ["FSW_A_RIB_THICK.step", "modal_A_report.pdf"]
+      },
+      {
+        id: "a1",
+        parent: "a",
+        code: "A1",
+        title: "加强筋位置外移",
+        status: "recommended",
+        statusText: "推荐",
+        x: 640,
+        y: 28,
+        first: 42.6,
+        second: 68.3,
+        third: 94.5,
+        mass: 1.82,
+        stiffness: 118,
+        owner: "李工",
+        model: "FSW_A1_RIB_OFFSET.step",
+        report: "modal_A1_report.pdf",
+        change: "保持加强筋厚度，将筋位向锁止区域外侧移动 6mm。",
+        conclusion: "模态提升稳定，质量增幅可接受，可作为结构优化候选。",
+        task: "SIM-2026-040",
+        files: ["FSW_A1_RIB_OFFSET.step", "modal_A1_report.pdf", "freq_table_A1.xlsx"]
+      },
+      {
+        id: "a2",
+        parent: "a",
+        code: "A2",
+        title: "局部开孔减重",
+        status: "done",
+        statusText: "已完成",
+        x: 640,
+        y: 168,
+        first: 40.1,
+        second: 66.7,
+        third: 92.0,
+        mass: 1.78,
+        stiffness: 112,
+        owner: "王工",
+        model: "FSW_A2_LIGHTWEIGHT.step",
+        report: "modal_A2_report.pdf",
+        change: "在加强筋根部非受力区域增加两个减重孔。",
+        conclusion: "质量回落，但一阶模态收益低于 A1，适合作为备选方案。",
+        task: "SIM-2026-041",
+        files: ["FSW_A2_LIGHTWEIGHT.step", "modal_A2_report.pdf"]
+      },
+      {
+        id: "b",
+        parent: "v1",
+        code: "B",
+        title: "连接支架改型",
+        status: "failed",
+        statusText: "淘汰",
+        x: 340,
+        y: 285,
+        first: 37.8,
+        second: 63.4,
+        third: 88.8,
+        mass: 1.77,
+        stiffness: 103,
+        owner: "赵工",
+        model: "FSW_B_BRACKET.step",
+        report: "modal_B_report.pdf",
+        change: "连接支架由直边改为折线轮廓，尝试减少局部应力集中。",
+        conclusion: "对一阶模态帮助有限，且制造复杂度上升，建议淘汰。",
+        task: "SIM-2026-044",
+        files: ["FSW_B_BRACKET.step", "modal_B_report.pdf"]
+      },
+      {
+        id: "b1",
+        parent: "b",
+        code: "B1",
+        title: "支架圆角优化",
+        status: "failed",
+        statusText: "淘汰",
+        x: 640,
+        y: 300,
+        first: 38.1,
+        second: 64.0,
+        third: 90.2,
+        mass: 1.78,
+        stiffness: 105,
+        owner: "赵工",
+        model: "FSW_B1_FILLET.step",
+        report: "modal_B1_report.pdf",
+        change: "支架根部圆角从 R2 调整为 R5。",
+        conclusion: "局部应力改善，但模态目标仍未满足，不进入下一轮。",
+        task: "SIM-2026-047",
+        files: ["FSW_B1_FILLET.step", "modal_B1_report.pdf"]
+      },
+      {
+        id: "c",
+        parent: "v1",
+        code: "C",
+        title: "锁止结构加强",
+        status: "recommended",
+        statusText: "推荐",
+        x: 340,
+        y: 505,
+        first: 44.3,
+        second: 71.8,
+        third: 97.2,
+        mass: 1.86,
+        stiffness: 124,
+        owner: "陈工",
+        model: "FSW_C_LOCK_REINF.step",
+        report: "modal_C_report.pdf",
+        change: "锁止块厚度增加 1.5mm，连接区增加过渡圆角。",
+        conclusion: "一阶模态提升明显，但质量略高，建议继续优化重量。",
+        task: "SIM-2026-050",
+        files: ["FSW_C_LOCK_REINF.step", "modal_C_report.pdf", "mode_shape_C.mp4"]
+      },
+      {
+        id: "c1",
+        parent: "c",
+        code: "C1",
+        title: "锁止块材料替换",
+        status: "running",
+        statusText: "仿真中",
+        x: 640,
+        y: 462,
+        first: 45.1,
+        second: 72.4,
+        third: 99.0,
+        mass: 1.83,
+        stiffness: 126,
+        owner: "陈工",
+        model: "FSW_C1_MATERIAL.step",
+        report: "待上传",
+        change: "锁止块改用高模量材料，同时保持 C 方案几何。",
+        conclusion: "求解已完成 70%，初步结果显示一阶模态继续提升。",
+        task: "SIM-2026-056",
+        files: ["FSW_C1_MATERIAL.step", "solver_log_C1.txt"]
+      },
+      {
+        id: "c2",
+        parent: "c",
+        code: "C2",
+        title: "锁止加强 + 轻量化",
+        status: "recommended",
+        statusText: "推荐冻结",
+        x: 640,
+        y: 592,
+        first: 47.8,
+        second: 74.2,
+        third: 101.6,
+        mass: 1.81,
+        stiffness: 131,
+        owner: "陈工",
+        model: "FSW_C2_LOCK_LIGHT.step",
+        report: "modal_C2_freeze_report.pdf",
+        change: "保留锁止加强区域，在非关键轮辐背面做局部减薄。",
+        conclusion: "目前综合表现最好：一阶模态 +31.3%，质量仅 +3.4%，建议作为冻结方案。",
+        task: "SIM-2026-058",
+        files: ["FSW_C2_LOCK_LIGHT.step", "modal_C2_freeze_report.pdf", "freq_table_C2.xlsx", "mode_shape_C2.mp4"]
+      }
+    ];
+
+    const statusClass = {
+      recommended: "green",
+      done: "blue",
+      running: "amber",
+      failed: "red",
+      archived: "gray"
+    };
+
+    const selected = new Set(["v1", "a1", "c", "c2"]);
+    let activeId = "c2";
+    let filter = "all";
+    let zoom = 1;
+
+    const nodesLayer = document.getElementById("nodesLayer");
+    const linkSvg = document.getElementById("linkSvg");
+    const detailBody = document.getElementById("detailBody");
+    const compareTable = document.getElementById("compareTable");
+    const searchInput = document.getElementById("searchInput");
+    const treeCanvas = document.getElementById("treeCanvas");
+
+    function variantById(id) {
+      return variants.find((item) => item.id === id);
+    }
+
+    function deltaText(item) {
+      const base = variantById("v1");
+      if (item.id === "v1") return "基准";
+      const delta = ((item.first - base.first) / base.first) * 100;
+      return `${delta >= 0 ? "+" : ""}${delta.toFixed(1)}%`;
+    }
+
+    function nodeMatches(item) {
+      const q = searchInput.value.trim().toLowerCase();
+      const hitSearch = !q || [item.code, item.title, item.change, item.conclusion, item.owner]
+        .join(" ")
+        .toLowerCase()
+        .includes(q);
+      const hitFilter = filter === "all" || item.status === filter;
+      return hitSearch && hitFilter;
+    }
+
+    function drawLinks() {
+      linkSvg.innerHTML = "";
+      variants
+        .filter((item) => item.parent)
+        .forEach((item) => {
+          const parent = variantById(item.parent);
+          const x1 = parent.x + 196;
+          const y1 = parent.y + 58;
+          const x2 = item.x;
+          const y2 = item.y + 58;
+          const mid = x1 + (x2 - x1) / 2;
+          const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+          path.setAttribute("class", "link");
+          path.setAttribute("d", `M ${x1} ${y1} C ${mid} ${y1}, ${mid} ${y2}, ${x2} ${y2}`);
+          linkSvg.appendChild(path);
+        });
+    }
+
+    function renderNodes() {
+      nodesLayer.innerHTML = "";
+      variants.forEach((item) => {
+        const node = document.createElement("article");
+        node.className = `node ${item.status} ${item.id === activeId ? "active" : ""} ${nodeMatches(item) ? "" : "dimmed"}`;
+        node.style.left = `${item.x}px`;
+        node.style.top = `${item.y}px`;
+        node.tabIndex = 0;
+        node.setAttribute("role", "button");
+        node.setAttribute("aria-label", `${item.code} ${item.title}`);
+        node.innerHTML = `
+          <div class="node-top">
+            <div>
+              <div class="node-code">${item.code}</div>
+              <div class="node-title">${item.title}</div>
+            </div>
+            <input class="node-check" type="checkbox" ${selected.has(item.id) ? "checked" : ""} aria-label="加入对比">
+          </div>
+          <div class="metrics">
+            <div class="metric"><span>一阶模态</span><strong>${item.first.toFixed(1)}Hz</strong></div>
+            <div class="metric"><span>质量</span><strong>${item.mass.toFixed(2)}kg</strong></div>
+          </div>
+          <div class="node-footer">
+            <span class="badge ${statusClass[item.status]}">${item.statusText}</span>
+            <span class="delta">${deltaText(item)}</span>
+          </div>
+        `;
+        node.addEventListener("click", () => selectNode(item.id));
+        node.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            selectNode(item.id);
+          }
+        });
+        const checkbox = node.querySelector("input");
+        checkbox.addEventListener("click", (event) => {
+          event.stopPropagation();
+          if (checkbox.checked) selected.add(item.id);
+          else selected.delete(item.id);
+          renderCompare();
+        });
+        nodesLayer.appendChild(node);
+      });
+    }
+
+    function selectNode(id) {
+      activeId = id;
+      renderNodes();
+      renderDetail();
+    }
+
+    function renderDetail() {
+      const item = variantById(activeId);
+      const parent = item.parent ? variantById(item.parent) : null;
+      const maxMode = Math.max(...[item.first, item.second, item.third]);
+      detailBody.innerHTML = `
+        <div class="selected-heading">
+          <div>
+            <h3>${item.code} · ${item.title}</h3>
+            <p>${item.conclusion}</p>
+          </div>
+          <span class="badge ${statusClass[item.status]}">${item.statusText}</span>
+        </div>
+
+        <section class="detail-section">
+          <div class="stats-grid">
+            <div class="stat"><span>一阶模态</span><strong>${item.first.toFixed(1)}Hz</strong><small>相对基准 ${deltaText(item)}</small></div>
+            <div class="stat"><span>二阶模态</span><strong>${item.second.toFixed(1)}Hz</strong><small>三阶 ${item.third.toFixed(1)}Hz</small></div>
+            <div class="stat"><span>质量</span><strong>${item.mass.toFixed(2)}kg</strong><small>目标质量 ≤ 1.85kg</small></div>
+            <div class="stat"><span>刚度指数</span><strong>${item.stiffness}</strong><small>基准结构 = 100</small></div>
+          </div>
+        </section>
+
+        <section class="detail-section">
+          <h4>模态频率</h4>
+          <div class="mini-chart">
+            ${[
+              ["1阶", item.first],
+              ["2阶", item.second],
+              ["3阶", item.third]
+            ].map(([label, value]) => `
+              <div class="bar-wrap">
+                <div class="bar" style="height:${Math.max(10, (value / maxMode) * 82)}px"></div>
+                <div class="bar-label">${label} ${value.toFixed(1)}</div>
+              </div>
+            `).join("")}
+          </div>
+        </section>
+
+        <section class="detail-section">
+          <h4>结构变更与任务</h4>
+          <div class="kv">
+            <div class="kv-row"><span>来源方案</span><strong>${parent ? `${parent.code} · ${parent.title}` : "无，项目基准结构"}</strong></div>
+            <div class="kv-row"><span>变更说明</span><strong>${item.change}</strong></div>
+            <div class="kv-row"><span>仿真任务</span><strong>${item.task}</strong></div>
+            <div class="kv-row"><span>负责人</span><strong>${item.owner}</strong></div>
+          </div>
+        </section>
+
+        <section class="detail-section">
+          <h4>关联文件</h4>
+          <div class="file-list">
+            ${item.files.map((file) => `
+              <div class="file-item">
+                <strong>${file}</strong>
+                <span>${file.endsWith(".step") ? "数模" : file.endsWith(".pdf") ? "报告" : "结果文件"}</span>
+              </div>
+            `).join("")}
+          </div>
+        </section>
+
+        <section class="detail-section">
+          <button class="primary-btn" type="button" onclick="toggleActiveCompare()">加入/移出对比</button>
+          <button class="ghost-btn" type="button">下载报告</button>
+        </section>
+      `;
+    }
+
+    function renderCompare() {
+      const rows = variants.filter((item) => selected.has(item.id));
+      if (!rows.length) {
+        compareTable.innerHTML = `<div class="empty">勾选树节点右上角的复选框，快速比较不同结构方案。</div>`;
+        renderNodes();
+        return;
+      }
+      compareTable.innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>方案</th>
+              <th>来源</th>
+              <th class="num">一阶模态</th>
+              <th class="num">二阶模态</th>
+              <th class="num">质量</th>
+              <th class="num">刚度指数</th>
+              <th>结论状态</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows.map((item) => {
+              const parent = item.parent ? variantById(item.parent).code : "基准";
+              return `
+                <tr>
+                  <td><strong>${item.code}</strong> ${item.title}</td>
+                  <td>${parent}</td>
+                  <td class="num">${item.first.toFixed(1)} Hz</td>
+                  <td class="num">${item.second.toFixed(1)} Hz</td>
+                  <td class="num">${item.mass.toFixed(2)} kg</td>
+                  <td class="num">${item.stiffness}</td>
+                  <td><span class="badge ${statusClass[item.status]}">${item.statusText}</span></td>
+                </tr>
+              `;
+            }).join("")}
+          </tbody>
+        </table>
+      `;
+      renderNodes();
+    }
+
+    window.toggleActiveCompare = function toggleActiveCompare() {
+      if (selected.has(activeId)) selected.delete(activeId);
+      else selected.add(activeId);
+      renderCompare();
+    };
+
+    document.querySelectorAll("[data-filter]").forEach((button) => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll("[data-filter]").forEach((item) => item.classList.remove("active"));
+        button.classList.add("active");
+        filter = button.dataset.filter;
+        renderNodes();
+      });
+    });
+
+    searchInput.addEventListener("input", renderNodes);
+
+    document.getElementById("clearCompare").addEventListener("click", () => {
+      selected.clear();
+      renderCompare();
+    });
+
+    document.getElementById("zoomIn").addEventListener("click", () => {
+      zoom = Math.min(1.2, zoom + 0.1);
+      treeCanvas.style.transform = `scale(${zoom})`;
+    });
+
+    document.getElementById("zoomOut").addEventListener("click", () => {
+      zoom = Math.max(0.75, zoom - 0.1);
+      treeCanvas.style.transform = `scale(${zoom})`;
+    });
+
+    document.getElementById("resetView").addEventListener("click", () => {
+      zoom = 1;
+      treeCanvas.style.transform = "scale(1)";
+      document.getElementById("treeStage").scrollTo({ left: 0, top: 0, behavior: "smooth" });
+    });
+
+    drawLinks();
+    renderNodes();
+    renderDetail();
+    renderCompare();
+  </script>
+</body>
+</html>
