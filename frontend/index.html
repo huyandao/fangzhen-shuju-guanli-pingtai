@@ -110,6 +110,24 @@
       gap: 10px;
     }
 
+    .user-chip {
+      min-height: 36px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 11px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--muted);
+      background: #ffffff;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .user-chip strong {
+      color: var(--text);
+    }
+
     .search {
       width: 300px;
       height: 38px;
@@ -143,6 +161,14 @@
       padding: 12px;
     }
 
+    .layout.template-mode {
+      grid-template-columns: 272px minmax(760px, 1fr);
+    }
+
+    .layout.template-mode .detail {
+      display: none;
+    }
+
     .sidebar,
     .workspace,
     .detail {
@@ -163,6 +189,37 @@
     .workspace {
       display: grid;
       grid-template-rows: auto minmax(0, 1fr) 172px;
+    }
+
+    .workspace.template-mode {
+      grid-template-rows: auto minmax(0, 1fr);
+    }
+
+    .workspace.template-mode .tree-stage,
+    .workspace.template-mode .compare {
+      display: none;
+    }
+
+    .workspace.template-mode [aria-label="图谱编辑模式"],
+    .workspace.template-mode [aria-label="关系类型"],
+    .workspace.template-mode [aria-label="过滤方案状态"],
+    .workspace.template-mode #zoomOut,
+    .workspace.template-mode #zoomIn,
+    .workspace.template-mode #autoLayout,
+    .workspace.template-mode #resetView {
+      display: none;
+    }
+
+    .workspace-template {
+      display: none;
+      min-height: 0;
+      overflow: auto;
+      padding: 14px;
+      background: #ffffff;
+    }
+
+    .workspace.template-mode .workspace-template {
+      display: block;
     }
 
     .panel-head,
@@ -234,7 +291,8 @@
     }
 
     .segmented button.active,
-    .tabbar button.active {
+    .tabbar button.active,
+    .ghost-btn.active {
       color: var(--text);
       background: #ffffff;
       box-shadow: 0 1px 4px rgba(24, 39, 75, 0.12);
@@ -730,7 +788,7 @@
 
     .tabbar {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 4px;
       padding: 4px;
       border: 1px solid var(--line);
@@ -882,6 +940,80 @@
       font-size: 13px;
     }
 
+    .file-main {
+      min-width: 0;
+      display: grid;
+      gap: 3px;
+    }
+
+    .file-main strong,
+    .file-main span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .file-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex: 0 0 auto;
+    }
+
+    .image-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(138px, 1fr));
+      gap: 10px;
+    }
+
+    .image-card,
+    .image-upload-card {
+      display: grid;
+      gap: 8px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfcfe;
+    }
+
+    .image-thumb {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--muted);
+      background: #ffffff;
+      cursor: zoom-in;
+    }
+
+    .image-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: #ffffff;
+    }
+
+    .image-upload-card .image-thumb {
+      cursor: default;
+    }
+
+    .image-upload-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .image-meta {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+      overflow-wrap: anywhere;
+    }
+
     .form-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -945,6 +1077,115 @@
       background: #ffffff;
     }
 
+    .image-modal[hidden] {
+      display: none;
+    }
+
+    .login-screen[hidden],
+    .user-modal[hidden] {
+      display: none;
+    }
+
+    .login-screen,
+    .user-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 120;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background: #eef2f7;
+    }
+
+    .login-card,
+    .user-dialog {
+      width: min(420px, 94vw);
+      display: grid;
+      gap: 14px;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+      box-shadow: var(--shadow);
+    }
+
+    .user-dialog {
+      width: min(820px, 94vw);
+      max-height: 90vh;
+      overflow: auto;
+    }
+
+    .login-card h2,
+    .user-dialog h2 {
+      margin: 0;
+      font-size: 18px;
+      letter-spacing: 0;
+    }
+
+    .login-card p,
+    .user-dialog p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .user-table-wrap {
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+
+    .auth-error {
+      min-height: 18px;
+      color: var(--red);
+      font-size: 12px;
+    }
+
+    .image-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      display: grid;
+      place-items: center;
+      padding: 28px;
+    }
+
+    .image-modal-backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.62);
+    }
+
+    .image-modal-dialog {
+      position: relative;
+      width: min(1100px, 94vw);
+      max-height: 92vh;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      border-radius: 8px;
+      background: #ffffff;
+      box-shadow: 0 24px 70px rgba(15, 23, 42, 0.32);
+      overflow: hidden;
+    }
+
+    .image-modal-head {
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 8px 12px 8px 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .image-modal-dialog img {
+      width: 100%;
+      max-height: calc(92vh - 48px);
+      object-fit: contain;
+      background: #f8fafc;
+    }
+
     .sr-only {
       position: absolute;
       width: 1px;
@@ -966,14 +1207,37 @@
         grid-template-columns: 240px minmax(620px, 1fr) 300px;
       }
 
+      .layout.template-mode {
+        grid-template-columns: 240px minmax(620px, 1fr);
+      }
+
       .search {
         width: 240px;
       }
     }
-  </style>
+</style>
 </head>
 <body>
-  <div class="app">
+  <div class="login-screen" id="loginScreen" hidden>
+    <form class="login-card" id="loginForm">
+      <div>
+        <h2>登录仿真数据管理平台</h2>
+        <p>请输入后台分配的账号和密码。</p>
+      </div>
+      <div class="field">
+        <label for="loginUsername">账号</label>
+        <input id="loginUsername" name="username" autocomplete="username" required>
+      </div>
+      <div class="field">
+        <label for="loginPassword">密码</label>
+        <input id="loginPassword" name="password" type="password" autocomplete="current-password" required>
+      </div>
+      <div class="auth-error" id="loginError"></div>
+      <button class="primary-btn" type="submit">登录</button>
+    </form>
+  </div>
+
+  <div class="app" id="appShell" hidden>
     <header class="topbar">
       <div class="brand">
         <div class="brand-mark">FS</div>
@@ -983,15 +1247,15 @@
         </div>
       </div>
       <div class="top-actions">
+        <button class="ghost-btn active" id="graphTop" type="button" data-panel="detail">仿真结果图谱</button>
+        <button class="ghost-btn" id="templateTop" type="button" data-panel="template">模板</button>
         <label class="search">
           <span aria-hidden="true">⌕</span>
           <input id="searchInput" type="search" placeholder="搜索方案、变更、结论、负责人">
         </label>
-        <div class="segmented" aria-label="角色切换">
-          <button class="active" type="button" data-role="simulation">仿真工程师</button>
-          <button type="button" data-role="structure">结构工程师</button>
-          <button type="button" data-role="admin">管理员</button>
-        </div>
+        <div class="user-chip" id="userChip"></div>
+        <button class="ghost-btn" id="userManage" type="button" hidden>用户管理</button>
+        <button class="ghost-btn" id="logoutBtn" type="button">退出</button>
         <button class="ghost-btn" id="exportData" type="button">导出</button>
         <label class="ghost-btn" for="importData">导入</label>
         <input class="sr-only" id="importData" type="file" accept="application/json">
@@ -1062,6 +1326,8 @@
           </div>
         </div>
 
+        <div class="workspace-template" id="workspaceTemplate"></div>
+
         <div class="tree-stage" id="treeStage">
           <div class="tree-canvas" id="treeCanvas">
             <svg class="links" width="1500" height="980" viewBox="0 0 1500 980" aria-hidden="true" id="linkSvg"></svg>
@@ -1090,7 +1356,6 @@
           <div class="tabbar" aria-label="右侧面板">
             <button class="active" type="button" data-panel="detail">详情</button>
             <button type="button" data-panel="edit">编辑</button>
-            <button type="button" data-panel="template">模板</button>
           </div>
           <div id="detailBody"></div>
         </div>
@@ -1098,11 +1363,75 @@
     </main>
   </div>
 
+  <div class="user-modal" id="userModal" hidden>
+    <div class="user-dialog">
+      <div class="selected-heading">
+        <div>
+          <h2>用户管理</h2>
+          <p>维护登录账号、密码和角色。</p>
+        </div>
+        <button class="icon-btn" type="button" id="closeUserModal" title="关闭">×</button>
+      </div>
+      <form id="userForm" class="form-grid">
+        <div class="field">
+          <label for="newUsername">账号</label>
+          <input id="newUsername" name="username" required>
+        </div>
+        <div class="field">
+          <label for="newDisplayName">显示名</label>
+          <input id="newDisplayName" name="displayName">
+        </div>
+        <div class="field">
+          <label for="newPassword">密码</label>
+          <input id="newPassword" name="password" required>
+        </div>
+        <div class="field">
+          <label for="newRole">角色</label>
+          <select id="newRole" name="role">
+            <option value="simulation">仿真工程师</option>
+            <option value="structure">结构工程师</option>
+            <option value="admin">管理员</option>
+          </select>
+        </div>
+        <div class="field full">
+          <button class="primary-btn" type="submit">新增用户</button>
+          <div class="auth-error" id="userManageError"></div>
+        </div>
+      </form>
+      <div class="user-table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>账号</th>
+              <th>显示名</th>
+              <th>角色</th>
+              <th>状态</th>
+              <th>新密码</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="userTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="image-modal" id="imageModal" hidden>
+    <div class="image-modal-backdrop" data-close-image-modal></div>
+    <div class="image-modal-dialog" role="dialog" aria-modal="true" aria-label="图片预览">
+      <div class="image-modal-head">
+        <strong id="imageModalTitle">图片预览</strong>
+        <button class="icon-btn" type="button" data-close-image-modal title="关闭">×</button>
+      </div>
+      <img id="imageModalImg" alt="图片预览">
+    </div>
+  </div>
+
   <script>
     /*
      * 维护导航
      * 1. 常量与示例数据：默认模板、卡片、图谱边。
-     * 2. 状态与持久化：本地模式 localStorage / 工作站模式 server.py。
+     * 2. 状态与持久化：本地模式 localStorage / 工作站模式 backend/server.py。
      * 3. 附件管理：本地 File System Access API / 服务端上传接口。
      * 4. 图谱数据模型：卡片查找、父子边、环路检测。
      * 5. 渲染层：左侧数据库、图谱节点、右侧详情/编辑/模板。
@@ -1114,9 +1443,12 @@
     const ATTACHMENT_DB = "fsw-simulation-attachments";
     const ATTACHMENT_STORE = "handles";
     const ATTACHMENT_HANDLE_KEY = "root";
-    const ATTACHMENT_ROOT_FOLDER = "simulation-attachments";
+    const ATTACHMENT_ROOT_FOLDER = "server_data";
+    const ATTACHMENT_FILES_FOLDER = "attachments";
     const HTTP_PROTOCOL = location.protocol === "http:" || location.protocol === "https:";
     const RELATION_TYPES = ["结构迭代", "材料替换", "减重优化", "参数调整", "横向对比", "复核结果", "推荐路径"];
+    const IMAGE_EXTENSIONS = [".jpg", ".jpeg", ".gif", ".png", ".bmp"];
+    const IMAGE_ACCEPT = "image/jpeg,image/gif,image/png,image/bmp,.jpg,.jpeg,.gif,.png,.bmp";
 
     const statusMeta = {
       recommended: { text: "推荐", className: "green" },
@@ -1362,7 +1694,22 @@
     let serverSaveTimer = null;
     let serverSaveQueued = false;
     let serverSaveInFlight = false;
+    let objectUrlCache = new Map();
+    let currentUser = null;
 
+    const appShell = document.getElementById("appShell");
+    const loginScreen = document.getElementById("loginScreen");
+    const loginForm = document.getElementById("loginForm");
+    const loginError = document.getElementById("loginError");
+    const userChip = document.getElementById("userChip");
+    const userManage = document.getElementById("userManage");
+    const userModal = document.getElementById("userModal");
+    const userForm = document.getElementById("userForm");
+    const userTableBody = document.getElementById("userTableBody");
+    const userManageError = document.getElementById("userManageError");
+    const layout = document.querySelector(".layout");
+    const workspace = document.querySelector(".workspace");
+    const workspaceTemplate = document.getElementById("workspaceTemplate");
     const nodesLayer = document.getElementById("nodesLayer");
     const linkSvg = document.getElementById("linkSvg");
     const detailBody = document.getElementById("detailBody");
@@ -1370,9 +1717,89 @@
     const searchInput = document.getElementById("searchInput");
     const treeCanvas = document.getElementById("treeCanvas");
     const treeStage = document.getElementById("treeStage");
+    const imageModal = document.getElementById("imageModal");
+    const imageModalImg = document.getElementById("imageModalImg");
+    const imageModalTitle = document.getElementById("imageModalTitle");
 
     function clone(value) {
       return JSON.parse(JSON.stringify(value));
+    }
+
+    function roleLabel(role) {
+      return {
+        admin: "管理员",
+        simulation: "仿真工程师",
+        structure: "结构工程师"
+      }[role] || "未设置角色";
+    }
+
+    function applyCurrentUser(user) {
+      currentUser = user;
+      state.role = user?.role || "structure";
+      if (!canEditTemplate() && state.panel === "template") {
+        state.panel = "detail";
+        templateDraft = null;
+      }
+    }
+
+    function showLogin() {
+      appShell.hidden = true;
+      loginScreen.hidden = false;
+      loginError.textContent = "";
+      document.getElementById("loginUsername").focus();
+    }
+
+    function showApp() {
+      loginScreen.hidden = true;
+      appShell.hidden = false;
+    }
+
+    async function fetchJson(url, options = {}) {
+      const response = await fetch(url, {
+        credentials: "same-origin",
+        ...options,
+        headers: {
+          ...(options.body ? { "Content-Type": "application/json" } : {}),
+          ...(options.headers || {})
+        }
+      });
+      const text = await response.text();
+      const payload = text ? JSON.parse(text) : {};
+      if (!response.ok) {
+        throw new Error(payload.error || `请求失败：${response.status}`);
+      }
+      return payload;
+    }
+
+    async function loadCurrentUser() {
+      try {
+        const payload = await fetchJson("/api/me", { cache: "no-store" });
+        if (!payload.authenticated) return null;
+        return payload.user;
+      } catch (error) {
+        console.warn("Failed to load current user", error);
+        return null;
+      }
+    }
+
+    async function login(username, password) {
+      const payload = await fetchJson("/api/login", {
+        method: "POST",
+        body: JSON.stringify({ username, password })
+      });
+      applyCurrentUser(payload.user);
+    }
+
+    async function logout() {
+      if (serverMode) {
+        try {
+          await fetchJson("/api/logout", { method: "POST" });
+        } catch (error) {
+          console.warn("Logout failed", error);
+        }
+      }
+      currentUser = null;
+      showLogin();
     }
 
     // === 状态规范化与持久化 ==================================================
@@ -1380,7 +1807,7 @@
     function normalizedDefaultState() {
       const fresh = clone(defaultState);
       fresh.template = normalizeTemplate(fresh.template);
-      fresh.cards = fresh.cards.map(normalizeCardRecord);
+      fresh.cards = fresh.cards.map((card) => normalizeCardRecord(card, fresh.parts));
       return fresh;
     }
 
@@ -1403,7 +1830,7 @@
         next.template = normalizeTemplate(next.template);
         if (!next.parts.length) next.parts = clone(defaultState.parts);
         if (!next.activePartId) next.activePartId = "all";
-        next.cards = next.cards.map(normalizeCardRecord);
+        next.cards = next.cards.map((card) => normalizeCardRecord(card, next.parts));
         next.mode = "move";
         next.pendingConnectId = null;
         next.createChildMode = false;
@@ -1414,18 +1841,21 @@
       }
     }
 
-    function normalizeCardRecord(card) {
+    function normalizeCardRecord(card, parts = defaultState.parts) {
       const values = { ...(card.values || {}) };
       if (!Object.prototype.hasOwnProperty.call(values, "conclusion")) {
         values.conclusion = card.conclusion || "";
       }
+      Object.entries(values).forEach(([code, value]) => {
+        if (isImageValue(value)) values[code] = normalizeAttachment(value, card, `field-${code}`, parts);
+      });
       return {
         ...card,
         partId: card.partId || inferPartId(card),
         relationType: card.relationType || "结构迭代",
         values,
         files: Array.isArray(card.files)
-          ? card.files.map((file, index) => normalizeAttachment(file, card, index))
+          ? card.files.map((file, index) => normalizeAttachment(file, card, index, parts))
           : []
       };
     }
@@ -1450,7 +1880,7 @@
       const next = { ...base, ...(template || {}) };
       const sourceFields = Array.isArray(next.fields) ? next.fields : base.fields;
       const normalizedFields = sourceFields.map((field) => {
-        const type = field.type === "text" ? "text" : "number";
+        const type = ["text", "image"].includes(field.type) ? field.type : "number";
         return {
           ...field,
           type,
@@ -1459,13 +1889,14 @@
           detailSummary: Object.prototype.hasOwnProperty.call(field, "detailSummary")
             ? Boolean(field.detailSummary)
             : Boolean(field.showOnNode),
-          compare: Boolean(field.compare),
+          compare: type !== "image" && Boolean(field.compare),
           keyMetric: type === "number" && (Object.prototype.hasOwnProperty.call(field, "keyMetric")
             ? Boolean(field.keyMetric)
             : ["first", "second", "third", "mass", "stiffness"].includes(field.code)),
-          conclusionField: Object.prototype.hasOwnProperty.call(field, "conclusionField")
+          conclusionField: type === "text" && (Object.prototype.hasOwnProperty.call(field, "conclusionField")
             ? Boolean(field.conclusionField)
             : ["conclusion", "constraint", "solver", "conclusionStatus", "suggestion", "risk"].includes(field.code)
+          )
         };
       });
       if (!normalizedFields.some((field) => field.code === "conclusion")) {
@@ -1483,11 +1914,16 @@
       return "part-steering";
     }
 
-    function normalizeAttachment(file, card, index) {
+    function normalizeAttachment(file, card, index, parts = defaultState.parts) {
       if (file && typeof file === "object") {
         const relativePath = file.relativePath || "";
-        const serverStored = Boolean(file.serverStored || file.url || relativePath.startsWith("server_data/attachments/"));
-        const folderName = file.folderName || attachmentFolderName(card);
+        const serverStored = Boolean(
+          file.serverStored
+          || file.url
+          || relativePath.startsWith("data_attachment/")
+          || relativePath.startsWith("server_data/attachments/")
+        );
+        const folderName = file.folderName || attachmentFolderName(card, parts);
         const storedName = file.storedName || file.name || file.fileName || "未命名附件";
         return {
           id: file.id || `file-${card.id}-${index}`,
@@ -1519,6 +1955,7 @@
 
     function saveState() {
       if (serverMode) {
+        if (!currentUser || !canEditCards()) return;
         scheduleServerSave();
         return;
       }
@@ -1558,6 +1995,7 @@
         const payload = await response.json();
         if (!payload.state) {
           state = normalizedDefaultState();
+          if (currentUser) state.role = currentUser.role;
           return true;
         }
         if (!Array.isArray(payload.state.cards)) return false;
@@ -1575,6 +2013,7 @@
         if (!next.activePartId) next.activePartId = "all";
         next.cards = next.cards.map(normalizeCardRecord);
         next.mode = "move";
+        next.role = currentUser?.role || next.role;
         next.pendingConnectId = null;
         next.createChildMode = false;
         state = next;
@@ -1633,7 +2072,7 @@
 
     async function chooseAttachmentDirectory() {
       if (serverMode) {
-        alert("当前为工作站服务器模式，附件会统一保存到工作站 server_data/attachments 目录。");
+        alert("当前为工作站服务器模式，附件会按 config.json 配置统一保存到工作站 server_data/attachments 目录。");
         return;
       }
       if (!("showDirectoryPicker" in window)) {
@@ -1654,22 +2093,64 @@
         .slice(0, 80) || "untitled";
     }
 
-    function attachmentFolderName(card) {
-      return `${sanitizeFilePart(card.code || "card")}_${sanitizeFilePart(card.id)}`;
+    function attachmentFolderName(card, parts = defaultState.parts) {
+      const part = parts.find((item) => item.id === card.partId) || parts[0] || {};
+      const partType = sanitizeFilePart(part.type || "未分类");
+      const partLabel = sanitizeFilePart(`${part.code || ""}_${part.name || ""}`) || "未命名零件";
+      const cardLabel = sanitizeFilePart(`${card.code || ""}_${card.title || ""}_${card.id || "card"}`);
+      return `${partType}/${partLabel}/${cardLabel}`;
+    }
+
+    function attachmentUploadParams(card) {
+      const part = partById(card.partId) || state.parts[0] || {};
+      return new URLSearchParams({
+        cardId: card.id,
+        folderName: attachmentFolderName(card, state.parts),
+        partType: part.type || "未分类",
+        partCode: part.code || "",
+        partName: part.name || "",
+        cardCode: card.code || "",
+        cardTitle: card.title || ""
+      });
+    }
+
+    function isImageFileName(name) {
+      const lower = String(name || "").toLowerCase();
+      return IMAGE_EXTENSIONS.some((extension) => lower.endsWith(extension));
+    }
+
+    function isImageValue(value) {
+      return value && typeof value === "object" && (value.url || value.storedName || value.relativePath);
     }
 
     async function getCardAttachmentFolder(card, create = true) {
       if (!attachmentRootHandle) return null;
       if (!(await ensureAttachmentPermission())) return null;
       const root = await attachmentRootHandle.getDirectoryHandle(ATTACHMENT_ROOT_FOLDER, { create });
-      return root.getDirectoryHandle(attachmentFolderName(card), { create });
+      return getNestedDirectory(root, `${ATTACHMENT_FILES_FOLDER}/${attachmentFolderName(card, state.parts)}`, create);
     }
 
     async function getAttachmentFolderByName(folderName, create = false) {
       if (!attachmentRootHandle || !folderName) return null;
       if (!(await ensureAttachmentPermission())) return null;
       const root = await attachmentRootHandle.getDirectoryHandle(ATTACHMENT_ROOT_FOLDER, { create });
-      return root.getDirectoryHandle(folderName, { create });
+      return getNestedDirectory(root, `${ATTACHMENT_FILES_FOLDER}/${folderName}`, create);
+    }
+
+    async function getNestedDirectory(root, relativePath, create = false) {
+      let folder = root;
+      for (const part of String(relativePath || "").split("/").filter(Boolean)) {
+        folder = await folder.getDirectoryHandle(part, { create });
+      }
+      return folder;
+    }
+
+    async function removeNestedDirectory(root, relativePath) {
+      const parts = String(relativePath || "").split("/").filter(Boolean);
+      if (!parts.length) return;
+      const targetName = parts.pop();
+      const parent = await getNestedDirectory(root, parts.join("/"), false);
+      await parent.removeEntry(targetName, { recursive: true });
     }
 
     async function uploadAttachments(card, fileList) {
@@ -1682,88 +2163,99 @@
         await chooseAttachmentDirectory();
       }
       if (!attachmentRootHandle) return;
-      const folder = await getCardAttachmentFolder(card, true);
-      if (!folder) {
-        alert("没有获得附件目录写入权限。");
-        return;
-      }
       for (const file of fileList) {
-        const storedName = `${Date.now()}_${sanitizeFilePart(file.name)}`;
-        const fileHandle = await folder.getFileHandle(storedName, { create: true });
-        const writable = await fileHandle.createWritable();
-        await writable.write(file);
-        await writable.close();
-        card.files.push({
-          id: `file-${card.id}-${Date.now()}-${Math.random().toString(16).slice(2)}`,
-          name: file.name,
-          storedName,
-          folderName: attachmentFolderName(card),
-          relativePath: `${ATTACHMENT_ROOT_FOLDER}/${attachmentFolderName(card)}/${storedName}`,
-          type: fileType(file.name),
-          size: file.size,
-          uploadedAt: new Date().toISOString(),
-          legacy: false
-        });
+        const stored = await storeLocalFile(card, file);
+        if (stored) card.files.push(stored);
       }
       renderAll();
     }
 
+    async function storeLocalFile(card, file) {
+      const folder = await getCardAttachmentFolder(card, true);
+      if (!folder) {
+        alert("没有获得附件目录写入权限。");
+        return null;
+      }
+      const storedName = `${Date.now()}_${sanitizeFilePart(file.name)}`;
+      const fileHandle = await folder.getFileHandle(storedName, { create: true });
+      const writable = await fileHandle.createWritable();
+      await writable.write(file);
+      await writable.close();
+      return {
+        id: `file-${card.id}-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+        name: file.name,
+        storedName,
+        folderName: attachmentFolderName(card, state.parts),
+        relativePath: `${ATTACHMENT_ROOT_FOLDER}/${ATTACHMENT_FILES_FOLDER}/${attachmentFolderName(card, state.parts)}/${storedName}`,
+        type: fileType(file.name),
+        size: file.size,
+        uploadedAt: new Date().toISOString(),
+        legacy: false
+      };
+    }
+
     async function uploadAttachmentsToServer(card, fileList) {
+      const files = await uploadFilesToServer(card, fileList);
+      files.forEach((file) => card.files.push(file));
+      if (files.length) renderAll();
+    }
+
+    async function uploadFilesToServer(card, fileList) {
       const form = new FormData();
       fileList.forEach((file) => form.append("files", file, file.name));
-      const folderName = attachmentFolderName(card);
       try {
-        const response = await fetch(`/api/upload?cardId=${encodeURIComponent(card.id)}&folderName=${encodeURIComponent(folderName)}`, {
+        const response = await fetch(`/api/upload?${attachmentUploadParams(card).toString()}`, {
           method: "POST",
           body: form
         });
         if (!response.ok) throw new Error(`Upload failed: ${response.status}`);
         const payload = await response.json();
-        (payload.files || []).forEach((file) => {
-          card.files.push({
+        return (payload.files || []).map((file) => ({
             ...file,
             type: fileType(file.name),
             uploadedAt: new Date().toISOString()
-          });
-        });
-        renderAll();
+          }));
       } catch (error) {
         console.warn("Failed to upload attachment to server", error);
-        alert("附件上传到工作站失败，请确认 server.py 正在运行。");
+        alert("附件上传到工作站失败，请确认已通过 python3 run.py 启动服务。");
+        return [];
       }
     }
 
     async function deleteAttachment(card, attachmentId) {
       const attachment = card.files.find((file) => file.id === attachmentId);
       if (!attachment) return;
-      if (serverMode && attachment.serverStored) {
+      await deleteStoredFile(card, attachment);
+      card.files = card.files.filter((file) => file.id !== attachmentId);
+      renderAll();
+    }
+
+    async function deleteStoredFile(card, file) {
+      if (!file || file.legacy) return;
+      if (serverMode && file.serverStored) {
         try {
-          await fetch(`/api/attachments/${encodeURIComponent(attachment.folderName)}/${encodeURIComponent(attachment.storedName)}`, { method: "DELETE" });
+          await fetch(`/api/attachments/${encodeURIComponent(file.folderName)}/${encodeURIComponent(file.storedName)}`, { method: "DELETE" });
         } catch (error) {
           console.warn("Failed to delete server attachment", error);
         }
-        card.files = card.files.filter((file) => file.id !== attachmentId);
-        renderAll();
         return;
       }
-      if (!attachment.legacy && attachmentRootHandle) {
+      if (attachmentRootHandle) {
         try {
-          const folder = await getAttachmentFolderByName(attachment.folderName || attachmentFolderName(card), false);
-          await folder.removeEntry(attachment.storedName);
+          const folder = await getAttachmentFolderByName(file.folderName || attachmentFolderName(card, state.parts), false);
+          await folder.removeEntry(file.storedName);
         } catch (error) {
           console.warn("Failed to delete attachment file", error);
         }
       }
-      card.files = card.files.filter((file) => file.id !== attachmentId);
-      renderAll();
     }
 
     async function deleteCardAttachmentFolder(card) {
       if (serverMode) {
         const folders = new Set((card.files || [])
           .filter((file) => file.serverStored)
-          .map((file) => file.folderName || attachmentFolderName(card)));
-        if (!folders.size) folders.add(attachmentFolderName(card));
+          .map((file) => file.folderName || attachmentFolderName(card, state.parts)));
+        if (!folders.size) folders.add(attachmentFolderName(card, state.parts));
         for (const folderName of folders) {
           try {
             await fetch(`/api/attachments/${encodeURIComponent(folderName)}`, { method: "DELETE" });
@@ -1776,16 +2268,74 @@
       if (!attachmentRootHandle) return;
       const folders = new Set((card.files || [])
         .filter((file) => !file.legacy)
-        .map((file) => file.folderName || attachmentFolderName(card)));
-      if (!folders.size) folders.add(attachmentFolderName(card));
+        .map((file) => file.folderName || attachmentFolderName(card, state.parts)));
+      if (!folders.size) folders.add(attachmentFolderName(card, state.parts));
       for (const folderName of folders) {
         try {
           if (!(await ensureAttachmentPermission())) return;
           const root = await attachmentRootHandle.getDirectoryHandle(ATTACHMENT_ROOT_FOLDER, { create: false });
-          await root.removeEntry(folderName, { recursive: true });
+          await removeNestedDirectory(root, `${ATTACHMENT_FILES_FOLDER}/${folderName}`);
         } catch (error) {
           console.warn("Failed to delete card attachment folder", error);
         }
+      }
+    }
+
+    async function uploadImageField(card, field, file) {
+      if (!canEditCards() || !file) return;
+      if (!isImageFileName(file.name)) {
+        alert("图片字段仅支持 jpg、jpeg、gif、png、bmp 格式。");
+        return;
+      }
+      const previous = card.values?.[field.code];
+      let stored = null;
+      if (serverMode) {
+        const files = await uploadFilesToServer(card, [file]);
+        stored = files[0] || null;
+      } else {
+        if (!attachmentRootHandle) await chooseAttachmentDirectory();
+        if (!attachmentRootHandle) return;
+        stored = await storeLocalFile(card, file);
+      }
+      if (!stored) return;
+      if (isImageValue(previous)) await deleteStoredFile(card, previous);
+      card.values = card.values || {};
+      card.values[field.code] = {
+        ...stored,
+        imageField: true,
+        type: fileType(stored.name)
+      };
+      renderAll();
+    }
+
+    async function clearImageField(card, field) {
+      const previous = card.values?.[field.code];
+      if (isImageValue(previous)) await deleteStoredFile(card, previous);
+      card.values = card.values || {};
+      card.values[field.code] = "";
+      renderAll();
+    }
+
+    function imageCacheKey(image) {
+      return `${image.folderName || ""}/${image.storedName || image.name || ""}`;
+    }
+
+    async function imageDisplayUrl(image) {
+      if (!isImageValue(image)) return "";
+      if (image.url) return image.url;
+      const key = imageCacheKey(image);
+      if (objectUrlCache.has(key)) return objectUrlCache.get(key);
+      if (!attachmentRootHandle) return "";
+      try {
+        const folder = await getAttachmentFolderByName(image.folderName, false);
+        const fileHandle = await folder.getFileHandle(image.storedName);
+        const file = await fileHandle.getFile();
+        const objectUrl = URL.createObjectURL(file);
+        objectUrlCache.set(key, objectUrl);
+        return objectUrl;
+      } catch (error) {
+        console.warn("Failed to read image field file", error);
+        return "";
       }
     }
 
@@ -1868,6 +2418,10 @@
       return state.role !== "structure";
     }
 
+    function canEditTemplate() {
+      return state.role === "admin";
+    }
+
     function numericValue(card, code) {
       const value = Number(card.values?.[code]);
       return Number.isFinite(value) ? value : 0;
@@ -1876,6 +2430,7 @@
     function fieldValue(card, field) {
       const value = card.values?.[field.code];
       if (value === undefined || value === null || value === "") return "—";
+      if (field.type === "image") return isImageValue(value) ? attachmentName(value) : "—";
       if (field.type === "number") {
         const number = Number(value);
         if (!Number.isFinite(number)) return "—";
@@ -1899,6 +2454,10 @@
     function isDetailSummaryField(field) {
       if (Object.prototype.hasOwnProperty.call(field, "detailSummary")) return Boolean(field.detailSummary);
       return Boolean(field.showOnNode);
+    }
+
+    function isImageField(field) {
+      return field.type === "image";
     }
 
     function primaryConclusionText(card) {
@@ -1961,23 +2520,37 @@
     // === 渲染入口 ============================================================
     // renderAll 是唯一的全量刷新入口；局部拖拽只更新节点位置和 SVG 连线。
     function renderAll() {
+      if (currentUser) state.role = currentUser.role;
+      if (state.panel === "template" && !canEditTemplate()) {
+        state.panel = "detail";
+        templateDraft = null;
+      }
       refreshCardLookup();
       saveState();
       renderRoleAndMode();
       renderKpis();
       renderPartTree();
       renderLibrary();
-      renderLinks();
-      renderNodes();
+      renderWorkspace();
       renderCompare();
       renderEdgeList();
       renderPanel();
     }
 
+    function renderWorkspace() {
+      const templateMode = state.panel === "template" && canEditTemplate();
+      layout.classList.toggle("template-mode", templateMode);
+      workspace.classList.toggle("template-mode", templateMode);
+      if (templateMode) {
+        renderTemplatePanel(workspaceTemplate);
+        return;
+      }
+      workspaceTemplate.innerHTML = "";
+      renderLinks();
+      renderNodes();
+    }
+
     function renderRoleAndMode() {
-      document.querySelectorAll("[data-role]").forEach((button) => {
-        button.classList.toggle("active", button.dataset.role === state.role);
-      });
       document.querySelectorAll("[data-mode]").forEach((button) => {
         button.classList.toggle("active", button.dataset.mode === state.mode);
       });
@@ -1987,10 +2560,22 @@
       document.querySelectorAll("[data-panel]").forEach((button) => {
         button.classList.toggle("active", button.dataset.panel === state.panel);
       });
+      const graphTop = document.getElementById("graphTop");
+      graphTop.classList.toggle("active", state.panel !== "template");
+      const templateTop = document.getElementById("templateTop");
+      templateTop.disabled = !canEditTemplate();
+      templateTop.title = canEditTemplate() ? "编辑卡片模板" : "仅管理员可编辑模板";
+      userChip.innerHTML = currentUser
+        ? `<strong>${escapeHtml(currentUser.displayName || currentUser.username)}</strong><span>${escapeHtml(roleLabel(currentUser.role))}</span>`
+        : `<strong>未登录</strong>`;
+      userManage.hidden = !canEditTemplate();
+      document.querySelector(".toolbar-title").textContent = state.panel === "template" ? "卡片模板" : "仿真结果图谱";
       document.getElementById("permissionNote").textContent = canEditGraph()
-        ? state.createChildMode
-          ? "新建卡片模式：点击图谱中的父卡片，在其子集中创建新卡片。"
-          : "当前角色可编辑图谱和卡片内容。"
+        ? canEditTemplate()
+          ? "管理员可编辑模板、图谱和卡片内容。"
+          : state.createChildMode
+            ? "新建卡片模式：点击图谱中的父卡片，在其子集中创建新卡片。"
+            : "当前角色可编辑图谱和卡片内容。"
         : "结构工程师角色仅查看图谱、结果和附件元数据。";
       treeStage.classList.toggle("create-child", Boolean(state.createChildMode && canEditGraph()));
       const newCardButton = document.getElementById("newCard");
@@ -2302,7 +2887,7 @@
     }
 
     function renderCompare() {
-      const fields = state.template.fields.filter((field) => field.compare);
+      const fields = state.template.fields.filter((field) => field.compare && field.type !== "image");
       const selectedIds = new Set(state.selectedIds);
       const rows = state.cards.filter((card) => selectedIds.has(card.id) && cardInActivePart(card));
       if (!rows.length) {
@@ -2409,7 +2994,6 @@
 
     function renderPanel() {
       if (state.panel === "edit") renderEditPanel();
-      else if (state.panel === "template") renderTemplatePanel();
       else renderDetailPanel();
     }
 
@@ -2425,6 +3009,7 @@
         .filter((field) => field.type === "number" && isKeyMetricField(field))
         .slice(0, 4);
       const conclusionFields = state.template.fields.filter(isConclusionField);
+      const imageFields = state.template.fields.filter(isImageField);
       const maxValue = Math.max(1, ...chartFields.map((field) => numericValue(card, field.code)));
       detailBody.innerHTML = `
         <div class="selected-heading">
@@ -2471,6 +3056,15 @@
           </div>
         </section>
 
+        ${imageFields.length ? `
+        <section class="detail-section">
+          <h4>图片字段</h4>
+          <div class="image-grid">
+            ${imageFields.map((field) => renderImageCard(card, field)).join("")}
+          </div>
+        </section>
+        ` : ""}
+
         <section class="detail-section">
           <h4>结构变更与任务</h4>
           <div class="kv">
@@ -2485,12 +3079,7 @@
         <section class="detail-section">
           <h4>关联文件</h4>
           <div class="file-list">
-            ${(card.files || []).map((file) => `
-              <div class="file-item">
-                <strong>${attachmentTitleHtml(file)}</strong>
-                <span>${escapeHtml(attachmentMetaText(file))}</span>
-              </div>
-            `).join("") || `<div class="empty">暂无附件元数据。</div>`}
+            ${(card.files || []).map((file) => attachmentItemHtml(file)).join("") || `<div class="empty">暂无附件元数据。</div>`}
           </div>
         </section>
 
@@ -2505,47 +3094,217 @@
         toggleSelected(card.id, !state.selectedIds.includes(card.id));
       });
       document.getElementById("duplicateCard").addEventListener("click", () => duplicateCard(card.id));
+      bindAttachmentDownloadButtons(detailBody, card);
+      hydrateImageThumbnails(detailBody);
+    }
+
+    function renderImageCard(card, field, editable = false) {
+      const image = card.values?.[field.code];
+      const hasImage = isImageValue(image);
+      return `
+        <div class="${editable ? "image-upload-card" : "image-card"}">
+          <strong>${escapeHtml(field.name)}</strong>
+          ${hasImage
+            ? `<button class="image-thumb" type="button" data-image-code="${escapeHtml(field.code)}">
+                <img alt="${escapeHtml(field.name)} 缩略图">
+              </button>`
+            : `<div class="image-thumb">未上传</div>`}
+          <div class="image-meta">${hasImage ? escapeHtml(attachmentName(image)) : escapeHtml(field.required ? "必填图片" : "可选图片")}</div>
+          ${editable ? `
+            <div class="image-upload-actions">
+              <label class="ghost-btn" for="image-${field.code}">上传图片</label>
+              <input class="sr-only" id="image-${field.code}" type="file" accept="${IMAGE_ACCEPT}" data-image-input="${escapeHtml(field.code)}">
+              ${hasImage ? `<button class="danger-btn" type="button" data-clear-image="${escapeHtml(field.code)}">移除</button>` : ""}
+            </div>
+          ` : ""}
+        </div>
+      `;
+    }
+
+    async function hydrateImageThumbnails(container) {
+      const card = activeScopedCard();
+      if (!card) return;
+      const buttons = Array.from(container.querySelectorAll("[data-image-code]"));
+      for (const button of buttons) {
+        const field = state.template.fields.find((item) => item.code === button.dataset.imageCode);
+        const image = field ? card.values?.[field.code] : null;
+        const img = button.querySelector("img");
+        const url = await imageDisplayUrl(image);
+        if (img && url) img.src = url;
+        if (!url) button.innerHTML = "<span>无法读取图片</span>";
+        button.addEventListener("click", async () => {
+          const fullUrl = await imageDisplayUrl(image);
+          if (fullUrl) openImageModal(fullUrl, field?.name || attachmentName(image));
+        });
+      }
+    }
+
+    function openImageModal(url, title) {
+      imageModalTitle.textContent = title || "图片预览";
+      imageModalImg.src = url;
+      imageModal.hidden = false;
+    }
+
+    function closeImageModal() {
+      imageModal.hidden = true;
+      imageModalImg.removeAttribute("src");
     }
 
     function attachmentName(file) {
       return typeof file === "string" ? file : file?.name || "未命名附件";
     }
 
+    function isPdfAttachment(file) {
+      return attachmentName(file).toLowerCase().endsWith(".pdf");
+    }
+
+    function attachmentDownloadUrl(file) {
+      if (!file || typeof file !== "object" || !file.url) return "";
+      const separator = file.url.includes("?") ? "&" : "?";
+      return `${file.url}${separator}download=1&name=${encodeURIComponent(attachmentName(file))}`;
+    }
+
     function attachmentTitleHtml(file) {
       const name = escapeHtml(attachmentName(file));
-      if (file && typeof file === "object" && file.url) {
+      if (isPdfAttachment(file) && file && typeof file === "object" && file.url) {
         return `<a href="${escapeHtml(file.url)}" target="_blank" rel="noopener">${name}</a>`;
       }
       return name;
     }
 
-    function attachmentMetaText(file) {
-      const item = typeof file === "string" ? normalizeAttachment(file, { id: "legacy" }, 0) : file;
-      const size = item.size ? ` · ${formatBytes(item.size)}` : "";
-      const path = item.relativePath ? ` · ${item.relativePath}` : item.legacy ? " · 示例元数据" : "";
-      return `${item.type || fileType(item.name)}${size}${path}`;
+    function attachmentItemHtml(file, editable = false) {
+      const downloadUrl = attachmentDownloadUrl(file);
+      const downloadButton = downloadUrl
+        ? `<a class="icon-btn" href="${escapeHtml(downloadUrl)}" title="下载附件" aria-label="下载 ${escapeHtml(attachmentName(file))}">↓</a>`
+        : file && typeof file === "object" && !file.legacy
+          ? `<button class="icon-btn" type="button" data-download-attachment="${escapeHtml(file.id)}" title="下载附件">↓</button>`
+          : `<button class="icon-btn" type="button" disabled title="示例附件没有可下载文件">↓</button>`;
+      return `
+        <div class="file-item">
+          <div class="file-main">
+            <strong>${attachmentTitleHtml(file)}</strong>
+          </div>
+          <div class="file-actions">
+            ${downloadButton}
+            ${editable ? `<button class="icon-btn" type="button" data-delete-attachment="${escapeHtml(file.id)}" title="删除附件">×</button>` : ""}
+          </div>
+        </div>
+      `;
+    }
+
+    function bindAttachmentDownloadButtons(container, card) {
+      container.querySelectorAll("[data-download-attachment]").forEach((button) => {
+        button.addEventListener("click", async () => {
+          const file = (card.files || []).find((item) => item.id === button.dataset.downloadAttachment);
+          if (!file || !attachmentRootHandle) return;
+          try {
+            const folder = await getAttachmentFolderByName(file.folderName, false);
+            const fileHandle = await folder.getFileHandle(file.storedName);
+            const blob = await fileHandle.getFile();
+            const objectUrl = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = objectUrl;
+            link.download = attachmentName(file);
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+            setTimeout(() => URL.revokeObjectURL(objectUrl), 500);
+          } catch (error) {
+            console.warn("Failed to download local attachment", error);
+            alert("无法读取本地归档附件，请确认已授权附件目录。");
+          }
+        });
+      });
+    }
+
+    async function loadUsersForManage() {
+      userManageError.textContent = "";
+      try {
+        const payload = await fetchJson("/api/users", { cache: "no-store" });
+        renderUserTable(payload.users || []);
+      } catch (error) {
+        userManageError.textContent = error.message;
+      }
+    }
+
+    function renderUserTable(users) {
+      userTableBody.innerHTML = users.map((user) => `
+        <tr data-user-row="${escapeHtml(user.id)}">
+          <td>${escapeHtml(user.username)}</td>
+          <td><input value="${escapeHtml(user.displayName || "")}" data-user-prop="displayName"></td>
+          <td>
+            <select data-user-prop="role">
+              <option value="admin" ${user.role === "admin" ? "selected" : ""}>管理员</option>
+              <option value="simulation" ${user.role === "simulation" ? "selected" : ""}>仿真工程师</option>
+              <option value="structure" ${user.role === "structure" ? "selected" : ""}>结构工程师</option>
+            </select>
+          </td>
+          <td>
+            <select data-user-prop="enabled">
+              <option value="true" ${user.enabled ? "selected" : ""}>启用</option>
+              <option value="false" ${!user.enabled ? "selected" : ""}>禁用</option>
+            </select>
+          </td>
+          <td><input type="password" placeholder="不修改则留空" data-user-prop="password"></td>
+          <td>
+            <div class="button-row">
+              <button class="ghost-btn" type="button" data-save-user="${escapeHtml(user.id)}">保存</button>
+              <button class="danger-btn" type="button" data-delete-user="${escapeHtml(user.id)}">删除</button>
+            </div>
+          </td>
+        </tr>
+      `).join("") || `<tr><td colspan="6">暂无用户</td></tr>`;
+
+      userTableBody.querySelectorAll("[data-save-user]").forEach((button) => {
+        button.addEventListener("click", async () => {
+          const row = button.closest("[data-user-row]");
+          const body = {};
+          row.querySelectorAll("[data-user-prop]").forEach((input) => {
+            if (input.dataset.userProp === "password" && !input.value.trim()) return;
+            body[input.dataset.userProp] = input.dataset.userProp === "enabled" ? input.value === "true" : input.value.trim();
+          });
+          try {
+            await fetchJson(`/api/users/${encodeURIComponent(button.dataset.saveUser)}`, {
+              method: "PUT",
+              body: JSON.stringify(body)
+            });
+            await loadUsersForManage();
+          } catch (error) {
+            userManageError.textContent = error.message;
+          }
+        });
+      });
+
+      userTableBody.querySelectorAll("[data-delete-user]").forEach((button) => {
+        button.addEventListener("click", async () => {
+          if (!window.confirm("确定删除该用户吗？")) return;
+          try {
+            await fetchJson(`/api/users/${encodeURIComponent(button.dataset.deleteUser)}`, { method: "DELETE" });
+            await loadUsersForManage();
+          } catch (error) {
+            userManageError.textContent = error.message;
+          }
+        });
+      });
+    }
+
+    async function openUserManage() {
+      if (!canEditTemplate()) return;
+      userModal.hidden = false;
+      await loadUsersForManage();
     }
 
     function attachmentStorageStatus() {
       if (serverMode) {
-        return "服务器模式：附件统一保存到工作站 server_data/attachments，可供局域网用户访问。";
+        return "服务器模式：附件统一保存到工作站 server_data/attachments 目录，并按零件库和卡片分层归档。";
       }
       if (!("showDirectoryPicker" in window)) {
         return "当前浏览器不支持本地目录归档；请使用 Chrome 或 Edge 试用真实附件保存。";
       }
       if (!attachmentRootHandle) {
-        return "尚未选择附件目录。上传前请选择一个本地目录，系统会在其中创建 simulation-attachments。";
+        return "尚未选择附件目录。上传前请选择一个本地目录，系统会在其中创建 server_data/attachments。";
       }
-      return `附件目录：${state.attachmentDirectoryName || attachmentRootHandle.name} / ${ATTACHMENT_ROOT_FOLDER}`;
-    }
-
-    function formatBytes(bytes) {
-      const value = Number(bytes);
-      if (!value) return "";
-      if (value < 1024) return `${value} B`;
-      if (value < 1024 * 1024) return `${(value / 1024).toFixed(1)} KB`;
-      if (value < 1024 * 1024 * 1024) return `${(value / 1024 / 1024).toFixed(1)} MB`;
-      return `${(value / 1024 / 1024 / 1024).toFixed(1)} GB`;
+      return `附件目录：${state.attachmentDirectoryName || attachmentRootHandle.name} / ${ATTACHMENT_ROOT_FOLDER}/${ATTACHMENT_FILES_FOLDER}`;
     }
 
     function fileType(file) {
@@ -2618,11 +3377,13 @@
               </select>
             </div>
             ${state.template.fields.map((field) => `
-              <div class="field ${field.type === "text" ? "full" : ""}">
+              <div class="field ${field.type !== "number" ? "full" : ""}">
                 <label for="value-${field.code}">${escapeHtml(field.name)}${field.unit ? `（${escapeHtml(field.unit)}）` : ""}</label>
                 ${field.type === "number"
                   ? `<input id="value-${field.code}" data-value-code="${field.code}" type="number" step="0.01" value="${escapeHtml(card.values?.[field.code] ?? "")}" ${disabled}>`
-                  : `<textarea id="value-${field.code}" data-value-code="${field.code}" ${disabled}>${escapeHtml(card.values?.[field.code] ?? "")}</textarea>`
+                  : field.type === "image"
+                    ? renderImageCard(card, field, canEditCards())
+                    : `<textarea id="value-${field.code}" data-value-code="${field.code}" ${disabled}>${escapeHtml(card.values?.[field.code] ?? "")}</textarea>`
                 }
               </div>
             `).join("")}
@@ -2639,15 +3400,7 @@
               </div>
               <div class="field-help" id="attachmentStatus">${escapeHtml(attachmentStorageStatus())}</div>
               <div class="file-list">
-                ${(card.files || []).map((file) => `
-                  <div class="file-item">
-                    <div>
-                      <strong>${attachmentTitleHtml(file)}</strong>
-                      <span>${escapeHtml(attachmentMetaText(file))}</span>
-                    </div>
-                    <button class="icon-btn" type="button" data-delete-attachment="${escapeHtml(file.id)}" ${disabled} title="删除附件">×</button>
-                  </div>
-                `).join("") || `<div class="empty">还没有附件。上传后会复制到已选择的本地附件目录。</div>`}
+                ${(card.files || []).map((file) => attachmentItemHtml(file, canEditCards())).join("") || `<div class="empty">还没有附件。上传后会复制到归档目录。</div>`}
               </div>
             </div>
           </div>
@@ -2699,6 +3452,13 @@
             nextValues[field.code] = rawValue;
           }
         });
+        state.template.fields
+          .filter((field) => field.type === "image")
+          .forEach((field) => {
+            if (field.required && !isImageValue(card.values?.[field.code])) {
+              missingRequired = missingRequired || field;
+            }
+          });
         if (missingRequired) {
           alert(`请填写必填字段：${missingRequired.name}`);
           return;
@@ -2735,12 +3495,28 @@
         await uploadAttachments(card, Array.from(event.target.files || []));
         event.target.value = "";
       });
+      detailBody.querySelectorAll("[data-image-input]").forEach((input) => {
+        input.addEventListener("change", async (event) => {
+          const field = state.template.fields.find((item) => item.code === input.dataset.imageInput);
+          const file = event.target.files?.[0];
+          if (field && file) await uploadImageField(card, field, file);
+          event.target.value = "";
+        });
+      });
+      detailBody.querySelectorAll("[data-clear-image]").forEach((button) => {
+        button.addEventListener("click", async () => {
+          const field = state.template.fields.find((item) => item.code === button.dataset.clearImage);
+          if (field) await clearImageField(card, field);
+        });
+      });
       detailBody.querySelectorAll("[data-delete-attachment]").forEach((button) => {
         button.addEventListener("click", async () => {
           if (!canEditCards()) return;
           await deleteAttachment(card, button.dataset.deleteAttachment);
         });
       });
+      bindAttachmentDownloadButtons(detailBody, card);
+      hydrateImageThumbnails(detailBody);
     }
 
     function syncParentEdge(card, previousParentId = "", previousRelationType = "结构迭代") {
@@ -2798,14 +3574,14 @@
         .map((field) => ({
           code: String(field.code || "").trim(),
           name: String(field.name || "").trim(),
-          type: field.type === "text" ? "text" : "number",
+          type: ["text", "image"].includes(field.type) ? field.type : "number",
           unit: String(field.unit || "").trim(),
           required: Boolean(field.required),
           showOnNode: Boolean(field.showOnNode),
           detailSummary: Boolean(field.detailSummary),
-          compare: Boolean(field.compare),
+          compare: field.type !== "image" && Boolean(field.compare),
           keyMetric: field.type === "number" && Boolean(field.keyMetric),
-          conclusionField: Boolean(field.conclusionField),
+          conclusionField: field.type === "text" && Boolean(field.conclusionField),
           originalCode: field.originalCode || field.code
         }))
         .filter((field) => field.code && field.name);
@@ -2845,10 +3621,10 @@
     }
 
     // === 模板面板渲染与保存 ==================================================
-    function renderTemplatePanel() {
-      const disabled = canEditCards() ? "" : "disabled";
+    function renderTemplatePanel(target = detailBody) {
+      const disabled = canEditTemplate() ? "" : "disabled";
       const draft = getTemplateDraft();
-      detailBody.innerHTML = `
+      target.innerHTML = `
         <section class="detail-section">
           <div class="selected-heading">
             <div>
@@ -2885,15 +3661,16 @@
                     <select data-field-index="${index}" data-field-prop="type" ${disabled}>
                       <option value="number" ${field.type === "number" ? "selected" : ""}>数字</option>
                       <option value="text" ${field.type === "text" ? "selected" : ""}>文本</option>
+                      <option value="image" ${field.type === "image" ? "selected" : ""}>图片</option>
                     </select>
                   </td>
                   <td><input value="${escapeHtml(field.unit || "")}" data-field-index="${index}" data-field-prop="unit" ${disabled}></td>
                   <td><input type="checkbox" ${field.required ? "checked" : ""} data-field-index="${index}" data-field-prop="required" ${disabled}></td>
                   <td><input type="checkbox" ${field.showOnNode ? "checked" : ""} data-field-index="${index}" data-field-prop="showOnNode" ${disabled}></td>
                   <td><input type="checkbox" ${isDetailSummaryField(field) ? "checked" : ""} data-field-index="${index}" data-field-prop="detailSummary" ${disabled}></td>
-                  <td><input type="checkbox" ${field.compare ? "checked" : ""} data-field-index="${index}" data-field-prop="compare" ${disabled}></td>
+                  <td><input type="checkbox" ${field.compare ? "checked" : ""} data-field-index="${index}" data-field-prop="compare" ${field.type === "image" ? "disabled" : disabled}></td>
                   <td><input type="checkbox" ${isKeyMetricField(field) ? "checked" : ""} data-field-index="${index}" data-field-prop="keyMetric" ${field.type === "number" ? disabled : "disabled"}></td>
-                  <td><input type="checkbox" ${isConclusionField(field) ? "checked" : ""} data-field-index="${index}" data-field-prop="conclusionField" ${disabled}></td>
+                  <td><input type="checkbox" ${isConclusionField(field) ? "checked" : ""} data-field-index="${index}" data-field-prop="conclusionField" ${field.type === "text" ? disabled : "disabled"}></td>
                   <td><button class="icon-btn" type="button" data-delete-field="${index}" ${disabled} title="删除字段">×</button></td>
                 </tr>
               `).join("")}
@@ -2917,6 +3694,7 @@
               <select id="newFieldType" name="type" ${disabled}>
                 <option value="number">数字</option>
                 <option value="text">文本</option>
+                <option value="image">图片</option>
               </select>
             </div>
             <div class="field">
@@ -2941,51 +3719,57 @@
         </section>
       `;
       document.getElementById("templateName").addEventListener("input", (event) => {
-        if (!canEditCards()) return;
+        if (!canEditTemplate()) return;
         draft.name = event.target.value.trim();
       });
-      detailBody.querySelectorAll("[data-field-prop]").forEach((input) => {
+      target.querySelectorAll("[data-field-prop]").forEach((input) => {
         const updateDraftField = () => {
-          if (!canEditCards()) return;
+          if (!canEditTemplate()) return;
           const field = draft.fields[Number(input.dataset.fieldIndex)];
           const prop = input.dataset.fieldProp;
           const nextValue = input.type === "checkbox" ? input.checked : input.value.trim();
           field[prop] = nextValue;
+          if (prop === "type") {
+            field.compare = field.type !== "image" && Boolean(field.compare);
+            field.keyMetric = field.type === "number" && Boolean(field.keyMetric);
+            field.conclusionField = field.type === "text" && Boolean(field.conclusionField);
+          }
         };
         input.addEventListener("input", updateDraftField);
         input.addEventListener("change", updateDraftField);
       });
-      detailBody.querySelectorAll("[data-delete-field]").forEach((button) => {
+      target.querySelectorAll("[data-delete-field]").forEach((button) => {
         button.addEventListener("click", () => {
-          if (!canEditCards()) return;
+          if (!canEditTemplate()) return;
           draft.fields.splice(Number(button.dataset.deleteField), 1);
-          renderTemplatePanel();
+          renderTemplatePanel(target);
         });
       });
       document.getElementById("fieldForm").addEventListener("submit", (event) => {
         event.preventDefault();
-        if (!canEditCards()) return;
+        if (!canEditTemplate()) return;
         const data = new FormData(event.currentTarget);
         const name = data.get("name").trim();
         const code = data.get("code").trim();
+        const type = data.get("type");
         if (!name || !code || draft.fields.some((field) => field.code === code)) return;
         draft.fields.push({
           name,
           code,
-          type: data.get("type"),
+          type,
           unit: data.get("unit").trim(),
           required: false,
           showOnNode: false,
           detailSummary: false,
-          compare: true,
-          keyMetric: data.get("type") === "number",
-          conclusionField: data.get("type") === "text",
+          compare: type !== "image",
+          keyMetric: type === "number",
+          conclusionField: type === "text",
           originalCode: ""
         });
-        renderTemplatePanel();
+        renderTemplatePanel(target);
       });
       document.getElementById("saveTemplate").addEventListener("click", () => {
-        if (!canEditCards()) return;
+        if (!canEditTemplate()) return;
         if (applyTemplateDraft()) renderAll();
       });
       document.getElementById("discardTemplate").addEventListener("click", () => {
@@ -2993,6 +3777,7 @@
         renderAll();
       });
       document.getElementById("resetData").addEventListener("click", () => {
+        if (!canEditTemplate()) return;
         state = normalizedDefaultState();
         if (!state.parts?.length) state.parts = clone(defaultState.parts);
         state.activePartId = "all";
@@ -3138,16 +3923,46 @@
       renderAll();
     });
 
-    document.querySelectorAll("[data-role]").forEach((button) => {
-      button.addEventListener("click", () => {
-        state.role = button.dataset.role;
-        if (!canEditGraph()) {
-          state.mode = "move";
-          state.pendingConnectId = null;
-          state.createChildMode = false;
-        }
+    loginForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      loginError.textContent = "";
+      const data = new FormData(loginForm);
+      try {
+        await login(data.get("username").trim(), data.get("password"));
+        const loadedFromServer = await loadStateFromServer();
+        if (!loadedFromServer) state = normalizedDefaultState();
+        showApp();
         renderAll();
-      });
+      } catch (error) {
+        loginError.textContent = error.message;
+      }
+    });
+
+    document.getElementById("logoutBtn").addEventListener("click", logout);
+    userManage.addEventListener("click", openUserManage);
+    document.getElementById("closeUserModal").addEventListener("click", () => {
+      userModal.hidden = true;
+      userManageError.textContent = "";
+    });
+    userForm.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      userManageError.textContent = "";
+      const data = new FormData(userForm);
+      try {
+        await fetchJson("/api/users", {
+          method: "POST",
+          body: JSON.stringify({
+            username: data.get("username").trim(),
+            displayName: data.get("displayName").trim(),
+            password: data.get("password").trim(),
+            role: data.get("role")
+          })
+        });
+        userForm.reset();
+        await loadUsersForManage();
+      } catch (error) {
+        userManageError.textContent = error.message;
+      }
     });
 
     document.querySelectorAll("[data-mode]").forEach((button) => {
@@ -3169,6 +3984,7 @@
 
     document.querySelectorAll("[data-panel]").forEach((button) => {
       button.addEventListener("click", () => {
+        if (button.dataset.panel === "template" && !canEditTemplate()) return;
         state.panel = button.dataset.panel;
         renderAll();
       });
@@ -3214,7 +4030,7 @@
     document.getElementById("copyCompare").addEventListener("click", async () => {
       const selectedIds = new Set(state.selectedIds);
       const rows = state.cards.filter((card) => selectedIds.has(card.id) && cardInActivePart(card));
-      const fields = state.template.fields.filter((field) => field.compare);
+      const fields = state.template.fields.filter((field) => field.compare && field.type !== "image");
       const text = [
         ["卡片", "来源", ...fields.map((field) => field.name), "状态"].join("\t"),
         ...rows.map((card) => {
@@ -3227,6 +4043,10 @@
       } catch (error) {
         console.warn("Clipboard unavailable", error);
       }
+    });
+
+    imageModal.querySelectorAll("[data-close-image-modal]").forEach((button) => {
+      button.addEventListener("click", closeImageModal);
     });
 
     document.getElementById("zoomIn").addEventListener("click", () => {
@@ -3282,13 +4102,23 @@
     // === 应用启动 ============================================================
     async function initializeApp() {
       if (serverMode) {
+        const user = await loadCurrentUser();
+        if (!user) {
+          showLogin();
+          return;
+        }
+        applyCurrentUser(user);
         const loadedFromServer = await loadStateFromServer();
         if (!loadedFromServer) {
           serverMode = false;
           state = loadState();
+          applyCurrentUser({ username: "local", displayName: "本地用户", role: "admin" });
         }
+      } else {
+        applyCurrentUser({ username: "local", displayName: "本地用户", role: "admin" });
       }
       if (!serverMode) await loadAttachmentDirectoryHandle();
+      showApp();
       renderAll();
     }
 
