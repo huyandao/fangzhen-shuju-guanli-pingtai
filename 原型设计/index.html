@@ -3,15 +3,15 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>折叠方向盘仿真数据管理原型</title>
+  <title>单机版仿真数据管理工具</title>
   <style>
     :root {
-      --bg: #f6f7f9;
+      --bg: #f5f7fa;
       --panel: #ffffff;
-      --panel-soft: #f0f4f8;
+      --panel-soft: #f1f5f9;
       --text: #17202a;
-      --muted: #637083;
-      --line: #d9e0e8;
+      --muted: #657386;
+      --line: #d8e0ea;
       --strong-line: #aeb9c6;
       --blue: #276ef1;
       --blue-soft: #e8f0ff;
@@ -22,7 +22,8 @@
       --red: #c73b3b;
       --red-soft: #ffe7e7;
       --gray-soft: #edf0f4;
-      --shadow: 0 18px 45px rgba(24, 39, 75, 0.08);
+      --ink: #1d2939;
+      --shadow: 0 16px 42px rgba(24, 39, 75, 0.08);
       --radius: 8px;
       font-family: Inter, "SF Pro Display", "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
     }
@@ -32,16 +33,21 @@
     }
 
     body {
+      min-width: 1200px;
       margin: 0;
-      background: var(--bg);
       color: var(--text);
-      min-width: 1160px;
+      background: var(--bg);
     }
 
     button,
     input,
-    select {
+    select,
+    textarea {
       font: inherit;
+    }
+
+    button {
+      user-select: none;
     }
 
     .app {
@@ -51,33 +57,34 @@
     }
 
     .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
       height: 64px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 24px;
-      background: #ffffff;
+      gap: 20px;
+      padding: 0 22px;
       border-bottom: 1px solid var(--line);
-      position: sticky;
-      top: 0;
-      z-index: 20;
+      background: #ffffff;
     }
 
     .brand {
+      min-width: 360px;
       display: flex;
       align-items: center;
       gap: 12px;
-      min-width: 460px;
     }
 
     .brand-mark {
       width: 34px;
       height: 34px;
-      border-radius: 8px;
       display: grid;
       place-items: center;
-      background: #1d2939;
+      border-radius: 8px;
       color: #ffffff;
+      background: var(--ink);
       font-weight: 800;
       letter-spacing: 0;
     }
@@ -95,89 +102,87 @@
       font-size: 12px;
     }
 
-    .top-actions {
+    .top-actions,
+    .toolbar-left,
+    .button-row {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
 
     .search {
-      width: 280px;
+      width: 300px;
+      height: 38px;
       display: flex;
       align-items: center;
       gap: 8px;
-      height: 38px;
       padding: 0 12px;
       border: 1px solid var(--line);
-      background: #fbfcfe;
       border-radius: 8px;
+      background: #fbfcfe;
+    }
+
+    .search span {
+      color: var(--muted);
+      font-weight: 800;
     }
 
     .search input {
       width: 100%;
       border: 0;
-      background: transparent;
       outline: 0;
       color: var(--text);
-    }
-
-    .role-switch {
-      display: flex;
-      gap: 4px;
-      padding: 4px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: #fbfcfe;
-    }
-
-    .role-switch button {
-      border: 0;
       background: transparent;
-      color: var(--muted);
-      padding: 7px 11px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    .role-switch button.active {
-      color: var(--text);
-      background: #ffffff;
-      box-shadow: 0 1px 4px rgba(24, 39, 75, 0.12);
     }
 
     .layout {
-      display: grid;
-      grid-template-columns: 268px minmax(620px, 1fr) 380px;
-      gap: 16px;
-      padding: 16px;
       height: calc(100vh - 64px);
+      display: grid;
+      grid-template-columns: 272px minmax(760px, 1fr) 340px;
+      gap: 12px;
+      padding: 12px;
     }
 
     .sidebar,
     .workspace,
     .detail {
-      background: var(--panel);
+      min-height: 0;
+      overflow: hidden;
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      min-height: 0;
+      background: var(--panel);
       box-shadow: var(--shadow);
     }
 
-    .sidebar {
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
+    .sidebar,
+    .detail {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr) 172px;
+    }
+
+    .panel-head,
+    .toolbar,
+    .compare-head {
+      border-bottom: 1px solid var(--line);
+      background: #ffffff;
     }
 
     .panel-head {
-      padding: 16px;
-      border-bottom: 1px solid var(--line);
+      padding: 13px 14px;
     }
 
     .panel-head h2,
-    .detail h2 {
+    .detail h2,
+    .compare-head h3,
+    .toolbar-title {
       margin: 0;
       font-size: 15px;
+      font-weight: 800;
       letter-spacing: 0;
     }
 
@@ -188,93 +193,20 @@
       line-height: 1.45;
     }
 
-    .project-list {
-      padding: 12px;
-      display: grid;
-      gap: 8px;
+    .sidebar-body,
+    .detail-body {
+      min-height: 0;
       overflow: auto;
-    }
-
-    .project-item {
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      padding: 12px;
-      background: #ffffff;
-    }
-
-    .project-item.active {
-      border-color: var(--blue);
-      background: var(--blue-soft);
-    }
-
-    .project-title {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-      font-size: 14px;
-      font-weight: 700;
-    }
-
-    .project-meta {
-      margin-top: 8px;
-      color: var(--muted);
-      font-size: 12px;
-      line-height: 1.55;
-    }
-
-    .kpi-strip {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-      padding: 0 12px 12px;
-    }
-
-    .kpi {
-      min-height: 76px;
-      padding: 11px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: #fbfcfe;
-    }
-
-    .kpi span {
-      display: block;
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    .kpi strong {
-      display: block;
-      margin-top: 8px;
-      font-size: 20px;
-      line-height: 1;
-    }
-
-    .workspace {
-      display: grid;
-      grid-template-rows: auto minmax(0, 1fr) 220px;
-      overflow: hidden;
+      padding: 10px;
     }
 
     .toolbar {
+      min-height: 54px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 14px;
-      padding: 14px 16px;
-      border-bottom: 1px solid var(--line);
-    }
-
-    .toolbar-left {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .toolbar-title {
-      font-size: 15px;
-      font-weight: 800;
+      gap: 10px;
+      padding: 9px 12px;
     }
 
     .segmented {
@@ -286,17 +218,23 @@
       background: #fbfcfe;
     }
 
-    .segmented button {
+    .segmented button,
+    .tabbar button {
       border: 0;
       border-radius: 6px;
-      background: transparent;
       color: var(--muted);
-      padding: 7px 10px;
+      background: transparent;
       cursor: pointer;
       white-space: nowrap;
     }
 
-    .segmented button.active {
+    .segmented button {
+      height: 30px;
+      padding: 0 10px;
+    }
+
+    .segmented button.active,
+    .tabbar button.active {
       color: var(--text);
       background: #ffffff;
       box-shadow: 0 1px 4px rgba(24, 39, 75, 0.12);
@@ -304,37 +242,254 @@
 
     .icon-btn,
     .primary-btn,
-    .ghost-btn {
+    .ghost-btn,
+    .danger-btn {
       height: 36px;
-      border-radius: 8px;
-      border: 1px solid var(--line);
-      background: #ffffff;
-      color: var(--text);
-      cursor: pointer;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 7px;
       padding: 0 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--text);
+      background: #ffffff;
+      cursor: pointer;
       white-space: nowrap;
     }
 
     .icon-btn {
       width: 36px;
       padding: 0;
+      font-weight: 800;
     }
 
     .primary-btn {
-      background: var(--blue);
       color: #ffffff;
       border-color: var(--blue);
+      background: var(--blue);
+    }
+
+    .danger-btn {
+      color: var(--red);
+      border-color: #f2b9b9;
+      background: #fff8f8;
     }
 
     .ghost-btn:hover,
     .icon-btn:hover,
     .segmented button:hover,
-    .role-switch button:hover {
+    .tabbar button:hover {
       background: var(--panel-soft);
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 6px 0 10px;
+      color: #344054;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 7px;
+      margin-bottom: 12px;
+    }
+
+    .kpi {
+      min-height: 62px;
+      padding: 9px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfcfe;
+    }
+
+    .kpi span,
+    .metric span,
+    .stat span,
+    .field-help,
+    .file-item span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .kpi strong {
+      display: block;
+      margin-top: 7px;
+      font-size: 18px;
+      line-height: 1;
+    }
+
+    .library-list {
+      display: grid;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .library-card {
+      border: 1px solid var(--line);
+      border-left: 5px solid var(--blue);
+      border-radius: 8px;
+      padding: 9px;
+      background: #ffffff;
+      cursor: grab;
+    }
+
+    .library-card:active {
+      cursor: grabbing;
+    }
+
+    .library-card strong {
+      display: block;
+      font-size: 13px;
+      line-height: 1.35;
+    }
+
+    .library-card p {
+      margin: 6px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .mini-list {
+      display: grid;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .part-tree {
+      display: grid;
+      gap: 6px;
+      margin-bottom: 12px;
+    }
+
+    .tree-root,
+    .part-item {
+      width: 100%;
+      min-height: 38px;
+      display: grid;
+      grid-template-columns: 18px minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 9px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      color: var(--text);
+      background: #ffffff;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .part-item {
+      margin-left: 14px;
+      width: calc(100% - 14px);
+      background: #fbfcfe;
+    }
+
+    .tree-root.active,
+    .part-item.active {
+      border-color: var(--blue);
+      background: var(--blue-soft);
+    }
+
+    .tree-icon {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .tree-label {
+      min-width: 0;
+    }
+
+    .tree-label strong {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 12px;
+      line-height: 1.25;
+    }
+
+    .tree-label span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 11px;
+    }
+
+    .mini-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      min-height: 38px;
+      padding: 8px 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfcfe;
+      font-size: 12px;
+    }
+
+    .mini-row strong {
+      font-size: 12px;
+    }
+
+    .mini-row select {
+      min-width: 82px;
+      height: 30px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      color: var(--text);
+      background: #ffffff;
+      font-size: 12px;
+    }
+
+    .badge {
+      height: 24px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .badge.green {
+      color: var(--green);
+      background: var(--green-soft);
+    }
+
+    .badge.blue {
+      color: var(--blue);
+      background: var(--blue-soft);
+    }
+
+    .badge.amber {
+      color: var(--amber);
+      background: var(--amber-soft);
+    }
+
+    .badge.red {
+      color: var(--red);
+      background: var(--red-soft);
+    }
+
+    .badge.gray {
+      color: #53606f;
+      background: var(--gray-soft);
     }
 
     .tree-stage {
@@ -342,15 +497,26 @@
       min-height: 0;
       overflow: auto;
       background:
-        linear-gradient(#eef2f7 1px, transparent 1px),
-        linear-gradient(90deg, #eef2f7 1px, transparent 1px);
+        linear-gradient(#edf2f7 1px, transparent 1px),
+        linear-gradient(90deg, #edf2f7 1px, transparent 1px);
       background-size: 28px 28px;
+    }
+
+    .tree-stage.drop-ready {
+      outline: 3px solid rgba(39, 110, 241, 0.18);
+      outline-offset: -3px;
+    }
+
+    .tree-stage.create-child {
+      cursor: crosshair;
+      outline: 3px solid rgba(22, 138, 74, 0.18);
+      outline-offset: -3px;
     }
 
     .tree-canvas {
       position: relative;
-      width: 1180px;
-      height: 690px;
+      min-width: 1500px;
+      min-height: 980px;
       transform-origin: top left;
       transition: transform 160ms ease;
     }
@@ -359,6 +525,7 @@
       position: absolute;
       inset: 0;
       pointer-events: none;
+      overflow: visible;
     }
 
     .link {
@@ -367,23 +534,47 @@
       stroke-width: 2;
     }
 
+    .link.recommended {
+      stroke: var(--green);
+      stroke-width: 2.6;
+    }
+
+    .link-label {
+      fill: #53606f;
+      font-size: 11px;
+      font-weight: 800;
+      paint-order: stroke;
+      stroke: #ffffff;
+      stroke-width: 5px;
+      stroke-linejoin: round;
+    }
+
     .node {
       position: absolute;
-      width: 196px;
-      min-height: 116px;
+      width: 206px;
+      min-height: 126px;
+      padding: 11px 11px 10px;
       border: 1px solid var(--line);
       border-left: 5px solid var(--blue);
       border-radius: 8px;
-      padding: 11px 11px 10px;
       background: #ffffff;
       box-shadow: 0 12px 26px rgba(24, 39, 75, 0.1);
       cursor: pointer;
-      transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease, opacity 140ms ease;
+      transition: box-shadow 140ms ease, border-color 140ms ease, opacity 140ms ease;
     }
 
     .node:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 18px 32px rgba(24, 39, 75, 0.14);
+      box-shadow: 0 18px 34px rgba(24, 39, 75, 0.15);
+    }
+
+    .tree-stage.create-child .node {
+      cursor: copy;
+    }
+
+    .node.dragging {
+      cursor: grabbing;
+      opacity: 0.86;
+      box-shadow: 0 20px 42px rgba(24, 39, 75, 0.2);
     }
 
     .node.active {
@@ -391,8 +582,12 @@
       outline: 3px solid rgba(39, 110, 241, 0.16);
     }
 
+    .node.pending {
+      outline: 3px solid rgba(22, 138, 74, 0.22);
+    }
+
     .node.dimmed {
-      opacity: 0.28;
+      opacity: 0.24;
     }
 
     .node.recommended {
@@ -442,113 +637,138 @@
 
     .metrics {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 8px;
       margin-top: 12px;
     }
 
     .metric {
-      min-height: 39px;
-    }
-
-    .metric span {
-      color: var(--muted);
-      display: block;
-      font-size: 11px;
+      min-height: 41px;
     }
 
     .metric strong {
       display: block;
-      margin-top: 3px;
+      margin-top: 4px;
       font-size: 14px;
+      line-height: 1.15;
+      overflow-wrap: anywhere;
     }
 
     .node-footer {
-      margin-top: 9px;
+      margin-top: 10px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 6px;
-    }
-
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      height: 24px;
-      padding: 0 8px;
-      border-radius: 999px;
-      font-size: 11px;
-      font-weight: 700;
-      white-space: nowrap;
-    }
-
-    .badge.green {
-      color: var(--green);
-      background: var(--green-soft);
-    }
-
-    .badge.blue {
-      color: var(--blue);
-      background: var(--blue-soft);
-    }
-
-    .badge.amber {
-      color: var(--amber);
-      background: var(--amber-soft);
-    }
-
-    .badge.red {
-      color: var(--red);
-      background: var(--red-soft);
-    }
-
-    .badge.gray {
-      color: #53606f;
-      background: var(--gray-soft);
+      gap: 7px;
     }
 
     .delta {
       color: var(--muted);
       font-size: 11px;
-      font-weight: 700;
+      font-weight: 800;
     }
 
-    .detail {
-      display: grid;
-      grid-template-rows: auto minmax(0, 1fr);
+    .compare {
       overflow: hidden;
+      border-top: 1px solid var(--line);
+      background: #ffffff;
     }
 
-    .detail-body {
-      padding: 16px;
+    .compare-head {
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+    }
+
+    .compare-table {
+      height: 127px;
       overflow: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+    }
+
+    th,
+    td {
+      height: 36px;
+      padding: 0 10px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    th {
+      position: sticky;
+      top: 0;
+      z-index: 1;
+      color: var(--muted);
+      background: #fbfcfe;
+      font-weight: 800;
+    }
+
+    td.num,
+    th.num {
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .empty {
+      min-height: 96px;
+      display: grid;
+      place-items: center;
+      padding: 16px;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    .tabbar {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 4px;
+      padding: 4px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfcfe;
+    }
+
+    .tabbar button {
+      height: 32px;
+      padding: 0 8px;
+      font-size: 12px;
     }
 
     .selected-heading {
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
-      gap: 14px;
-      margin-bottom: 14px;
+      gap: 12px;
+      margin: 14px 0;
     }
 
     .selected-heading h3 {
       margin: 0;
-      font-size: 20px;
+      font-size: 18px;
       line-height: 1.2;
       letter-spacing: 0;
     }
 
-    .selected-heading p {
-      margin: 6px 0 0;
+    .selected-heading p,
+    .detail-text {
+      margin: 7px 0 0;
       color: var(--muted);
       font-size: 13px;
-      line-height: 1.5;
+      line-height: 1.55;
     }
 
     .detail-section {
-      padding: 15px 0;
+      padding: 12px 0;
       border-top: 1px solid var(--line);
     }
 
@@ -559,34 +779,30 @@
 
     .detail-section h4 {
       margin: 0 0 10px;
-      font-size: 13px;
       color: #344054;
+      font-size: 13px;
     }
 
     .stats-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      grid-template-columns: 1fr;
+      gap: 9px;
     }
 
     .stat {
+      min-height: 64px;
+      padding: 10px;
       border: 1px solid var(--line);
       border-radius: 8px;
-      padding: 12px;
-      min-height: 76px;
       background: #fbfcfe;
-    }
-
-    .stat span {
-      color: var(--muted);
-      font-size: 12px;
     }
 
     .stat strong {
       display: block;
       margin-top: 7px;
-      font-size: 22px;
-      line-height: 1;
+      font-size: 18px;
+      line-height: 1.1;
+      overflow-wrap: anywhere;
     }
 
     .stat small {
@@ -594,6 +810,42 @@
       margin-top: 7px;
       color: var(--muted);
       font-size: 11px;
+      line-height: 1.35;
+    }
+
+    .mini-chart {
+      height: 118px;
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+      padding: 12px 12px 8px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfcfe;
+    }
+
+    .bar-wrap {
+      flex: 1;
+      height: 94px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 6px;
+    }
+
+    .bar {
+      width: 100%;
+      max-width: 44px;
+      min-height: 8px;
+      border-radius: 6px 6px 2px 2px;
+      background: var(--blue);
+    }
+
+    .bar-label {
+      color: var(--muted);
+      font-size: 11px;
+      text-align: center;
     }
 
     .kv {
@@ -623,113 +875,74 @@
       align-items: center;
       justify-content: space-between;
       gap: 10px;
+      padding: 10px 11px;
       border: 1px solid var(--line);
       border-radius: 8px;
-      padding: 10px 11px;
       background: #fbfcfe;
       font-size: 13px;
     }
 
-    .file-item span {
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    .mini-chart {
-      height: 118px;
-      display: flex;
-      align-items: flex-end;
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 10px;
-      padding: 12px 12px 8px;
-      border: 1px solid var(--line);
-      border-radius: 8px;
-      background: #fbfcfe;
     }
 
-    .bar-wrap {
-      flex: 1;
-      height: 94px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-end;
+    .field {
+      display: grid;
       gap: 6px;
     }
 
-    .bar {
-      width: 100%;
-      max-width: 42px;
-      background: var(--blue);
-      border-radius: 6px 6px 2px 2px;
-      min-height: 8px;
+    .field.full {
+      grid-column: 1 / -1;
     }
 
-    .bar-label {
-      color: var(--muted);
-      font-size: 11px;
-    }
-
-    .compare {
-      border-top: 1px solid var(--line);
-      overflow: hidden;
-      background: #ffffff;
-    }
-
-    .compare-head {
-      height: 50px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 16px;
-      border-bottom: 1px solid var(--line);
-    }
-
-    .compare-head h3 {
-      margin: 0;
-      font-size: 14px;
-    }
-
-    .compare-table {
-      height: 169px;
-      overflow: auto;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
+    .field label {
+      color: #344054;
       font-size: 12px;
+      font-weight: 800;
     }
 
-    th,
-    td {
-      height: 42px;
-      padding: 0 12px;
-      text-align: left;
-      border-bottom: 1px solid var(--line);
-      white-space: nowrap;
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 8px 10px;
+      color: var(--text);
+      background: #ffffff;
+      outline: 0;
     }
 
-    th {
-      position: sticky;
-      top: 0;
-      z-index: 1;
-      color: var(--muted);
-      background: #fbfcfe;
-      font-weight: 700;
+    .field textarea {
+      min-height: 78px;
+      resize: vertical;
+      line-height: 1.5;
     }
 
-    td.num,
-    th.num {
-      text-align: right;
-      font-variant-numeric: tabular-nums;
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(39, 110, 241, 0.14);
     }
 
-    .empty {
-      height: 128px;
-      display: grid;
-      place-items: center;
-      color: var(--muted);
-      font-size: 13px;
+    .template-table td,
+    .template-table th {
+      height: auto;
+      padding: 8px;
+      vertical-align: middle;
+    }
+
+    .template-table input,
+    .template-table select {
+      width: 100%;
+      min-width: 74px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 6px 7px;
+      background: #ffffff;
     }
 
     .sr-only {
@@ -744,13 +957,17 @@
       border: 0;
     }
 
-    @media (max-width: 1200px) {
+    @media (max-width: 1260px) {
       body {
-        min-width: 1000px;
+        min-width: 1080px;
       }
 
       .layout {
-        grid-template-columns: 230px minmax(560px, 1fr) 340px;
+        grid-template-columns: 240px minmax(620px, 1fr) 300px;
+      }
+
+      .search {
+        width: 240px;
       }
     }
   </style>
@@ -761,75 +978,75 @@
       <div class="brand">
         <div class="brand-mark">FS</div>
         <div>
-          <h1>折叠方向盘仿真数据管理</h1>
-          <p>结构方案演化树 · 模态分析结果追溯 · 多方案横向对比</p>
+          <h1>单机版仿真数据管理工具</h1>
+          <p>卡片模板 · 结果图谱 · 拖拽组装 · 本地保存</p>
         </div>
       </div>
       <div class="top-actions">
         <label class="search">
           <span aria-hidden="true">⌕</span>
-          <input id="searchInput" type="search" placeholder="搜索方案、变更、结论">
+          <input id="searchInput" type="search" placeholder="搜索方案、变更、结论、负责人">
         </label>
-        <div class="role-switch" aria-label="角色切换">
-          <button class="active" type="button">仿真工程师</button>
-          <button type="button">结构工程师</button>
+        <div class="segmented" aria-label="角色切换">
+          <button class="active" type="button" data-role="simulation">仿真工程师</button>
+          <button type="button" data-role="structure">结构工程师</button>
+          <button type="button" data-role="admin">管理员</button>
         </div>
+        <button class="ghost-btn" id="exportData" type="button">导出</button>
+        <label class="ghost-btn" for="importData">导入</label>
+        <input class="sr-only" id="importData" type="file" accept="application/json">
       </div>
     </header>
 
     <main class="layout">
       <aside class="sidebar">
         <div class="panel-head">
-          <h2>项目总览</h2>
-          <p>把每一次结构修改和对应仿真结果挂到同一棵方案树上。</p>
+          <h2>仿真数据库</h2>
+          <p>按仿真零件组织结果卡片、附件和图谱节点。</p>
         </div>
-        <div class="project-list">
-          <section class="project-item active">
-            <div class="project-title">
-              <span>FSW-01 折叠方向盘</span>
-              <span class="badge green">推荐冻结</span>
-            </div>
-            <div class="project-meta">
-              分析类型：模态 / 刚度<br>
-              基准版本：V1.0 · 当前候选：C2<br>
-              最近更新：2026-06-30 14:20
-            </div>
-          </section>
-          <section class="project-item">
-            <div class="project-title">
-              <span>FSW-02 锁止支架</span>
-              <span class="badge amber">仿真中</span>
-            </div>
-            <div class="project-meta">
-              分析类型：模态<br>
-              方案节点：5 · 结果：3
-            </div>
-          </section>
-        </div>
-        <div class="kpi-strip">
-          <div class="kpi">
-            <span>方案节点</span>
-            <strong id="kpiVariants">9</strong>
+        <div class="sidebar-body">
+          <div class="section-title">项目总览</div>
+          <div class="kpi-grid">
+            <div class="kpi"><span>图谱节点</span><strong id="kpiNodes">0</strong></div>
+            <div class="kpi"><span>未布置卡片</span><strong id="kpiLibrary">0</strong></div>
+            <div class="kpi"><span>最高一阶模态</span><strong id="kpiBest">0Hz</strong></div>
+            <div class="kpi"><span>推荐方案</span><strong id="kpiRecommended">0</strong></div>
           </div>
-          <div class="kpi">
-            <span>已完成仿真</span>
-            <strong id="kpiDone">8</strong>
+
+          <div class="section-title">
+            <span>仿真零件库</span>
+            <button class="ghost-btn" id="newPart" type="button">新建零件</button>
           </div>
-          <div class="kpi">
-            <span>最高一阶模态</span>
-            <strong>47.8Hz</strong>
+          <div class="part-tree" id="partTree"></div>
+
+          <div class="section-title">
+            <span>待布置卡片</span>
+            <button class="primary-btn" id="newCard" type="button">新建卡片</button>
           </div>
-          <div class="kpi">
-            <span>推荐方案</span>
-            <strong>3</strong>
-          </div>
+          <div class="library-list" id="libraryList"></div>
+
+          <div class="section-title">图谱关系</div>
+          <div class="mini-list" id="edgeList"></div>
         </div>
       </aside>
 
       <section class="workspace">
         <div class="toolbar">
           <div class="toolbar-left">
-            <div class="toolbar-title">方案迭代与仿真结果图谱</div>
+            <div class="toolbar-title">仿真结果图谱</div>
+            <div class="segmented" aria-label="图谱编辑模式">
+              <button class="active" type="button" data-mode="move">移动</button>
+              <button type="button" data-mode="connect">连线</button>
+            </div>
+            <select id="relationType" aria-label="关系类型">
+              <option>结构迭代</option>
+              <option>材料替换</option>
+              <option>减重优化</option>
+              <option>参数调整</option>
+              <option>横向对比</option>
+              <option>复核结果</option>
+              <option>推荐路径</option>
+            </select>
             <div class="segmented" aria-label="过滤方案状态">
               <button class="active" type="button" data-filter="all">全部</button>
               <button type="button" data-filter="recommended">推荐</button>
@@ -840,22 +1057,25 @@
           <div class="toolbar-left">
             <button class="icon-btn" id="zoomOut" type="button" title="缩小">−</button>
             <button class="icon-btn" id="zoomIn" type="button" title="放大">＋</button>
+            <button class="ghost-btn" id="autoLayout" type="button">自动布局</button>
             <button class="ghost-btn" id="resetView" type="button">重置视图</button>
-            <button class="primary-btn" type="button">上传新方案</button>
           </div>
         </div>
 
         <div class="tree-stage" id="treeStage">
           <div class="tree-canvas" id="treeCanvas">
-            <svg class="links" width="1180" height="690" viewBox="0 0 1180 690" aria-hidden="true" id="linkSvg"></svg>
+            <svg class="links" width="1500" height="980" viewBox="0 0 1500 980" aria-hidden="true" id="linkSvg"></svg>
             <div id="nodesLayer"></div>
           </div>
         </div>
 
         <section class="compare">
           <div class="compare-head">
-            <h3>已选方案对比</h3>
-            <button class="ghost-btn" id="clearCompare" type="button">清空选择</button>
+            <h3>已选卡片对比</h3>
+            <div class="button-row">
+              <button class="ghost-btn" id="copyCompare" type="button">复制表格</button>
+              <button class="ghost-btn" id="clearCompare" type="button">清空选择</button>
+            </div>
           </div>
           <div class="compare-table" id="compareTable"></div>
         </section>
@@ -863,228 +1083,285 @@
 
       <aside class="detail">
         <div class="panel-head">
-          <h2>方案详情</h2>
-          <p>点击树节点查看数模、仿真任务、报告和关键力学属性。</p>
+          <h2>卡片详情</h2>
+          <p id="permissionNote">当前角色可编辑图谱和卡片内容。</p>
         </div>
-        <div class="detail-body" id="detailBody"></div>
+        <div class="detail-body">
+          <div class="tabbar" aria-label="右侧面板">
+            <button class="active" type="button" data-panel="detail">详情</button>
+            <button type="button" data-panel="edit">编辑</button>
+            <button type="button" data-panel="template">模板</button>
+          </div>
+          <div id="detailBody"></div>
+        </div>
       </aside>
     </main>
   </div>
 
   <script>
-    const variants = [
-      {
-        id: "v1",
-        parent: null,
-        code: "V1.0",
-        title: "基础折叠方向盘总成",
-        status: "archived",
-        statusText: "基准",
-        x: 70,
-        y: 285,
-        first: 36.4,
-        second: 61.2,
-        third: 88.0,
-        mass: 1.75,
-        stiffness: 100,
-        owner: "结构工程组",
-        model: "FSW_BASE_V1.step",
-        report: "modal_baseline_v1.pdf",
-        change: "量产初始结构，作为后续优化的模态基准。",
-        conclusion: "一阶模态低于 40 Hz 目标，锁止支架与轮辐连接区域需要加强。",
-        task: "SIM-2026-031",
-        files: ["FSW_BASE_V1.step", "modal_baseline_v1.pdf", "mode_shape_v1.mp4"]
-      },
-      {
-        id: "a",
-        parent: "v1",
-        code: "A",
-        title: "轮辐加强筋加厚",
-        status: "done",
-        statusText: "已完成",
-        x: 340,
-        y: 80,
-        first: 39.2,
-        second: 65.0,
-        third: 91.1,
-        mass: 1.84,
-        stiffness: 111,
-        owner: "李工",
-        model: "FSW_A_RIB_THICK.step",
-        report: "modal_A_report.pdf",
-        change: "三处轮辐加强筋厚度由 2.0mm 调整为 2.8mm。",
-        conclusion: "一阶模态提升，但质量增加明显，继续拆分为位置调整和减重两个分支。",
-        task: "SIM-2026-036",
-        files: ["FSW_A_RIB_THICK.step", "modal_A_report.pdf"]
-      },
-      {
-        id: "a1",
-        parent: "a",
-        code: "A1",
-        title: "加强筋位置外移",
-        status: "recommended",
-        statusText: "推荐",
-        x: 640,
-        y: 28,
-        first: 42.6,
-        second: 68.3,
-        third: 94.5,
-        mass: 1.82,
-        stiffness: 118,
-        owner: "李工",
-        model: "FSW_A1_RIB_OFFSET.step",
-        report: "modal_A1_report.pdf",
-        change: "保持加强筋厚度，将筋位向锁止区域外侧移动 6mm。",
-        conclusion: "模态提升稳定，质量增幅可接受，可作为结构优化候选。",
-        task: "SIM-2026-040",
-        files: ["FSW_A1_RIB_OFFSET.step", "modal_A1_report.pdf", "freq_table_A1.xlsx"]
-      },
-      {
-        id: "a2",
-        parent: "a",
-        code: "A2",
-        title: "局部开孔减重",
-        status: "done",
-        statusText: "已完成",
-        x: 640,
-        y: 168,
-        first: 40.1,
-        second: 66.7,
-        third: 92.0,
-        mass: 1.78,
-        stiffness: 112,
-        owner: "王工",
-        model: "FSW_A2_LIGHTWEIGHT.step",
-        report: "modal_A2_report.pdf",
-        change: "在加强筋根部非受力区域增加两个减重孔。",
-        conclusion: "质量回落，但一阶模态收益低于 A1，适合作为备选方案。",
-        task: "SIM-2026-041",
-        files: ["FSW_A2_LIGHTWEIGHT.step", "modal_A2_report.pdf"]
-      },
-      {
-        id: "b",
-        parent: "v1",
-        code: "B",
-        title: "连接支架改型",
-        status: "failed",
-        statusText: "淘汰",
-        x: 340,
-        y: 285,
-        first: 37.8,
-        second: 63.4,
-        third: 88.8,
-        mass: 1.77,
-        stiffness: 103,
-        owner: "赵工",
-        model: "FSW_B_BRACKET.step",
-        report: "modal_B_report.pdf",
-        change: "连接支架由直边改为折线轮廓，尝试减少局部应力集中。",
-        conclusion: "对一阶模态帮助有限，且制造复杂度上升，建议淘汰。",
-        task: "SIM-2026-044",
-        files: ["FSW_B_BRACKET.step", "modal_B_report.pdf"]
-      },
-      {
-        id: "b1",
-        parent: "b",
-        code: "B1",
-        title: "支架圆角优化",
-        status: "failed",
-        statusText: "淘汰",
-        x: 640,
-        y: 300,
-        first: 38.1,
-        second: 64.0,
-        third: 90.2,
-        mass: 1.78,
-        stiffness: 105,
-        owner: "赵工",
-        model: "FSW_B1_FILLET.step",
-        report: "modal_B1_report.pdf",
-        change: "支架根部圆角从 R2 调整为 R5。",
-        conclusion: "局部应力改善，但模态目标仍未满足，不进入下一轮。",
-        task: "SIM-2026-047",
-        files: ["FSW_B1_FILLET.step", "modal_B1_report.pdf"]
-      },
-      {
-        id: "c",
-        parent: "v1",
-        code: "C",
-        title: "锁止结构加强",
-        status: "recommended",
-        statusText: "推荐",
-        x: 340,
-        y: 505,
-        first: 44.3,
-        second: 71.8,
-        third: 97.2,
-        mass: 1.86,
-        stiffness: 124,
-        owner: "陈工",
-        model: "FSW_C_LOCK_REINF.step",
-        report: "modal_C_report.pdf",
-        change: "锁止块厚度增加 1.5mm，连接区增加过渡圆角。",
-        conclusion: "一阶模态提升明显，但质量略高，建议继续优化重量。",
-        task: "SIM-2026-050",
-        files: ["FSW_C_LOCK_REINF.step", "modal_C_report.pdf", "mode_shape_C.mp4"]
-      },
-      {
-        id: "c1",
-        parent: "c",
-        code: "C1",
-        title: "锁止块材料替换",
-        status: "running",
-        statusText: "仿真中",
-        x: 640,
-        y: 462,
-        first: 45.1,
-        second: 72.4,
-        third: 99.0,
-        mass: 1.83,
-        stiffness: 126,
-        owner: "陈工",
-        model: "FSW_C1_MATERIAL.step",
-        report: "待上传",
-        change: "锁止块改用高模量材料，同时保持 C 方案几何。",
-        conclusion: "求解已完成 70%，初步结果显示一阶模态继续提升。",
-        task: "SIM-2026-056",
-        files: ["FSW_C1_MATERIAL.step", "solver_log_C1.txt"]
-      },
-      {
-        id: "c2",
-        parent: "c",
-        code: "C2",
-        title: "锁止加强 + 轻量化",
-        status: "recommended",
-        statusText: "推荐冻结",
-        x: 640,
-        y: 592,
-        first: 47.8,
-        second: 74.2,
-        third: 101.6,
-        mass: 1.81,
-        stiffness: 131,
-        owner: "陈工",
-        model: "FSW_C2_LOCK_LIGHT.step",
-        report: "modal_C2_freeze_report.pdf",
-        change: "保留锁止加强区域，在非关键轮辐背面做局部减薄。",
-        conclusion: "目前综合表现最好：一阶模态 +31.3%，质量仅 +3.4%，建议作为冻结方案。",
-        task: "SIM-2026-058",
-        files: ["FSW_C2_LOCK_LIGHT.step", "modal_C2_freeze_report.pdf", "freq_table_C2.xlsx", "mode_shape_C2.mp4"]
-      }
-    ];
+    /*
+     * 维护导航
+     * 1. 常量与示例数据：默认模板、卡片、图谱边。
+     * 2. 状态与持久化：本地模式 localStorage / 工作站模式 server.py。
+     * 3. 附件管理：本地 File System Access API / 服务端上传接口。
+     * 4. 图谱数据模型：卡片查找、父子边、环路检测。
+     * 5. 渲染层：左侧数据库、图谱节点、右侧详情/编辑/模板。
+     * 6. 业务动作与事件绑定：新建、复制、布局、导入导出。
+     */
 
-    const statusClass = {
-      recommended: "green",
-      done: "blue",
-      running: "amber",
-      failed: "red",
-      archived: "gray"
+    // === 常量与示例数据 ======================================================
+    const STORAGE_KEY = "fsw-simulation-local-tool-v1";
+    const ATTACHMENT_DB = "fsw-simulation-attachments";
+    const ATTACHMENT_STORE = "handles";
+    const ATTACHMENT_HANDLE_KEY = "root";
+    const ATTACHMENT_ROOT_FOLDER = "simulation-attachments";
+    const HTTP_PROTOCOL = location.protocol === "http:" || location.protocol === "https:";
+    const RELATION_TYPES = ["结构迭代", "材料替换", "减重优化", "参数调整", "横向对比", "复核结果", "推荐路径"];
+
+    const statusMeta = {
+      recommended: { text: "推荐", className: "green" },
+      done: { text: "已完成", className: "blue" },
+      running: { text: "仿真中", className: "amber" },
+      failed: { text: "淘汰", className: "red" },
+      archived: { text: "归档", className: "gray" }
     };
 
-    const selected = new Set(["v1", "a1", "c", "c2"]);
-    let activeId = "c2";
-    let filter = "all";
-    let zoom = 1;
+    const defaultState = {
+      role: "simulation",
+      mode: "move",
+      panel: "detail",
+      filter: "all",
+      zoom: 1,
+      createChildMode: false,
+      attachmentDirectoryName: "",
+      activePartId: "all",
+      activeCardId: "c2",
+      pendingConnectId: null,
+      selectedIds: ["v1", "a1", "c", "c2"],
+      parts: [
+        { id: "part-steering", code: "FSW-01", name: "折叠方向盘总成", type: "总成", owner: "结构工程组" },
+        { id: "part-lock", code: "FSW-LOCK", name: "锁止结构", type: "子系统", owner: "陈工" },
+        { id: "part-bracket", code: "FSW-BRACKET", name: "连接支架", type: "零件", owner: "赵工" }
+      ],
+      template: {
+        name: "模态分析卡片",
+        fields: [
+          { code: "first", name: "一阶模态", type: "number", unit: "Hz", required: true, showOnNode: true, detailSummary: true, compare: true, keyMetric: true, conclusionField: false },
+          { code: "second", name: "二阶模态", type: "number", unit: "Hz", required: true, showOnNode: true, detailSummary: true, compare: true, keyMetric: true, conclusionField: false },
+          { code: "third", name: "三阶模态", type: "number", unit: "Hz", required: false, showOnNode: false, detailSummary: false, compare: true, keyMetric: true, conclusionField: false },
+          { code: "mass", name: "质量", type: "number", unit: "kg", required: true, showOnNode: true, detailSummary: true, compare: true, keyMetric: true, conclusionField: false },
+          { code: "stiffness", name: "刚度指数", type: "number", unit: "", required: false, showOnNode: false, detailSummary: true, compare: true, keyMetric: true, conclusionField: false },
+          { code: "conclusion", name: "结果结论", type: "text", unit: "", required: true, showOnNode: false, detailSummary: false, compare: false, keyMetric: false, conclusionField: true },
+          { code: "constraint", name: "约束条件", type: "text", unit: "", required: true, showOnNode: false, detailSummary: false, compare: false, keyMetric: false, conclusionField: true },
+          { code: "solver", name: "求解器版本", type: "text", unit: "", required: false, showOnNode: false, detailSummary: false, compare: false, keyMetric: false, conclusionField: true }
+        ]
+      },
+      cards: [
+        {
+          id: "v1",
+          parentId: "",
+          code: "V1.0",
+          title: "基础折叠方向盘总成",
+          status: "archived",
+          owner: "结构工程组",
+          task: "SIM-2026-031",
+          model: "FSW_BASE_V1.step",
+          report: "modal_baseline_v1.pdf",
+          placed: true,
+          x: 70,
+          y: 310,
+          values: { first: 36.4, second: 61.2, third: 88.0, mass: 1.75, stiffness: 100, constraint: "方向盘轮毂连接面全约束", solver: "Abaqus 2024" },
+          change: "量产初始结构，作为后续优化的模态基准。",
+          conclusion: "一阶模态低于 40 Hz 目标，锁止支架与轮辐连接区域需要加强。",
+          files: ["FSW_BASE_V1.step", "modal_baseline_v1.pdf", "mode_shape_v1.mp4"]
+        },
+        {
+          id: "a",
+          parentId: "v1",
+          code: "A",
+          title: "轮辐加强筋加厚",
+          status: "done",
+          owner: "李工",
+          task: "SIM-2026-036",
+          model: "FSW_A_RIB_THICK.step",
+          report: "modal_A_report.pdf",
+          placed: true,
+          x: 350,
+          y: 92,
+          values: { first: 39.2, second: 65.0, third: 91.1, mass: 1.84, stiffness: 111, constraint: "轮毂连接面全约束，锁止块接触等效", solver: "Abaqus 2024" },
+          change: "三处轮辐加强筋厚度由 2.0mm 调整为 2.8mm。",
+          conclusion: "一阶模态提升，但质量增加明显，继续拆分为位置调整和减重两个分支。",
+          files: ["FSW_A_RIB_THICK.step", "modal_A_report.pdf"]
+        },
+        {
+          id: "a1",
+          parentId: "a",
+          code: "A1",
+          title: "加强筋位置外移",
+          status: "recommended",
+          owner: "李工",
+          task: "SIM-2026-040",
+          model: "FSW_A1_RIB_OFFSET.step",
+          report: "modal_A1_report.pdf",
+          placed: true,
+          x: 650,
+          y: 42,
+          values: { first: 42.6, second: 68.3, third: 94.5, mass: 1.82, stiffness: 118, constraint: "轮毂连接面全约束，锁止块接触等效", solver: "Abaqus 2024" },
+          change: "保持加强筋厚度，将筋位向锁止区域外侧移动 6mm。",
+          conclusion: "模态提升稳定，质量增幅可接受，可作为结构优化候选。",
+          files: ["FSW_A1_RIB_OFFSET.step", "modal_A1_report.pdf", "freq_table_A1.xlsx"]
+        },
+        {
+          id: "a2",
+          parentId: "a",
+          code: "A2",
+          title: "局部开孔减重",
+          status: "done",
+          owner: "王工",
+          task: "SIM-2026-041",
+          model: "FSW_A2_LIGHTWEIGHT.step",
+          report: "modal_A2_report.pdf",
+          placed: true,
+          x: 650,
+          y: 183,
+          values: { first: 40.1, second: 66.7, third: 92.0, mass: 1.78, stiffness: 112, constraint: "轮毂连接面全约束，锁止块接触等效", solver: "Abaqus 2024" },
+          change: "在加强筋根部非受力区域增加两个减重孔。",
+          conclusion: "质量回落，但一阶模态收益低于 A1，适合作为备选方案。",
+          files: ["FSW_A2_LIGHTWEIGHT.step", "modal_A2_report.pdf"]
+        },
+        {
+          id: "b",
+          parentId: "v1",
+          code: "B",
+          title: "连接支架改型",
+          status: "failed",
+          owner: "赵工",
+          task: "SIM-2026-044",
+          model: "FSW_B_BRACKET.step",
+          report: "modal_B_report.pdf",
+          placed: true,
+          x: 350,
+          y: 310,
+          values: { first: 37.8, second: 63.4, third: 88.8, mass: 1.77, stiffness: 103, constraint: "轮毂连接面全约束", solver: "Abaqus 2024" },
+          change: "连接支架由直边改为折线轮廓，尝试减少局部应力集中。",
+          conclusion: "对一阶模态帮助有限，且制造复杂度上升，建议淘汰。",
+          files: ["FSW_B_BRACKET.step", "modal_B_report.pdf"]
+        },
+        {
+          id: "b1",
+          parentId: "b",
+          code: "B1",
+          title: "支架圆角优化",
+          status: "failed",
+          owner: "赵工",
+          task: "SIM-2026-047",
+          model: "FSW_B1_FILLET.step",
+          report: "modal_B1_report.pdf",
+          placed: true,
+          x: 650,
+          y: 325,
+          values: { first: 38.1, second: 64.0, third: 90.2, mass: 1.78, stiffness: 105, constraint: "轮毂连接面全约束", solver: "Abaqus 2024" },
+          change: "支架根部圆角从 R2 调整为 R5。",
+          conclusion: "局部应力改善，但模态目标仍未满足，不进入下一轮。",
+          files: ["FSW_B1_FILLET.step", "modal_B1_report.pdf"]
+        },
+        {
+          id: "c",
+          parentId: "v1",
+          code: "C",
+          title: "锁止结构加强",
+          status: "recommended",
+          owner: "陈工",
+          task: "SIM-2026-050",
+          model: "FSW_C_LOCK_REINF.step",
+          report: "modal_C_report.pdf",
+          placed: true,
+          x: 350,
+          y: 535,
+          values: { first: 44.3, second: 71.8, third: 97.2, mass: 1.86, stiffness: 124, constraint: "轮毂连接面全约束，锁止块连接区接触绑定", solver: "Abaqus 2024" },
+          change: "锁止块厚度增加 1.5mm，连接区增加过渡圆角。",
+          conclusion: "一阶模态提升明显，但质量略高，建议继续优化重量。",
+          files: ["FSW_C_LOCK_REINF.step", "modal_C_report.pdf", "mode_shape_C.mp4"]
+        },
+        {
+          id: "c1",
+          parentId: "c",
+          code: "C1",
+          title: "锁止块材料替换",
+          status: "running",
+          owner: "陈工",
+          task: "SIM-2026-056",
+          model: "FSW_C1_MATERIAL.step",
+          report: "待上传",
+          placed: true,
+          x: 650,
+          y: 494,
+          values: { first: 45.1, second: 72.4, third: 99.0, mass: 1.83, stiffness: 126, constraint: "轮毂连接面全约束，锁止块连接区接触绑定", solver: "Abaqus 2024" },
+          change: "锁止块改用高模量材料，同时保持 C 方案几何。",
+          conclusion: "求解已完成 70%，初步结果显示一阶模态继续提升。",
+          files: ["FSW_C1_MATERIAL.step", "solver_log_C1.txt"]
+        },
+        {
+          id: "c2",
+          parentId: "c",
+          code: "C2",
+          title: "锁止加强 + 轻量化",
+          status: "recommended",
+          owner: "陈工",
+          task: "SIM-2026-058",
+          model: "FSW_C2_LOCK_LIGHT.step",
+          report: "modal_C2_freeze_report.pdf",
+          placed: true,
+          x: 650,
+          y: 630,
+          values: { first: 47.8, second: 74.2, third: 101.6, mass: 1.81, stiffness: 131, constraint: "轮毂连接面全约束，锁止块连接区接触绑定", solver: "Abaqus 2024" },
+          change: "保留锁止加强区域，在非关键轮辐背面做局部减薄。",
+          conclusion: "目前综合表现最好：一阶模态 +31.3%，质量仅 +3.4%，建议作为冻结方案。",
+          files: ["FSW_C2_LOCK_LIGHT.step", "modal_C2_freeze_report.pdf", "freq_table_C2.xlsx", "mode_shape_C2.mp4"]
+        },
+        {
+          id: "draft-d",
+          parentId: "c2",
+          code: "D",
+          title: "锁止区域二次轻量化",
+          status: "running",
+          owner: "待分配",
+          task: "SIM-2026-061",
+          model: "FSW_D_LOCK_LIGHTER.step",
+          report: "待上传",
+          placed: false,
+          x: 940,
+          y: 590,
+          values: { first: 0, second: 0, third: 0, mass: 1.78, stiffness: 0, constraint: "沿用 C2 约束", solver: "Abaqus 2024" },
+          change: "在 C2 基础上继续优化锁止块背面非关键区域厚度。",
+          conclusion: "待仿真工程师提交结果。",
+          files: ["FSW_D_LOCK_LIGHTER.step"]
+        }
+      ],
+      edges: [
+        { id: "e-v1-a", from: "v1", to: "a", type: "结构迭代" },
+        { id: "e-a-a1", from: "a", to: "a1", type: "结构迭代" },
+        { id: "e-a-a2", from: "a", to: "a2", type: "减重优化" },
+        { id: "e-v1-b", from: "v1", to: "b", type: "结构迭代" },
+        { id: "e-b-b1", from: "b", to: "b1", type: "复核结果" },
+        { id: "e-v1-c", from: "v1", to: "c", type: "结构迭代" },
+        { id: "e-c-c1", from: "c", to: "c1", type: "材料替换" },
+        { id: "e-c-c2", from: "c", to: "c2", type: "推荐路径" }
+      ]
+    };
+
+    // === 运行态缓存 ==========================================================
+    // serverMode 会在初始化时探测 /api/state；普通静态 HTTP 预览会自动退回本地模式。
+    let serverMode = HTTP_PROTOCOL;
+    let state = serverMode ? normalizedDefaultState() : loadState();
+    let cardLookup = new Map();
+    let dragState = null;
+    let suppressedNodeClickId = "";
+    let attachmentRootHandle = null;
+    let templateDraft = null;
+    let serverSaveTimer = null;
+    let serverSaveQueued = false;
+    let serverSaveInFlight = false;
 
     const nodesLayer = document.getElementById("nodesLayer");
     const linkSvg = document.getElementById("linkSvg");
@@ -1092,247 +1369,1930 @@
     const compareTable = document.getElementById("compareTable");
     const searchInput = document.getElementById("searchInput");
     const treeCanvas = document.getElementById("treeCanvas");
+    const treeStage = document.getElementById("treeStage");
 
-    function variantById(id) {
-      return variants.find((item) => item.id === id);
+    function clone(value) {
+      return JSON.parse(JSON.stringify(value));
     }
 
-    function deltaText(item) {
-      const base = variantById("v1");
-      if (item.id === "v1") return "基准";
-      const delta = ((item.first - base.first) / base.first) * 100;
+    // === 状态规范化与持久化 ==================================================
+    // 旧版本数据可能缺少模板字段、附件服务端标记或结论字段，加载时统一补齐。
+    function normalizedDefaultState() {
+      const fresh = clone(defaultState);
+      fresh.template = normalizeTemplate(fresh.template);
+      fresh.cards = fresh.cards.map(normalizeCardRecord);
+      return fresh;
+    }
+
+    function loadState() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (!saved) {
+          return normalizedDefaultState();
+        }
+        const parsed = JSON.parse(saved);
+        const next = {
+          ...clone(defaultState),
+          ...parsed,
+          template: { ...clone(defaultState.template), ...(parsed.template || {}) },
+          parts: Array.isArray(parsed.parts) ? parsed.parts : clone(defaultState.parts),
+          cards: Array.isArray(parsed.cards) ? parsed.cards : clone(defaultState.cards),
+          edges: Array.isArray(parsed.edges) ? parsed.edges : clone(defaultState.edges),
+          selectedIds: Array.isArray(parsed.selectedIds) ? parsed.selectedIds : clone(defaultState.selectedIds)
+        };
+        next.template = normalizeTemplate(next.template);
+        if (!next.parts.length) next.parts = clone(defaultState.parts);
+        if (!next.activePartId) next.activePartId = "all";
+        next.cards = next.cards.map(normalizeCardRecord);
+        next.mode = "move";
+        next.pendingConnectId = null;
+        next.createChildMode = false;
+        return next;
+      } catch (error) {
+        console.warn("Failed to load saved state", error);
+        return normalizedDefaultState();
+      }
+    }
+
+    function normalizeCardRecord(card) {
+      const values = { ...(card.values || {}) };
+      if (!Object.prototype.hasOwnProperty.call(values, "conclusion")) {
+        values.conclusion = card.conclusion || "";
+      }
+      return {
+        ...card,
+        partId: card.partId || inferPartId(card),
+        relationType: card.relationType || "结构迭代",
+        values,
+        files: Array.isArray(card.files)
+          ? card.files.map((file, index) => normalizeAttachment(file, card, index))
+          : []
+      };
+    }
+
+    function defaultConclusionField() {
+      return {
+        code: "conclusion",
+        name: "结果结论",
+        type: "text",
+        unit: "",
+        required: true,
+        showOnNode: false,
+        detailSummary: false,
+        compare: false,
+        keyMetric: false,
+        conclusionField: true
+      };
+    }
+
+    function normalizeTemplate(template) {
+      const base = clone(defaultState.template);
+      const next = { ...base, ...(template || {}) };
+      const sourceFields = Array.isArray(next.fields) ? next.fields : base.fields;
+      const normalizedFields = sourceFields.map((field) => {
+        const type = field.type === "text" ? "text" : "number";
+        return {
+          ...field,
+          type,
+          required: Boolean(field.required),
+          showOnNode: Boolean(field.showOnNode),
+          detailSummary: Object.prototype.hasOwnProperty.call(field, "detailSummary")
+            ? Boolean(field.detailSummary)
+            : Boolean(field.showOnNode),
+          compare: Boolean(field.compare),
+          keyMetric: type === "number" && (Object.prototype.hasOwnProperty.call(field, "keyMetric")
+            ? Boolean(field.keyMetric)
+            : ["first", "second", "third", "mass", "stiffness"].includes(field.code)),
+          conclusionField: Object.prototype.hasOwnProperty.call(field, "conclusionField")
+            ? Boolean(field.conclusionField)
+            : ["conclusion", "constraint", "solver", "conclusionStatus", "suggestion", "risk"].includes(field.code)
+        };
+      });
+      if (!normalizedFields.some((field) => field.code === "conclusion")) {
+        const insertIndex = normalizedFields.findIndex((field) => field.code === "constraint");
+        if (insertIndex >= 0) normalizedFields.splice(insertIndex, 0, defaultConclusionField());
+        else normalizedFields.push(defaultConclusionField());
+      }
+      next.fields = normalizedFields;
+      return next;
+    }
+
+    function inferPartId(card) {
+      if (card.id === "b" || card.id === "b1") return "part-bracket";
+      if (card.id === "c" || card.id === "c1" || card.id === "c2" || card.id === "draft-d") return "part-lock";
+      return "part-steering";
+    }
+
+    function normalizeAttachment(file, card, index) {
+      if (file && typeof file === "object") {
+        const relativePath = file.relativePath || "";
+        const serverStored = Boolean(file.serverStored || file.url || relativePath.startsWith("server_data/attachments/"));
+        const folderName = file.folderName || attachmentFolderName(card);
+        const storedName = file.storedName || file.name || file.fileName || "未命名附件";
+        return {
+          id: file.id || `file-${card.id}-${index}`,
+          name: file.name || file.fileName || "未命名附件",
+          storedName,
+          folderName,
+          relativePath,
+          type: file.type || fileType(file.name || file.fileName || ""),
+          size: Number(file.size || 0),
+          uploadedAt: file.uploadedAt || "",
+          legacy: Boolean(file.legacy),
+          serverStored,
+          url: file.url || (serverStored ? `/api/attachments/${encodeURIComponent(folderName)}/${encodeURIComponent(storedName)}` : "")
+        };
+      }
+      const name = String(file || "未命名附件");
+      return {
+        id: `legacy-${card.id}-${index}-${name}`,
+        name,
+        storedName: name,
+        folderName: "",
+        relativePath: "",
+        type: fileType(name),
+        size: 0,
+        uploadedAt: "",
+        legacy: true
+      };
+    }
+
+    function saveState() {
+      if (serverMode) {
+        scheduleServerSave();
+        return;
+      }
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    // 服务端保存必须串行化，避免旧请求晚返回时覆盖新状态。
+    function scheduleServerSave() {
+      serverSaveQueued = true;
+      clearTimeout(serverSaveTimer);
+      serverSaveTimer = setTimeout(saveStateToServer, 250);
+    }
+
+    async function saveStateToServer() {
+      if (serverSaveInFlight || !serverSaveQueued) return;
+      serverSaveQueued = false;
+      serverSaveInFlight = true;
+      try {
+        const response = await fetch("/api/state", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(state)
+        });
+        if (!response.ok) throw new Error(`Save failed: ${response.status}`);
+      } catch (error) {
+        console.warn("Failed to save state to server", error);
+      } finally {
+        serverSaveInFlight = false;
+        if (serverSaveQueued) scheduleServerSave();
+      }
+    }
+
+    async function loadStateFromServer() {
+      try {
+        const response = await fetch("/api/state", { cache: "no-store" });
+        if (!response.ok) return false;
+        const payload = await response.json();
+        if (!payload.state) {
+          state = normalizedDefaultState();
+          return true;
+        }
+        if (!Array.isArray(payload.state.cards)) return false;
+        const next = {
+          ...clone(defaultState),
+          ...payload.state,
+          template: { ...clone(defaultState.template), ...(payload.state.template || {}) },
+          parts: Array.isArray(payload.state.parts) ? payload.state.parts : clone(defaultState.parts),
+          cards: payload.state.cards,
+          edges: Array.isArray(payload.state.edges) ? payload.state.edges : clone(defaultState.edges),
+          selectedIds: Array.isArray(payload.state.selectedIds) ? payload.state.selectedIds : clone(defaultState.selectedIds)
+        };
+        next.template = normalizeTemplate(next.template);
+        if (!next.parts.length) next.parts = clone(defaultState.parts);
+        if (!next.activePartId) next.activePartId = "all";
+        next.cards = next.cards.map(normalizeCardRecord);
+        next.mode = "move";
+        next.pendingConnectId = null;
+        next.createChildMode = false;
+        state = next;
+        return true;
+      } catch (error) {
+        console.warn("Failed to load state from server", error);
+        return false;
+      }
+    }
+
+    // === 附件管理 ============================================================
+    // 本地 file:// 模式复制到用户选择目录；工作站模式上传到 server_data/attachments。
+    function openAttachmentDb() {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open(ATTACHMENT_DB, 1);
+        request.onupgradeneeded = () => {
+          request.result.createObjectStore(ATTACHMENT_STORE);
+        };
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+    }
+
+    async function loadAttachmentDirectoryHandle() {
+      if (!("indexedDB" in window)) return;
+      try {
+        const db = await openAttachmentDb();
+        const transaction = db.transaction(ATTACHMENT_STORE, "readonly");
+        const store = transaction.objectStore(ATTACHMENT_STORE);
+        const request = store.get(ATTACHMENT_HANDLE_KEY);
+        attachmentRootHandle = await new Promise((resolve, reject) => {
+          request.onsuccess = () => resolve(request.result || null);
+          request.onerror = () => reject(request.error);
+        });
+      } catch (error) {
+        console.warn("Failed to load attachment directory handle", error);
+      }
+    }
+
+    async function saveAttachmentDirectoryHandle(handle) {
+      const db = await openAttachmentDb();
+      const transaction = db.transaction(ATTACHMENT_STORE, "readwrite");
+      transaction.objectStore(ATTACHMENT_STORE).put(handle, ATTACHMENT_HANDLE_KEY);
+      await new Promise((resolve, reject) => {
+        transaction.oncomplete = resolve;
+        transaction.onerror = () => reject(transaction.error);
+      });
+    }
+
+    async function ensureAttachmentPermission() {
+      if (!attachmentRootHandle) return false;
+      const options = { mode: "readwrite" };
+      if ((await attachmentRootHandle.queryPermission(options)) === "granted") return true;
+      return (await attachmentRootHandle.requestPermission(options)) === "granted";
+    }
+
+    async function chooseAttachmentDirectory() {
+      if (serverMode) {
+        alert("当前为工作站服务器模式，附件会统一保存到工作站 server_data/attachments 目录。");
+        return;
+      }
+      if (!("showDirectoryPicker" in window)) {
+        alert("当前浏览器不支持选择本地附件目录。建议使用 Chrome 或 Edge 打开此单机工具。");
+        return;
+      }
+      attachmentRootHandle = await window.showDirectoryPicker({ mode: "readwrite" });
+      await saveAttachmentDirectoryHandle(attachmentRootHandle);
+      state.attachmentDirectoryName = attachmentRootHandle.name;
+      renderAll();
+    }
+
+    function sanitizeFilePart(value) {
+      return String(value || "untitled")
+        .trim()
+        .replace(/[\\/:*?"<>|]+/g, "_")
+        .replace(/\s+/g, "_")
+        .slice(0, 80) || "untitled";
+    }
+
+    function attachmentFolderName(card) {
+      return `${sanitizeFilePart(card.code || "card")}_${sanitizeFilePart(card.id)}`;
+    }
+
+    async function getCardAttachmentFolder(card, create = true) {
+      if (!attachmentRootHandle) return null;
+      if (!(await ensureAttachmentPermission())) return null;
+      const root = await attachmentRootHandle.getDirectoryHandle(ATTACHMENT_ROOT_FOLDER, { create });
+      return root.getDirectoryHandle(attachmentFolderName(card), { create });
+    }
+
+    async function getAttachmentFolderByName(folderName, create = false) {
+      if (!attachmentRootHandle || !folderName) return null;
+      if (!(await ensureAttachmentPermission())) return null;
+      const root = await attachmentRootHandle.getDirectoryHandle(ATTACHMENT_ROOT_FOLDER, { create });
+      return root.getDirectoryHandle(folderName, { create });
+    }
+
+    async function uploadAttachments(card, fileList) {
+      if (!canEditCards() || !fileList.length) return;
+      if (serverMode) {
+        await uploadAttachmentsToServer(card, fileList);
+        return;
+      }
+      if (!attachmentRootHandle) {
+        await chooseAttachmentDirectory();
+      }
+      if (!attachmentRootHandle) return;
+      const folder = await getCardAttachmentFolder(card, true);
+      if (!folder) {
+        alert("没有获得附件目录写入权限。");
+        return;
+      }
+      for (const file of fileList) {
+        const storedName = `${Date.now()}_${sanitizeFilePart(file.name)}`;
+        const fileHandle = await folder.getFileHandle(storedName, { create: true });
+        const writable = await fileHandle.createWritable();
+        await writable.write(file);
+        await writable.close();
+        card.files.push({
+          id: `file-${card.id}-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+          name: file.name,
+          storedName,
+          folderName: attachmentFolderName(card),
+          relativePath: `${ATTACHMENT_ROOT_FOLDER}/${attachmentFolderName(card)}/${storedName}`,
+          type: fileType(file.name),
+          size: file.size,
+          uploadedAt: new Date().toISOString(),
+          legacy: false
+        });
+      }
+      renderAll();
+    }
+
+    async function uploadAttachmentsToServer(card, fileList) {
+      const form = new FormData();
+      fileList.forEach((file) => form.append("files", file, file.name));
+      const folderName = attachmentFolderName(card);
+      try {
+        const response = await fetch(`/api/upload?cardId=${encodeURIComponent(card.id)}&folderName=${encodeURIComponent(folderName)}`, {
+          method: "POST",
+          body: form
+        });
+        if (!response.ok) throw new Error(`Upload failed: ${response.status}`);
+        const payload = await response.json();
+        (payload.files || []).forEach((file) => {
+          card.files.push({
+            ...file,
+            type: fileType(file.name),
+            uploadedAt: new Date().toISOString()
+          });
+        });
+        renderAll();
+      } catch (error) {
+        console.warn("Failed to upload attachment to server", error);
+        alert("附件上传到工作站失败，请确认 server.py 正在运行。");
+      }
+    }
+
+    async function deleteAttachment(card, attachmentId) {
+      const attachment = card.files.find((file) => file.id === attachmentId);
+      if (!attachment) return;
+      if (serverMode && attachment.serverStored) {
+        try {
+          await fetch(`/api/attachments/${encodeURIComponent(attachment.folderName)}/${encodeURIComponent(attachment.storedName)}`, { method: "DELETE" });
+        } catch (error) {
+          console.warn("Failed to delete server attachment", error);
+        }
+        card.files = card.files.filter((file) => file.id !== attachmentId);
+        renderAll();
+        return;
+      }
+      if (!attachment.legacy && attachmentRootHandle) {
+        try {
+          const folder = await getAttachmentFolderByName(attachment.folderName || attachmentFolderName(card), false);
+          await folder.removeEntry(attachment.storedName);
+        } catch (error) {
+          console.warn("Failed to delete attachment file", error);
+        }
+      }
+      card.files = card.files.filter((file) => file.id !== attachmentId);
+      renderAll();
+    }
+
+    async function deleteCardAttachmentFolder(card) {
+      if (serverMode) {
+        const folders = new Set((card.files || [])
+          .filter((file) => file.serverStored)
+          .map((file) => file.folderName || attachmentFolderName(card)));
+        if (!folders.size) folders.add(attachmentFolderName(card));
+        for (const folderName of folders) {
+          try {
+            await fetch(`/api/attachments/${encodeURIComponent(folderName)}`, { method: "DELETE" });
+          } catch (error) {
+            console.warn("Failed to delete server attachment folder", error);
+          }
+        }
+        return;
+      }
+      if (!attachmentRootHandle) return;
+      const folders = new Set((card.files || [])
+        .filter((file) => !file.legacy)
+        .map((file) => file.folderName || attachmentFolderName(card)));
+      if (!folders.size) folders.add(attachmentFolderName(card));
+      for (const folderName of folders) {
+        try {
+          if (!(await ensureAttachmentPermission())) return;
+          const root = await attachmentRootHandle.getDirectoryHandle(ATTACHMENT_ROOT_FOLDER, { create: false });
+          await root.removeEntry(folderName, { recursive: true });
+        } catch (error) {
+          console.warn("Failed to delete card attachment folder", error);
+        }
+      }
+    }
+
+    // === 图谱数据模型与查询 ==================================================
+    // parentId 是卡片的主关系；edges 保存可编辑的显式连线和关系类型。
+    function cardById(id) {
+      return cardLookup.get(id) || state.cards.find((card) => card.id === id);
+    }
+
+    function refreshCardLookup() {
+      cardLookup = new Map(state.cards.map((card) => [card.id, card]));
+    }
+
+    function partById(id) {
+      return state.parts.find((part) => part.id === id);
+    }
+
+    function cardInActivePart(card) {
+      return state.activePartId === "all" || card.partId === state.activePartId;
+    }
+
+    function activeScopedCard() {
+      const active = cardById(state.activeCardId);
+      if (active && cardInActivePart(active)) return active;
+      return state.cards.find(cardInActivePart) || null;
+    }
+
+    function placedCards() {
+      return state.cards.filter((card) => card.placed && cardInActivePart(card));
+    }
+
+    function graphEdges() {
+      const edgeMap = new Map();
+      state.edges.forEach((edge) => {
+        const from = cardById(edge.from);
+        const to = cardById(edge.to);
+        if (!from || !to) return;
+        edgeMap.set(`${edge.from}->${edge.to}`, { ...edge, synthetic: false });
+      });
+      state.cards.forEach((card) => {
+        if (!card.parentId) return;
+        const parent = cardById(card.parentId);
+        if (!parent) return;
+        const key = `${parent.id}->${card.id}`;
+        if (!edgeMap.has(key)) {
+          edgeMap.set(key, {
+            id: `parent-${parent.id}-${card.id}`,
+            from: parent.id,
+            to: card.id,
+            type: card.relationType || "结构迭代",
+            synthetic: true
+          });
+        }
+      });
+      return Array.from(edgeMap.values());
+    }
+
+    function scopedGraphEdges() {
+      return graphEdges().filter((edge) => {
+        const from = cardById(edge.from);
+        const to = cardById(edge.to);
+        return from?.placed && to?.placed && cardInActivePart(from) && cardInActivePart(to);
+      });
+    }
+
+    function childIdMap(edges) {
+      const map = new Map();
+      edges.forEach((edge) => {
+        if (!map.has(edge.from)) map.set(edge.from, []);
+        map.get(edge.from).push(edge.to);
+      });
+      return map;
+    }
+
+    function canEditGraph() {
+      return state.role !== "structure";
+    }
+
+    function canEditCards() {
+      return state.role !== "structure";
+    }
+
+    function numericValue(card, code) {
+      const value = Number(card.values?.[code]);
+      return Number.isFinite(value) ? value : 0;
+    }
+
+    function fieldValue(card, field) {
+      const value = card.values?.[field.code];
+      if (value === undefined || value === null || value === "") return "—";
+      if (field.type === "number") {
+        const number = Number(value);
+        if (!Number.isFinite(number)) return "—";
+        const decimals = Math.abs(number) >= 100 || Number.isInteger(number) ? 0 : 2;
+        return `${number.toFixed(decimals).replace(/\.?0+$/, "")}${field.unit || ""}`;
+      }
+      return String(value);
+    }
+
+    function isKeyMetricField(field) {
+      if (field.type !== "number") return false;
+      if (Object.prototype.hasOwnProperty.call(field, "keyMetric")) return Boolean(field.keyMetric);
+      return ["first", "second", "third", "mass", "stiffness"].includes(field.code);
+    }
+
+    function isConclusionField(field) {
+      if (Object.prototype.hasOwnProperty.call(field, "conclusionField")) return Boolean(field.conclusionField);
+      return ["conclusion", "constraint", "solver", "conclusionStatus", "suggestion", "risk"].includes(field.code);
+    }
+
+    function isDetailSummaryField(field) {
+      if (Object.prototype.hasOwnProperty.call(field, "detailSummary")) return Boolean(field.detailSummary);
+      return Boolean(field.showOnNode);
+    }
+
+    function primaryConclusionText(card) {
+      const conclusionField = state.template.fields.find((field) => field.code === "conclusion" && isConclusionField(field))
+        || state.template.fields.find(isConclusionField);
+      if (!conclusionField) return "模板未配置结果结论字段";
+      const value = card.values?.[conclusionField.code];
+      return value === undefined || value === null || value === "" ? "未填写结果结论" : String(value);
+    }
+
+    function relationOptionsHtml(selected = "结构迭代") {
+      return RELATION_TYPES.map((type) => `<option value="${type}" ${selected === type ? "selected" : ""}>${type}</option>`).join("");
+    }
+
+    function parentRelationType(card) {
+      if (!card?.parentId) return card?.relationType || "结构迭代";
+      const explicit = state.edges.find((edge) => edge.from === card.parentId && edge.to === card.id);
+      return explicit?.type || card.relationType || "结构迭代";
+    }
+
+    function deltaText(card) {
+      const base = cardById("v1") || placedCards()[0];
+      if (!base || card.id === base.id) return "基准";
+      const baseValue = numericValue(base, "first");
+      const current = numericValue(card, "first");
+      if (!baseValue || !current) return "待计算";
+      const delta = ((current - baseValue) / baseValue) * 100;
       return `${delta >= 0 ? "+" : ""}${delta.toFixed(1)}%`;
     }
 
-    function nodeMatches(item) {
-      const q = searchInput.value.trim().toLowerCase();
-      const hitSearch = !q || [item.code, item.title, item.change, item.conclusion, item.owner]
-        .join(" ")
-        .toLowerCase()
-        .includes(q);
-      const hitFilter = filter === "all" || item.status === filter;
-      return hitSearch && hitFilter;
+    function nodeMatches(card, q = searchInput.value.trim().toLowerCase()) {
+      const fieldText = state.template.fields.map((field) => card.values?.[field.code]).join(" ");
+      const hitSearch = !q || [
+        card.code,
+        card.title,
+        card.change,
+        card.conclusion,
+        card.owner,
+        card.task,
+        fieldText
+      ].join(" ").toLowerCase().includes(q);
+      const hitFilter = state.filter === "all" || card.status === state.filter;
+      return hitSearch && hitFilter && cardInActivePart(card);
     }
 
-    function drawLinks() {
-      linkSvg.innerHTML = "";
-      variants
-        .filter((item) => item.parent)
-        .forEach((item) => {
-          const parent = variantById(item.parent);
-          const x1 = parent.x + 196;
-          const y1 = parent.y + 58;
-          const x2 = item.x;
-          const y2 = item.y + 58;
-          const mid = x1 + (x2 - x1) / 2;
-          const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-          path.setAttribute("class", "link");
-          path.setAttribute("d", `M ${x1} ${y1} C ${mid} ${y1}, ${mid} ${y2}, ${x2} ${y2}`);
-          linkSvg.appendChild(path);
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function statusBadge(card) {
+      const meta = statusMeta[card.status] || statusMeta.done;
+      return `<span class="badge ${meta.className}">${meta.text}</span>`;
+    }
+
+    // === 渲染入口 ============================================================
+    // renderAll 是唯一的全量刷新入口；局部拖拽只更新节点位置和 SVG 连线。
+    function renderAll() {
+      refreshCardLookup();
+      saveState();
+      renderRoleAndMode();
+      renderKpis();
+      renderPartTree();
+      renderLibrary();
+      renderLinks();
+      renderNodes();
+      renderCompare();
+      renderEdgeList();
+      renderPanel();
+    }
+
+    function renderRoleAndMode() {
+      document.querySelectorAll("[data-role]").forEach((button) => {
+        button.classList.toggle("active", button.dataset.role === state.role);
+      });
+      document.querySelectorAll("[data-mode]").forEach((button) => {
+        button.classList.toggle("active", button.dataset.mode === state.mode);
+      });
+      document.querySelectorAll("[data-filter]").forEach((button) => {
+        button.classList.toggle("active", button.dataset.filter === state.filter);
+      });
+      document.querySelectorAll("[data-panel]").forEach((button) => {
+        button.classList.toggle("active", button.dataset.panel === state.panel);
+      });
+      document.getElementById("permissionNote").textContent = canEditGraph()
+        ? state.createChildMode
+          ? "新建卡片模式：点击图谱中的父卡片，在其子集中创建新卡片。"
+          : "当前角色可编辑图谱和卡片内容。"
+        : "结构工程师角色仅查看图谱、结果和附件元数据。";
+      treeStage.classList.toggle("create-child", Boolean(state.createChildMode && canEditGraph()));
+      const newCardButton = document.getElementById("newCard");
+      if (newCardButton) {
+        newCardButton.classList.toggle("primary-btn", !state.createChildMode);
+        newCardButton.classList.toggle("ghost-btn", Boolean(state.createChildMode));
+        newCardButton.textContent = state.createChildMode ? "取消新建" : "新建卡片";
+      }
+      treeCanvas.style.transform = `scale(${state.zoom})`;
+    }
+
+    function renderKpis() {
+      const cards = placedCards();
+      const scopedCards = state.cards.filter(cardInActivePart);
+      const best = Math.max(0, ...scopedCards.map((card) => numericValue(card, "first")));
+      document.getElementById("kpiNodes").textContent = cards.length;
+      document.getElementById("kpiLibrary").textContent = scopedCards.filter((card) => !card.placed).length;
+      document.getElementById("kpiBest").textContent = best ? `${best.toFixed(1)}Hz` : "待录入";
+      document.getElementById("kpiRecommended").textContent = scopedCards.filter((card) => card.status === "recommended").length;
+    }
+
+    function renderPartTree() {
+      const tree = document.getElementById("partTree");
+      const totalCards = state.cards.length;
+      const totalAttachments = state.cards.reduce((sum, card) => sum + (card.files || []).length, 0);
+      const partStats = new Map(state.parts.map((part) => [part.id, { cards: 0, recommended: 0, attachments: 0 }]));
+      state.cards.forEach((card) => {
+        const stats = partStats.get(card.partId);
+        if (!stats) return;
+        stats.cards += 1;
+        if (card.status === "recommended") stats.recommended += 1;
+        stats.attachments += (card.files || []).length;
+      });
+      tree.innerHTML = `
+        <button class="tree-root ${state.activePartId === "all" ? "active" : ""}" type="button" data-part-id="all">
+          <span class="tree-icon">▾</span>
+          <span class="tree-label"><strong>FSW 仿真数据库</strong><span>${totalCards} 张卡片 · ${totalAttachments} 个附件</span></span>
+          <span class="badge gray">全部</span>
+        </button>
+        ${state.parts.map((part) => {
+          const stats = partStats.get(part.id) || { cards: 0, recommended: 0, attachments: 0 };
+          return `
+            <button class="part-item ${state.activePartId === part.id ? "active" : ""}" type="button" data-part-id="${escapeHtml(part.id)}">
+              <span class="tree-icon">□</span>
+              <span class="tree-label"><strong>${escapeHtml(part.code)} · ${escapeHtml(part.name)}</strong><span>${escapeHtml(part.type)} · ${stats.cards} 张卡片 · ${stats.attachments} 个附件</span></span>
+              <span class="badge ${stats.recommended ? "green" : "gray"}">${stats.recommended ? `${stats.recommended} 推荐` : "零件"}</span>
+            </button>
+          `;
+        }).join("")}
+      `;
+      tree.querySelectorAll("[data-part-id]").forEach((button) => {
+        button.addEventListener("click", () => {
+          state.activePartId = button.dataset.partId;
+          const firstCard = state.cards.find((card) => cardInActivePart(card));
+          if (firstCard) state.activeCardId = firstCard.id;
+          state.createChildMode = false;
+          renderAll();
         });
+      });
+    }
+
+    function renderLibrary() {
+      const list = document.getElementById("libraryList");
+      const items = state.cards.filter((card) => !card.placed && cardInActivePart(card));
+      if (!items.length) {
+        list.innerHTML = `<div class="empty">卡片库为空。新建卡片后可拖入图谱画布。</div>`;
+        return;
+      }
+      list.innerHTML = items.map((card) => `
+        <article class="library-card ${card.status}" draggable="${canEditGraph()}" data-library-card="${card.id}">
+          <strong>${escapeHtml(card.code)} · ${escapeHtml(card.title)}</strong>
+          <p>${escapeHtml(card.change)}</p>
+          <div class="node-footer">${statusBadge(card)}<span class="delta">${escapeHtml(card.owner)}</span></div>
+        </article>
+      `).join("");
+      list.querySelectorAll("[data-library-card]").forEach((item) => {
+        item.addEventListener("dragstart", (event) => {
+          if (!canEditGraph()) {
+            event.preventDefault();
+            return;
+          }
+          event.dataTransfer.setData("text/plain", item.dataset.libraryCard);
+          event.dataTransfer.effectAllowed = "move";
+        });
+        item.addEventListener("click", () => {
+          state.activeCardId = item.dataset.libraryCard;
+          state.panel = "edit";
+          renderAll();
+        });
+      });
+    }
+
+    function renderLinks() {
+      updateCanvasBounds();
+      linkSvg.innerHTML = "";
+      scopedGraphEdges().forEach((edge) => {
+        const from = cardById(edge.from);
+        const to = cardById(edge.to);
+        const x1 = from.x + 206;
+        const y1 = from.y + 63;
+        const x2 = to.x;
+        const y2 = to.y + 63;
+        const mid = x1 + (x2 - x1) / 2;
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path.setAttribute("class", `link ${edge.type === "推荐路径" ? "recommended" : ""}`);
+        path.setAttribute("d", `M ${x1} ${y1} C ${mid} ${y1}, ${mid} ${y2}, ${x2} ${y2}`);
+        linkSvg.appendChild(path);
+
+        const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        label.setAttribute("class", "link-label");
+        label.setAttribute("x", String(mid - 18));
+        label.setAttribute("y", String((y1 + y2) / 2 - 6));
+        label.textContent = edge.type;
+        linkSvg.appendChild(label);
+      });
+    }
+
+    function updateCanvasBounds() {
+      const cards = placedCards();
+      const minWidth = Math.max(1500, Math.ceil(treeStage.clientWidth / Math.max(state.zoom, 0.1)) + 320);
+      const minHeight = Math.max(980, Math.ceil(treeStage.clientHeight / Math.max(state.zoom, 0.1)) + 260);
+      const maxX = cards.length ? Math.max(...cards.map((card) => Number(card.x) || 0)) : 0;
+      const maxY = cards.length ? Math.max(...cards.map((card) => Number(card.y) || 0)) : 0;
+      const width = Math.max(minWidth, Math.ceil(maxX + 206 + 420));
+      const height = Math.max(minHeight, Math.ceil(maxY + 126 + 320));
+      treeCanvas.style.width = `${width}px`;
+      treeCanvas.style.height = `${height}px`;
+      linkSvg.setAttribute("width", String(width));
+      linkSvg.setAttribute("height", String(height));
+      linkSvg.setAttribute("viewBox", `0 0 ${width} ${height}`);
     }
 
     function renderNodes() {
       nodesLayer.innerHTML = "";
-      variants.forEach((item) => {
+      const summaryFields = state.template.fields.filter((field) => field.showOnNode).slice(0, 2);
+      const selectedIds = new Set(state.selectedIds);
+      const query = searchInput.value.trim().toLowerCase();
+      placedCards().forEach((card) => {
         const node = document.createElement("article");
-        node.className = `node ${item.status} ${item.id === activeId ? "active" : ""} ${nodeMatches(item) ? "" : "dimmed"}`;
-        node.style.left = `${item.x}px`;
-        node.style.top = `${item.y}px`;
+        node.className = [
+          "node",
+          card.status,
+          card.id === state.activeCardId ? "active" : "",
+          card.id === state.pendingConnectId ? "pending" : "",
+          nodeMatches(card, query) ? "" : "dimmed"
+        ].join(" ");
+        node.style.left = `${card.x}px`;
+        node.style.top = `${card.y}px`;
         node.tabIndex = 0;
         node.setAttribute("role", "button");
-        node.setAttribute("aria-label", `${item.code} ${item.title}`);
+        node.setAttribute("aria-label", `${card.code} ${card.title}`);
+        node.dataset.cardId = card.id;
         node.innerHTML = `
           <div class="node-top">
             <div>
-              <div class="node-code">${item.code}</div>
-              <div class="node-title">${item.title}</div>
+              <div class="node-code">${escapeHtml(card.code)}</div>
+              <div class="node-title">${escapeHtml(card.title)}</div>
             </div>
-            <input class="node-check" type="checkbox" ${selected.has(item.id) ? "checked" : ""} aria-label="加入对比">
+            <input class="node-check" type="checkbox" ${selectedIds.has(card.id) ? "checked" : ""} aria-label="加入对比">
           </div>
           <div class="metrics">
-            <div class="metric"><span>一阶模态</span><strong>${item.first.toFixed(1)}Hz</strong></div>
-            <div class="metric"><span>质量</span><strong>${item.mass.toFixed(2)}kg</strong></div>
+            ${summaryFields.map((field) => `
+              <div class="metric"><span>${escapeHtml(field.name)}</span><strong>${escapeHtml(fieldValue(card, field))}</strong></div>
+            `).join("")}
           </div>
           <div class="node-footer">
-            <span class="badge ${statusClass[item.status]}">${item.statusText}</span>
-            <span class="delta">${deltaText(item)}</span>
+            ${statusBadge(card)}
+            <span class="delta">${escapeHtml(deltaText(card))}</span>
           </div>
         `;
-        node.addEventListener("click", () => selectNode(item.id));
+
+        node.addEventListener("click", () => {
+          if (suppressedNodeClickId === card.id) {
+            suppressedNodeClickId = "";
+            return;
+          }
+          handleNodeClick(card.id);
+        });
         node.addEventListener("keydown", (event) => {
           if (event.key === "Enter" || event.key === " ") {
             event.preventDefault();
-            selectNode(item.id);
+            handleNodeClick(card.id);
           }
         });
+        node.addEventListener("pointerdown", (event) => startNodeDrag(event, node, card));
+
         const checkbox = node.querySelector("input");
         checkbox.addEventListener("click", (event) => {
           event.stopPropagation();
-          if (checkbox.checked) selected.add(item.id);
-          else selected.delete(item.id);
-          renderCompare();
+          toggleSelected(card.id, checkbox.checked);
         });
         nodesLayer.appendChild(node);
       });
     }
 
-    function selectNode(id) {
-      activeId = id;
-      renderNodes();
-      renderDetail();
+    function handleNodeClick(id) {
+      if (state.createChildMode && canEditGraph()) {
+        createCard(id);
+        return;
+      }
+      if (state.mode === "connect" && canEditGraph()) {
+        if (!state.pendingConnectId) {
+          state.pendingConnectId = id;
+        } else if (state.pendingConnectId === id) {
+          state.pendingConnectId = null;
+        } else {
+          addEdge(state.pendingConnectId, id);
+          state.pendingConnectId = null;
+        }
+      }
+      state.activeCardId = id;
+      state.panel = "detail";
+      renderAll();
     }
 
-    function renderDetail() {
-      const item = variantById(activeId);
-      const parent = item.parent ? variantById(item.parent) : null;
-      const maxMode = Math.max(...[item.first, item.second, item.third]);
-      detailBody.innerHTML = `
-        <div class="selected-heading">
-          <div>
-            <h3>${item.code} · ${item.title}</h3>
-            <p>${item.conclusion}</p>
-          </div>
-          <span class="badge ${statusClass[item.status]}">${item.statusText}</span>
-        </div>
+    function startNodeDrag(event, node, card) {
+      if (!canEditGraph() || state.createChildMode || state.mode !== "move" || event.target.closest("input, button, select, textarea")) return;
+      event.preventDefault();
+      node.setPointerCapture(event.pointerId);
+      dragState = {
+        id: card.id,
+        startX: event.clientX,
+        startY: event.clientY,
+        originX: card.x,
+        originY: card.y,
+        moved: false
+      };
+      node.classList.add("dragging");
+      node.addEventListener("pointermove", dragNode);
+      node.addEventListener("pointerup", endNodeDrag, { once: true });
+      node.addEventListener("pointercancel", endNodeDrag, { once: true });
+    }
 
-        <section class="detail-section">
-          <div class="stats-grid">
-            <div class="stat"><span>一阶模态</span><strong>${item.first.toFixed(1)}Hz</strong><small>相对基准 ${deltaText(item)}</small></div>
-            <div class="stat"><span>二阶模态</span><strong>${item.second.toFixed(1)}Hz</strong><small>三阶 ${item.third.toFixed(1)}Hz</small></div>
-            <div class="stat"><span>质量</span><strong>${item.mass.toFixed(2)}kg</strong><small>目标质量 ≤ 1.85kg</small></div>
-            <div class="stat"><span>刚度指数</span><strong>${item.stiffness}</strong><small>基准结构 = 100</small></div>
-          </div>
-        </section>
+    function dragNode(event) {
+      if (!dragState) return;
+      const card = cardById(dragState.id);
+      if (!card) return;
+      const dx = (event.clientX - dragState.startX) / state.zoom;
+      const dy = (event.clientY - dragState.startY) / state.zoom;
+      dragState.moved = Math.abs(dx) + Math.abs(dy) > 2;
+      card.x = Math.max(20, dragState.originX + dx);
+      card.y = Math.max(20, dragState.originY + dy);
+      const node = event.currentTarget;
+      node.style.left = `${card.x}px`;
+      node.style.top = `${card.y}px`;
+      updateCanvasBounds();
+      renderLinks();
+    }
 
-        <section class="detail-section">
-          <h4>模态频率</h4>
-          <div class="mini-chart">
-            ${[
-              ["1阶", item.first],
-              ["2阶", item.second],
-              ["3阶", item.third]
-            ].map(([label, value]) => `
-              <div class="bar-wrap">
-                <div class="bar" style="height:${Math.max(10, (value / maxMode) * 82)}px"></div>
-                <div class="bar-label">${label} ${value.toFixed(1)}</div>
-              </div>
-            `).join("")}
-          </div>
-        </section>
+    function endNodeDrag(event) {
+      const node = event.currentTarget;
+      const clickedId = dragState?.id;
+      const moved = Boolean(dragState?.moved);
+      node.classList.remove("dragging");
+      node.removeEventListener("pointermove", dragNode);
+      dragState = null;
+      if (moved && clickedId) {
+        state.activeCardId = clickedId;
+        saveState();
+        renderAll();
+        return;
+      }
+      if (clickedId && event.type === "pointerup") {
+        suppressedNodeClickId = clickedId;
+        setTimeout(() => {
+          if (suppressedNodeClickId === clickedId) suppressedNodeClickId = "";
+        }, 0);
+        handleNodeClick(clickedId);
+      }
+    }
 
-        <section class="detail-section">
-          <h4>结构变更与任务</h4>
-          <div class="kv">
-            <div class="kv-row"><span>来源方案</span><strong>${parent ? `${parent.code} · ${parent.title}` : "无，项目基准结构"}</strong></div>
-            <div class="kv-row"><span>变更说明</span><strong>${item.change}</strong></div>
-            <div class="kv-row"><span>仿真任务</span><strong>${item.task}</strong></div>
-            <div class="kv-row"><span>负责人</span><strong>${item.owner}</strong></div>
-          </div>
-        </section>
+    function addEdge(from, to) {
+      const exists = graphEdges().some((edge) => edge.from === from && edge.to === to);
+      if (exists || wouldCreateCycle(from, to)) return;
+      const toCard = cardById(to);
+      const relationType = document.getElementById("relationType").value;
+      if (toCard) {
+        toCard.parentId = from;
+        toCard.relationType = relationType;
+      }
+      state.edges.push({
+        id: `e-${from}-${to}-${Date.now()}`,
+        from,
+        to,
+        type: relationType
+      });
+    }
 
-        <section class="detail-section">
-          <h4>关联文件</h4>
-          <div class="file-list">
-            ${item.files.map((file) => `
-              <div class="file-item">
-                <strong>${file}</strong>
-                <span>${file.endsWith(".step") ? "数模" : file.endsWith(".pdf") ? "报告" : "结果文件"}</span>
-              </div>
-            `).join("")}
-          </div>
-        </section>
+    function wouldCreateCycle(from, to) {
+      const childrenByParent = childIdMap(graphEdges());
+      const stack = [to];
+      const visited = new Set();
+      while (stack.length) {
+        const current = stack.pop();
+        if (current === from) return true;
+        if (visited.has(current)) continue;
+        visited.add(current);
+        (childrenByParent.get(current) || []).forEach((childId) => stack.push(childId));
+      }
+      return false;
+    }
 
-        <section class="detail-section">
-          <button class="primary-btn" type="button" onclick="toggleActiveCompare()">加入/移出对比</button>
-          <button class="ghost-btn" type="button">下载报告</button>
-        </section>
-      `;
+    function toggleSelected(id, checked) {
+      const set = new Set(state.selectedIds);
+      if (checked) set.add(id);
+      else set.delete(id);
+      state.selectedIds = Array.from(set);
+      renderAll();
     }
 
     function renderCompare() {
-      const rows = variants.filter((item) => selected.has(item.id));
+      const fields = state.template.fields.filter((field) => field.compare);
+      const selectedIds = new Set(state.selectedIds);
+      const rows = state.cards.filter((card) => selectedIds.has(card.id) && cardInActivePart(card));
       if (!rows.length) {
-        compareTable.innerHTML = `<div class="empty">勾选树节点右上角的复选框，快速比较不同结构方案。</div>`;
-        renderNodes();
+        compareTable.innerHTML = `<div class="empty">勾选图谱节点右上角复选框，横向比较不同仿真结果卡片。</div>`;
         return;
       }
+      const bestFirst = Math.max(...rows.map((card) => numericValue(card, "first")));
       compareTable.innerHTML = `
         <table>
           <thead>
             <tr>
-              <th>方案</th>
+              <th>卡片</th>
               <th>来源</th>
-              <th class="num">一阶模态</th>
-              <th class="num">二阶模态</th>
-              <th class="num">质量</th>
-              <th class="num">刚度指数</th>
-              <th>结论状态</th>
+              ${fields.map((field) => `<th class="${field.type === "number" ? "num" : ""}">${escapeHtml(field.name)}</th>`).join("")}
+              <th>状态</th>
             </tr>
           </thead>
           <tbody>
-            ${rows.map((item) => {
-              const parent = item.parent ? variantById(item.parent).code : "基准";
+            ${rows.map((card) => {
+              const parent = card.parentId ? cardById(card.parentId) : null;
               return `
                 <tr>
-                  <td><strong>${item.code}</strong> ${item.title}</td>
-                  <td>${parent}</td>
-                  <td class="num">${item.first.toFixed(1)} Hz</td>
-                  <td class="num">${item.second.toFixed(1)} Hz</td>
-                  <td class="num">${item.mass.toFixed(2)} kg</td>
-                  <td class="num">${item.stiffness}</td>
-                  <td><span class="badge ${statusClass[item.status]}">${item.statusText}</span></td>
+                  <td><strong>${escapeHtml(card.code)}</strong> ${escapeHtml(card.title)}</td>
+                  <td>${parent ? escapeHtml(parent.code) : "基准"}</td>
+                  ${fields.map((field) => {
+                    const isBest = field.code === "first" && numericValue(card, "first") === bestFirst && bestFirst > 0;
+                    return `<td class="${field.type === "number" ? "num" : ""}">${escapeHtml(fieldValue(card, field))}${isBest ? " ↑" : ""}</td>`;
+                  }).join("")}
+                  <td>${statusBadge(card)}</td>
                 </tr>
               `;
             }).join("")}
           </tbody>
         </table>
       `;
-      renderNodes();
     }
 
-    window.toggleActiveCompare = function toggleActiveCompare() {
-      if (selected.has(activeId)) selected.delete(activeId);
-      else selected.add(activeId);
-      renderCompare();
-    };
+    function renderEdgeList() {
+      const list = document.getElementById("edgeList");
+      const active = activeScopedCard();
+      if (!active) {
+        list.innerHTML = `<div class="empty">当前零件还没有选中的卡片。</div>`;
+        return;
+      }
+      const edges = scopedGraphEdges().filter((edge) => edge.from === active.id || edge.to === active.id);
+      if (!edges.length) {
+        list.innerHTML = `<div class="empty">当前卡片暂无连接关系。点击“新建卡片”创建后续节点，或切换到连线模式连接其他卡片。</div>`;
+        return;
+      }
+      list.innerHTML = edges.map((edge) => {
+        const from = cardById(edge.from);
+        const to = cardById(edge.to);
+        const direction = edge.from === active.id ? "后续" : "来源";
+        return `
+          <div class="mini-row">
+            <strong>${escapeHtml(direction)}：${escapeHtml(from?.code || edge.from)} → ${escapeHtml(to?.code || edge.to)}</strong>
+            ${canEditGraph()
+              ? `<select data-edge-type="${edge.id}" aria-label="编辑关系类型">${relationOptionsHtml(edge.type)}</select>`
+              : `<span>${escapeHtml(edge.type)}</span>`}
+            ${canEditGraph() ? `<button class="icon-btn" type="button" data-delete-edge="${edge.id}" title="删除关系">×</button>` : ""}
+          </div>
+        `;
+      }).join("");
+      list.querySelectorAll("[data-edge-type]").forEach((select) => {
+        select.addEventListener("change", () => {
+          const edge = edges.find((item) => item.id === select.dataset.edgeType);
+          if (!edge) return;
+          updateEdgeType(edge, select.value);
+          renderAll();
+        });
+      });
+      list.querySelectorAll("[data-delete-edge]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const edge = edges.find((item) => item.id === button.dataset.deleteEdge);
+          if (edge) deleteGraphEdge(edge);
+          renderAll();
+        });
+      });
+    }
 
-    document.querySelectorAll("[data-filter]").forEach((button) => {
+    function updateEdgeType(edge, type) {
+      const to = cardById(edge.to);
+      if (to) to.relationType = type;
+      const explicit = state.edges.find((item) => item.from === edge.from && item.to === edge.to);
+      if (explicit) {
+        explicit.type = type;
+      } else {
+        state.edges.push({
+          id: `e-${edge.from}-${edge.to}-${Date.now()}`,
+          from: edge.from,
+          to: edge.to,
+          type
+        });
+      }
+    }
+
+    function deleteGraphEdge(edge) {
+      const to = cardById(edge.to);
+      if (to && to.parentId === edge.from) {
+        to.parentId = "";
+      }
+      state.edges = state.edges.filter((item) => item.id !== edge.id && !(item.from === edge.from && item.to === edge.to));
+    }
+
+    function renderPanel() {
+      if (state.panel === "edit") renderEditPanel();
+      else if (state.panel === "template") renderTemplatePanel();
+      else renderDetailPanel();
+    }
+
+    // === 右侧面板：详情 / 编辑 / 模板 =======================================
+    function renderDetailPanel() {
+      const card = activeScopedCard();
+      if (!card) {
+        detailBody.innerHTML = `<div class="empty">当前零件还没有卡片。点击“新建卡片”创建第一张结果卡片。</div>`;
+        return;
+      }
+      const parent = card.parentId ? cardById(card.parentId) : null;
+      const chartFields = state.template.fields
+        .filter((field) => field.type === "number" && isKeyMetricField(field))
+        .slice(0, 4);
+      const conclusionFields = state.template.fields.filter(isConclusionField);
+      const maxValue = Math.max(1, ...chartFields.map((field) => numericValue(card, field.code)));
+      detailBody.innerHTML = `
+        <div class="selected-heading">
+          <div>
+            <h3>${escapeHtml(card.code)} · ${escapeHtml(card.title)}</h3>
+            <p>${escapeHtml(primaryConclusionText(card))}</p>
+          </div>
+          ${statusBadge(card)}
+        </div>
+
+        <section class="detail-section">
+          <div class="stats-grid">
+            ${state.template.fields.filter(isDetailSummaryField).slice(0, 4).map((field) => `
+              <div class="stat">
+                <span>${escapeHtml(field.name)}</span>
+                <strong>${escapeHtml(fieldValue(card, field))}</strong>
+                <small>${field.code === "first" ? `相对基准 ${escapeHtml(deltaText(card))}` : escapeHtml(field.required ? "模板必填" : "模板字段")}</small>
+              </div>
+            `).join("") || `<div class="empty">模板中还没有勾选详情摘要字段。</div>`}
+          </div>
+        </section>
+
+        <section class="detail-section">
+          <h4>关键数值</h4>
+          ${chartFields.length ? `<div class="mini-chart">
+            ${chartFields.map((field) => {
+              const value = numericValue(card, field.code);
+              return `
+                <div class="bar-wrap">
+                  <div class="bar" style="height:${Math.max(8, (value / maxValue) * 82)}px"></div>
+                  <div class="bar-label">${escapeHtml(field.name)} ${escapeHtml(fieldValue(card, field))}</div>
+                </div>
+              `;
+            }).join("")}
+          </div>` : `<div class="empty">模板中还没有勾选关键数值字段。</div>`}
+        </section>
+
+        <section class="detail-section">
+          <h4>仿真结论内容</h4>
+          <div class="kv">
+            ${conclusionFields.map((field) => `
+              <div class="kv-row"><span>${escapeHtml(field.name)}</span><strong>${escapeHtml(fieldValue(card, field))}</strong></div>
+            `).join("") || `<div class="empty">模板中还没有勾选结论内容字段。</div>`}
+          </div>
+        </section>
+
+        <section class="detail-section">
+          <h4>结构变更与任务</h4>
+          <div class="kv">
+            <div class="kv-row"><span>来源卡片</span><strong>${parent ? `${escapeHtml(parent.code)} · ${escapeHtml(parent.title)}` : "无，项目基准结构"}</strong></div>
+            <div class="kv-row"><span>关系类型</span><strong>${escapeHtml(parent ? parentRelationType(card) : "基准")}</strong></div>
+            <div class="kv-row"><span>变更说明</span><strong>${escapeHtml(card.change)}</strong></div>
+            <div class="kv-row"><span>仿真任务</span><strong>${escapeHtml(card.task || "未关联")}</strong></div>
+            <div class="kv-row"><span>负责人</span><strong>${escapeHtml(card.owner || "未设置")}</strong></div>
+          </div>
+        </section>
+
+        <section class="detail-section">
+          <h4>关联文件</h4>
+          <div class="file-list">
+            ${(card.files || []).map((file) => `
+              <div class="file-item">
+                <strong>${attachmentTitleHtml(file)}</strong>
+                <span>${escapeHtml(attachmentMetaText(file))}</span>
+              </div>
+            `).join("") || `<div class="empty">暂无附件元数据。</div>`}
+          </div>
+        </section>
+
+        <section class="detail-section">
+          <div class="button-row">
+            <button class="primary-btn" type="button" id="toggleActiveCompare">加入/移出对比</button>
+            <button class="ghost-btn" type="button" id="duplicateCard" ${canEditCards() ? "" : "disabled"}>复制为新卡片</button>
+          </div>
+        </section>
+      `;
+      document.getElementById("toggleActiveCompare").addEventListener("click", () => {
+        toggleSelected(card.id, !state.selectedIds.includes(card.id));
+      });
+      document.getElementById("duplicateCard").addEventListener("click", () => duplicateCard(card.id));
+    }
+
+    function attachmentName(file) {
+      return typeof file === "string" ? file : file?.name || "未命名附件";
+    }
+
+    function attachmentTitleHtml(file) {
+      const name = escapeHtml(attachmentName(file));
+      if (file && typeof file === "object" && file.url) {
+        return `<a href="${escapeHtml(file.url)}" target="_blank" rel="noopener">${name}</a>`;
+      }
+      return name;
+    }
+
+    function attachmentMetaText(file) {
+      const item = typeof file === "string" ? normalizeAttachment(file, { id: "legacy" }, 0) : file;
+      const size = item.size ? ` · ${formatBytes(item.size)}` : "";
+      const path = item.relativePath ? ` · ${item.relativePath}` : item.legacy ? " · 示例元数据" : "";
+      return `${item.type || fileType(item.name)}${size}${path}`;
+    }
+
+    function attachmentStorageStatus() {
+      if (serverMode) {
+        return "服务器模式：附件统一保存到工作站 server_data/attachments，可供局域网用户访问。";
+      }
+      if (!("showDirectoryPicker" in window)) {
+        return "当前浏览器不支持本地目录归档；请使用 Chrome 或 Edge 试用真实附件保存。";
+      }
+      if (!attachmentRootHandle) {
+        return "尚未选择附件目录。上传前请选择一个本地目录，系统会在其中创建 simulation-attachments。";
+      }
+      return `附件目录：${state.attachmentDirectoryName || attachmentRootHandle.name} / ${ATTACHMENT_ROOT_FOLDER}`;
+    }
+
+    function formatBytes(bytes) {
+      const value = Number(bytes);
+      if (!value) return "";
+      if (value < 1024) return `${value} B`;
+      if (value < 1024 * 1024) return `${(value / 1024).toFixed(1)} KB`;
+      if (value < 1024 * 1024 * 1024) return `${(value / 1024 / 1024).toFixed(1)} MB`;
+      return `${(value / 1024 / 1024 / 1024).toFixed(1)} GB`;
+    }
+
+    function fileType(file) {
+      const lower = attachmentName(file).toLowerCase();
+      if (lower.endsWith(".step") || lower.endsWith(".catpart") || lower.endsWith(".catproduct")) return "数模";
+      if (lower.endsWith(".pdf") || lower.endsWith(".docx") || lower.endsWith(".pptx")) return "报告";
+      if (lower.endsWith(".png") || lower.endsWith(".jpg") || lower.endsWith(".mp4")) return "图片/动画";
+      if (lower.endsWith(".xlsx") || lower.endsWith(".xls") || lower.endsWith(".csv") || lower.endsWith(".rpt") || lower.endsWith(".dat")) return "数据";
+      if (lower.endsWith(".odb") || lower.endsWith(".inp") || lower.endsWith(".cae") || lower.endsWith(".hm") || lower.endsWith(".fem")) return "求解/前处理";
+      if (lower.endsWith(".zip") || lower.endsWith(".7z") || lower.endsWith(".rar")) return "压缩包";
+      return "结果文件";
+    }
+
+    function renderEditPanel() {
+      const card = activeScopedCard();
+      const disabled = canEditCards() ? "" : "disabled";
+      if (!card) {
+        detailBody.innerHTML = `<div class="empty">新建一张仿真结果卡片后即可填写字段。</div>`;
+        return;
+      }
+      detailBody.innerHTML = `
+        <form id="cardForm" class="detail-section">
+          <div class="form-grid">
+            <div class="field">
+              <label for="cardCode">卡片编号</label>
+              <input id="cardCode" name="code" value="${escapeHtml(card.code)}" ${disabled}>
+            </div>
+            <div class="field">
+              <label for="cardStatus">结论状态</label>
+              <select id="cardStatus" name="status" ${disabled}>
+                ${Object.entries(statusMeta).map(([key, meta]) => `<option value="${key}" ${card.status === key ? "selected" : ""}>${meta.text}</option>`).join("")}
+              </select>
+            </div>
+            <div class="field full">
+              <label for="cardTitle">卡片名称</label>
+              <input id="cardTitle" name="title" value="${escapeHtml(card.title)}" ${disabled}>
+            </div>
+            <div class="field">
+              <label for="cardOwner">负责人</label>
+              <input id="cardOwner" name="owner" value="${escapeHtml(card.owner || "")}" ${disabled}>
+            </div>
+            <div class="field">
+              <label for="cardTask">仿真任务</label>
+              <input id="cardTask" name="task" value="${escapeHtml(card.task || "")}" ${disabled}>
+            </div>
+            <div class="field">
+              <label for="cardPart">所属零件</label>
+              <select id="cardPart" name="partId" ${disabled}>
+                ${state.parts.map((part) => `<option value="${part.id}" ${card.partId === part.id ? "selected" : ""}>${escapeHtml(part.code)} · ${escapeHtml(part.name)}</option>`).join("")}
+              </select>
+            </div>
+            <div class="field">
+              <label for="cardParent">来源卡片</label>
+              <select id="cardParent" name="parentId" ${disabled}>
+                <option value="">无</option>
+                ${state.cards.filter((item) => item.id !== card.id).map((item) => `<option value="${item.id}" ${card.parentId === item.id ? "selected" : ""}>${escapeHtml(item.code)} · ${escapeHtml(item.title)}</option>`).join("")}
+              </select>
+            </div>
+            <div class="field">
+              <label for="cardRelationType">来源关系</label>
+              <select id="cardRelationType" name="relationType" ${disabled}>
+                ${relationOptionsHtml(parentRelationType(card))}
+              </select>
+            </div>
+            <div class="field">
+              <label for="cardPlaced">图谱状态</label>
+              <select id="cardPlaced" name="placed" ${disabled}>
+                <option value="true" ${card.placed ? "selected" : ""}>已上图谱</option>
+                <option value="false" ${!card.placed ? "selected" : ""}>在卡片库</option>
+              </select>
+            </div>
+            ${state.template.fields.map((field) => `
+              <div class="field ${field.type === "text" ? "full" : ""}">
+                <label for="value-${field.code}">${escapeHtml(field.name)}${field.unit ? `（${escapeHtml(field.unit)}）` : ""}</label>
+                ${field.type === "number"
+                  ? `<input id="value-${field.code}" data-value-code="${field.code}" type="number" step="0.01" value="${escapeHtml(card.values?.[field.code] ?? "")}" ${disabled}>`
+                  : `<textarea id="value-${field.code}" data-value-code="${field.code}" ${disabled}>${escapeHtml(card.values?.[field.code] ?? "")}</textarea>`
+                }
+              </div>
+            `).join("")}
+            <div class="field full">
+              <label for="cardChange">结构变更说明</label>
+              <textarea id="cardChange" name="change" ${disabled}>${escapeHtml(card.change || "")}</textarea>
+            </div>
+            <div class="field full">
+              <label>附件管理</label>
+              <div class="button-row">
+                <button class="ghost-btn" id="pickAttachmentDir" type="button" ${disabled}>选择附件目录</button>
+                <label class="primary-btn" for="cardFileInput">上传附件</label>
+                <input class="sr-only" id="cardFileInput" type="file" multiple ${disabled}>
+              </div>
+              <div class="field-help" id="attachmentStatus">${escapeHtml(attachmentStorageStatus())}</div>
+              <div class="file-list">
+                ${(card.files || []).map((file) => `
+                  <div class="file-item">
+                    <div>
+                      <strong>${attachmentTitleHtml(file)}</strong>
+                      <span>${escapeHtml(attachmentMetaText(file))}</span>
+                    </div>
+                    <button class="icon-btn" type="button" data-delete-attachment="${escapeHtml(file.id)}" ${disabled} title="删除附件">×</button>
+                  </div>
+                `).join("") || `<div class="empty">还没有附件。上传后会复制到已选择的本地附件目录。</div>`}
+              </div>
+            </div>
+          </div>
+          <div class="detail-section">
+            <div class="button-row">
+              <button class="primary-btn" type="submit" ${disabled}>保存卡片</button>
+              <button class="ghost-btn" id="removeFromGraph" type="button" ${disabled}>移回卡片库</button>
+              <button class="danger-btn" id="deleteCard" type="button" ${disabled}>删除卡片</button>
+            </div>
+          </div>
+        </form>
+      `;
+      const form = document.getElementById("cardForm");
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        if (!canEditCards()) return;
+        const data = new FormData(form);
+        const previousParentId = card.parentId;
+        const previousRelationType = parentRelationType(card);
+        card.code = data.get("code").trim() || card.code;
+        card.title = data.get("title").trim() || card.title;
+        card.status = data.get("status");
+        card.owner = data.get("owner").trim();
+        card.task = data.get("task").trim();
+        card.partId = data.get("partId") || card.partId;
+        card.parentId = data.get("parentId");
+        card.relationType = data.get("relationType") || "结构迭代";
+        card.placed = data.get("placed") === "true";
+        card.change = data.get("change").trim();
+        const nextValues = {};
+        let missingRequired = null;
+        let invalidNumber = null;
+        form.querySelectorAll("[data-value-code]").forEach((input) => {
+          const field = state.template.fields.find((item) => item.code === input.dataset.valueCode);
+          if (!field) return;
+          const rawValue = input.value.trim();
+          if (field.required && rawValue === "") {
+            missingRequired = missingRequired || field;
+            return;
+          }
+          if (field.type === "number") {
+            const numberValue = rawValue === "" ? 0 : Number(rawValue);
+            if (!Number.isFinite(numberValue)) {
+              invalidNumber = invalidNumber || field;
+              return;
+            }
+            nextValues[field.code] = numberValue;
+          } else {
+            nextValues[field.code] = rawValue;
+          }
+        });
+        if (missingRequired) {
+          alert(`请填写必填字段：${missingRequired.name}`);
+          return;
+        }
+        if (invalidNumber) {
+          alert(`请输入有效数字：${invalidNumber.name}`);
+          return;
+        }
+        card.values = { ...(card.values || {}), ...nextValues };
+        card.conclusion = card.values.conclusion || "";
+        syncParentEdge(card, previousParentId, previousRelationType);
+        renderAll();
+      });
+      document.getElementById("removeFromGraph").addEventListener("click", () => {
+        if (!canEditGraph()) return;
+        card.placed = false;
+        state.edges = state.edges.filter((edge) => edge.from !== card.id && edge.to !== card.id);
+        renderAll();
+      });
+      document.getElementById("deleteCard").addEventListener("click", async () => {
+        if (!canEditCards()) return;
+        await deleteCardAttachmentFolder(card);
+        state.cards = state.cards.filter((item) => item.id !== card.id);
+        state.edges = state.edges.filter((edge) => edge.from !== card.id && edge.to !== card.id);
+        state.selectedIds = state.selectedIds.filter((id) => id !== card.id);
+        state.activeCardId = state.cards[0]?.id || "";
+        renderAll();
+      });
+      document.getElementById("pickAttachmentDir").addEventListener("click", async () => {
+        if (!canEditCards()) return;
+        await chooseAttachmentDirectory();
+      });
+      document.getElementById("cardFileInput").addEventListener("change", async (event) => {
+        await uploadAttachments(card, Array.from(event.target.files || []));
+        event.target.value = "";
+      });
+      detailBody.querySelectorAll("[data-delete-attachment]").forEach((button) => {
+        button.addEventListener("click", async () => {
+          if (!canEditCards()) return;
+          await deleteAttachment(card, button.dataset.deleteAttachment);
+        });
+      });
+    }
+
+    function syncParentEdge(card, previousParentId = "", previousRelationType = "结构迭代") {
+      const nextParentId = card.parentId;
+      const previousEdges = state.edges.filter((edge) => edge.to === card.id);
+      const existingRelation = state.edges.find((edge) => edge.to === card.id && edge.from === nextParentId);
+      const relationType = card.relationType || existingRelation?.type || "结构迭代";
+      if (!nextParentId) {
+        state.edges = state.edges.filter((edge) => edge.to !== card.id);
+        return;
+      }
+      // 先校验环路，再删除旧边；否则非法来源会把原关系丢掉。
+      if (wouldCreateCycle(nextParentId, card.id)) {
+        const previousEdge = previousEdges[0];
+        card.parentId = previousParentId || previousEdge?.from || "";
+        card.relationType = previousRelationType || previousEdge?.type || card.relationType || "结构迭代";
+        alert("不能把来源卡片设置为当前卡片的下游节点。");
+        return;
+      }
+      state.edges = state.edges.filter((edge) => edge.to !== card.id);
+      if (card.placed && cardById(nextParentId)?.placed) {
+        state.edges.push({
+          id: existingRelation?.id || `e-${nextParentId}-${card.id}-${Date.now()}`,
+          from: nextParentId,
+          to: card.id,
+          type: relationType
+        });
+      }
+    }
+
+    function getTemplateDraft() {
+      if (!templateDraft) {
+        templateDraft = {
+          name: state.template.name,
+          fields: state.template.fields.map((field) => ({
+            ...clone(field),
+            keyMetric: isKeyMetricField(field),
+            conclusionField: isConclusionField(field),
+            detailSummary: isDetailSummaryField(field),
+            originalCode: field.code
+          }))
+        };
+      }
+      return templateDraft;
+    }
+
+    // 模板保存会迁移每张卡片的 values；字段编码是迁移和导入导出的稳定键。
+    function defaultFieldValue(field) {
+      return field.type === "number" ? 0 : "";
+    }
+
+    function applyTemplateDraft() {
+      const draft = getTemplateDraft();
+      const fields = draft.fields
+        .map((field) => ({
+          code: String(field.code || "").trim(),
+          name: String(field.name || "").trim(),
+          type: field.type === "text" ? "text" : "number",
+          unit: String(field.unit || "").trim(),
+          required: Boolean(field.required),
+          showOnNode: Boolean(field.showOnNode),
+          detailSummary: Boolean(field.detailSummary),
+          compare: Boolean(field.compare),
+          keyMetric: field.type === "number" && Boolean(field.keyMetric),
+          conclusionField: Boolean(field.conclusionField),
+          originalCode: field.originalCode || field.code
+        }))
+        .filter((field) => field.code && field.name);
+      const duplicateCode = fields.find((field, index) => fields.findIndex((item) => item.code === field.code) !== index);
+      if (duplicateCode) {
+        alert(`字段编码不能重复：${duplicateCode.code}`);
+        return false;
+      }
+      const nextCodes = new Set(fields.map((field) => field.code));
+      state.cards.forEach((card) => {
+        card.values = card.values || {};
+        fields.forEach((field) => {
+          const oldCode = field.originalCode;
+          if (oldCode && oldCode !== field.code && Object.prototype.hasOwnProperty.call(card.values, oldCode)) {
+            if (!Object.prototype.hasOwnProperty.call(card.values, field.code)) {
+              card.values[field.code] = card.values[oldCode];
+            }
+            delete card.values[oldCode];
+          }
+          if (!Object.prototype.hasOwnProperty.call(card.values, field.code)) {
+            card.values[field.code] = defaultFieldValue(field);
+          }
+        });
+        state.template.fields.forEach((oldField) => {
+          const stillExists = fields.some((field) => field.originalCode === oldField.code || field.code === oldField.code);
+          if (!stillExists && !nextCodes.has(oldField.code)) {
+            delete card.values[oldField.code];
+          }
+        });
+      });
+      state.template = {
+        name: draft.name || "仿真结果卡片",
+        fields: fields.map(({ originalCode, ...field }) => field)
+      };
+      templateDraft = null;
+      return true;
+    }
+
+    // === 模板面板渲染与保存 ==================================================
+    function renderTemplatePanel() {
+      const disabled = canEditCards() ? "" : "disabled";
+      const draft = getTemplateDraft();
+      detailBody.innerHTML = `
+        <section class="detail-section">
+          <div class="selected-heading">
+            <div>
+              <h3>${escapeHtml(draft.name)}</h3>
+              <p>模板字段决定卡片编辑表单、节点摘要和对比表字段。修改后需保存才会应用到卡片。</p>
+            </div>
+          </div>
+          <div class="field full">
+            <label for="templateName">模板名称</label>
+            <input id="templateName" value="${escapeHtml(draft.name)}" ${disabled}>
+          </div>
+          <table class="template-table">
+            <thead>
+              <tr>
+                <th>字段名</th>
+                <th>编码</th>
+                <th>类型</th>
+                <th>单位</th>
+                <th>必填</th>
+                <th>节点摘要</th>
+                <th>详情摘要</th>
+                <th>对比</th>
+                <th>关键数值</th>
+                <th>结论内容</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              ${draft.fields.map((field, index) => `
+                <tr>
+                  <td><input value="${escapeHtml(field.name)}" data-field-index="${index}" data-field-prop="name" ${disabled}></td>
+                  <td><input value="${escapeHtml(field.code)}" data-field-index="${index}" data-field-prop="code" ${disabled}></td>
+                  <td>
+                    <select data-field-index="${index}" data-field-prop="type" ${disabled}>
+                      <option value="number" ${field.type === "number" ? "selected" : ""}>数字</option>
+                      <option value="text" ${field.type === "text" ? "selected" : ""}>文本</option>
+                    </select>
+                  </td>
+                  <td><input value="${escapeHtml(field.unit || "")}" data-field-index="${index}" data-field-prop="unit" ${disabled}></td>
+                  <td><input type="checkbox" ${field.required ? "checked" : ""} data-field-index="${index}" data-field-prop="required" ${disabled}></td>
+                  <td><input type="checkbox" ${field.showOnNode ? "checked" : ""} data-field-index="${index}" data-field-prop="showOnNode" ${disabled}></td>
+                  <td><input type="checkbox" ${isDetailSummaryField(field) ? "checked" : ""} data-field-index="${index}" data-field-prop="detailSummary" ${disabled}></td>
+                  <td><input type="checkbox" ${field.compare ? "checked" : ""} data-field-index="${index}" data-field-prop="compare" ${disabled}></td>
+                  <td><input type="checkbox" ${isKeyMetricField(field) ? "checked" : ""} data-field-index="${index}" data-field-prop="keyMetric" ${field.type === "number" ? disabled : "disabled"}></td>
+                  <td><input type="checkbox" ${isConclusionField(field) ? "checked" : ""} data-field-index="${index}" data-field-prop="conclusionField" ${disabled}></td>
+                  <td><button class="icon-btn" type="button" data-delete-field="${index}" ${disabled} title="删除字段">×</button></td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+        </section>
+
+        <section class="detail-section">
+          <h4>新增字段</h4>
+          <form id="fieldForm" class="form-grid">
+            <div class="field">
+              <label for="newFieldName">字段名</label>
+              <input id="newFieldName" name="name" placeholder="最大应力" ${disabled}>
+            </div>
+            <div class="field">
+              <label for="newFieldCode">字段编码</label>
+              <input id="newFieldCode" name="code" placeholder="maxStress" ${disabled}>
+            </div>
+            <div class="field">
+              <label for="newFieldType">类型</label>
+              <select id="newFieldType" name="type" ${disabled}>
+                <option value="number">数字</option>
+                <option value="text">文本</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="newFieldUnit">单位</label>
+              <input id="newFieldUnit" name="unit" placeholder="MPa" ${disabled}>
+            </div>
+            <div class="field full">
+              <button class="primary-btn" type="submit" ${disabled}>添加字段</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="detail-section">
+          <div class="button-row">
+            <button class="primary-btn" id="saveTemplate" type="button" ${disabled}>保存模板</button>
+            <button class="ghost-btn" id="discardTemplate" type="button" ${disabled}>放弃修改</button>
+          </div>
+        </section>
+
+        <section class="detail-section">
+          <button class="danger-btn" id="resetData" type="button" ${disabled}>恢复示例数据</button>
+        </section>
+      `;
+      document.getElementById("templateName").addEventListener("input", (event) => {
+        if (!canEditCards()) return;
+        draft.name = event.target.value.trim();
+      });
+      detailBody.querySelectorAll("[data-field-prop]").forEach((input) => {
+        const updateDraftField = () => {
+          if (!canEditCards()) return;
+          const field = draft.fields[Number(input.dataset.fieldIndex)];
+          const prop = input.dataset.fieldProp;
+          const nextValue = input.type === "checkbox" ? input.checked : input.value.trim();
+          field[prop] = nextValue;
+        };
+        input.addEventListener("input", updateDraftField);
+        input.addEventListener("change", updateDraftField);
+      });
+      detailBody.querySelectorAll("[data-delete-field]").forEach((button) => {
+        button.addEventListener("click", () => {
+          if (!canEditCards()) return;
+          draft.fields.splice(Number(button.dataset.deleteField), 1);
+          renderTemplatePanel();
+        });
+      });
+      document.getElementById("fieldForm").addEventListener("submit", (event) => {
+        event.preventDefault();
+        if (!canEditCards()) return;
+        const data = new FormData(event.currentTarget);
+        const name = data.get("name").trim();
+        const code = data.get("code").trim();
+        if (!name || !code || draft.fields.some((field) => field.code === code)) return;
+        draft.fields.push({
+          name,
+          code,
+          type: data.get("type"),
+          unit: data.get("unit").trim(),
+          required: false,
+          showOnNode: false,
+          detailSummary: false,
+          compare: true,
+          keyMetric: data.get("type") === "number",
+          conclusionField: data.get("type") === "text",
+          originalCode: ""
+        });
+        renderTemplatePanel();
+      });
+      document.getElementById("saveTemplate").addEventListener("click", () => {
+        if (!canEditCards()) return;
+        if (applyTemplateDraft()) renderAll();
+      });
+      document.getElementById("discardTemplate").addEventListener("click", () => {
+        templateDraft = null;
+        renderAll();
+      });
+      document.getElementById("resetData").addEventListener("click", () => {
+        state = normalizedDefaultState();
+        if (!state.parts?.length) state.parts = clone(defaultState.parts);
+        state.activePartId = "all";
+        state.createChildMode = false;
+        templateDraft = null;
+        localStorage.removeItem(STORAGE_KEY);
+        renderAll();
+      });
+    }
+
+    // === 业务动作：卡片、零件、布局 =========================================
+    function duplicateCard(id) {
+      if (!canEditCards()) return;
+      const source = cardById(id);
+      if (!source) return;
+      const copy = clone(source);
+      copy.id = `card-${Date.now()}`;
+      copy.code = `${source.code}-COPY`;
+      copy.title = `${source.title} 副本`;
+      copy.status = "running";
+      copy.placed = false;
+      copy.parentId = source.id;
+      copy.relationType = "结构迭代";
+      copy.x = source.x + 280;
+      copy.y = source.y + 40;
+      copy.files = [];
+      state.cards.push(copy);
+      state.activeCardId = copy.id;
+      state.panel = "edit";
+      renderAll();
+    }
+
+    function createCard(parentId = state.activeCardId) {
+      if (!canEditCards()) return;
+      const id = `card-${Date.now()}`;
+      const values = {};
+      state.template.fields.forEach((field) => {
+        values[field.code] = field.type === "number" ? 0 : "";
+      });
+      const parent = cardById(parentId);
+      const siblingCount = parent ? state.cards.filter((item) => item.parentId === parent.id && item.placed).length : 0;
+      const partId = parent?.partId || (state.activePartId !== "all" ? state.activePartId : state.parts[0]?.id || "part-steering");
+      const card = {
+        id,
+        parentId: parent?.id || "",
+        partId,
+        relationType: "结构迭代",
+        code: `NEW-${state.cards.length + 1}`,
+        title: "新仿真结果卡片",
+        status: "running",
+        owner: "待分配",
+        task: "",
+        model: "",
+        report: "",
+        placed: Boolean(parent?.placed),
+        x: parent?.placed ? parent.x + 360 : 940,
+        y: parent?.placed ? Math.max(20, parent.y + siblingCount * 190) : 300,
+        values,
+        change: "填写结构变更说明。",
+        conclusion: "填写仿真结论。",
+        files: []
+      };
+      state.cards.push(card);
+      syncParentEdge(card);
+      state.activeCardId = id;
+      state.panel = "edit";
+      state.createChildMode = false;
+      renderAll();
+    }
+
+    function createPart() {
+      if (!canEditCards()) return;
+      const name = window.prompt("请输入仿真零件名称", `新仿真零件 ${state.parts.length + 1}`);
+      if (!name || !name.trim()) return;
+      const code = window.prompt("请输入零件编号", `PART-${String(state.parts.length + 1).padStart(2, "0")}`) || `PART-${state.parts.length + 1}`;
+      const part = {
+        id: `part-${Date.now()}`,
+        code: code.trim(),
+        name: name.trim(),
+        type: "零件",
+        owner: "未设置"
+      };
+      state.parts.push(part);
+      state.activePartId = part.id;
+      state.createChildMode = false;
+      renderAll();
+    }
+
+    function autoLayout() {
+      if (!canEditGraph()) return;
+      const cards = placedCards();
+      const edges = graphEdges();
+      const childrenByParent = childIdMap(edges);
+      const roots = cards.filter((card) => !card.parentId || !cardById(card.parentId)?.placed);
+      const levels = new Map();
+      const visited = new Set();
+      const visit = (card, level) => {
+        if (visited.has(card.id)) return;
+        visited.add(card.id);
+        if (!levels.has(level)) levels.set(level, []);
+        if (!levels.get(level).includes(card)) levels.get(level).push(card);
+        (childrenByParent.get(card.id) || [])
+          .map((childId) => cardById(childId))
+          .filter((child) => child && cardInActivePart(child))
+          .forEach((child) => visit(child, level + 1));
+      };
+      roots.forEach((root) => visit(root, 0));
+      cards.filter((card) => !visited.has(card.id)).forEach((card) => visit(card, 0));
+      levels.forEach((cards, level) => {
+        cards.forEach((card, index) => {
+          card.x = 70 + level * 370;
+          card.y = 80 + index * 210;
+        });
+      });
+      updateCanvasBounds();
+      renderAll();
+    }
+
+    // === DOM 事件绑定 ========================================================
+    treeStage.addEventListener("dragover", (event) => {
+      if (!canEditGraph()) return;
+      event.preventDefault();
+      treeStage.classList.add("drop-ready");
+    });
+
+    treeStage.addEventListener("dragleave", () => {
+      treeStage.classList.remove("drop-ready");
+    });
+
+    treeStage.addEventListener("drop", (event) => {
+      if (!canEditGraph()) return;
+      event.preventDefault();
+      treeStage.classList.remove("drop-ready");
+      const id = event.dataTransfer.getData("text/plain");
+      const card = cardById(id);
+      if (!card) return;
+      const rect = treeCanvas.getBoundingClientRect();
+      card.x = Math.max(20, (event.clientX - rect.left) / state.zoom);
+      card.y = Math.max(20, (event.clientY - rect.top) / state.zoom);
+      card.placed = true;
+      state.activeCardId = id;
+      syncParentEdge(card);
+      renderAll();
+    });
+
+    document.querySelectorAll("[data-role]").forEach((button) => {
       button.addEventListener("click", () => {
-        document.querySelectorAll("[data-filter]").forEach((item) => item.classList.remove("active"));
-        button.classList.add("active");
-        filter = button.dataset.filter;
-        renderNodes();
+        state.role = button.dataset.role;
+        if (!canEditGraph()) {
+          state.mode = "move";
+          state.pendingConnectId = null;
+          state.createChildMode = false;
+        }
+        renderAll();
       });
     });
 
-    searchInput.addEventListener("input", renderNodes);
+    document.querySelectorAll("[data-mode]").forEach((button) => {
+      button.addEventListener("click", () => {
+        if (!canEditGraph()) return;
+        state.mode = button.dataset.mode;
+        state.pendingConnectId = null;
+        state.createChildMode = false;
+        renderAll();
+      });
+    });
+
+    document.querySelectorAll("[data-filter]").forEach((button) => {
+      button.addEventListener("click", () => {
+        state.filter = button.dataset.filter;
+        renderAll();
+      });
+    });
+
+    document.querySelectorAll("[data-panel]").forEach((button) => {
+      button.addEventListener("click", () => {
+        state.panel = button.dataset.panel;
+        renderAll();
+      });
+    });
+
+    searchInput.addEventListener("input", () => {
+      renderNodes();
+    });
+
+    document.getElementById("newPart").addEventListener("click", createPart);
+    document.getElementById("newCard").addEventListener("click", () => {
+      if (!canEditCards()) return;
+      if (!placedCards().length) {
+        createCard("");
+        return;
+      }
+      state.createChildMode = !state.createChildMode;
+      if (state.createChildMode) {
+        state.mode = "move";
+        state.pendingConnectId = null;
+      }
+      renderAll();
+    });
+    document.getElementById("autoLayout").addEventListener("click", autoLayout);
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && state.createChildMode) {
+        state.createChildMode = false;
+        renderAll();
+      }
+    });
+
+    window.addEventListener("resize", () => {
+      updateCanvasBounds();
+      renderLinks();
+    });
 
     document.getElementById("clearCompare").addEventListener("click", () => {
-      selected.clear();
-      renderCompare();
+      state.selectedIds = [];
+      renderAll();
+    });
+
+    document.getElementById("copyCompare").addEventListener("click", async () => {
+      const selectedIds = new Set(state.selectedIds);
+      const rows = state.cards.filter((card) => selectedIds.has(card.id) && cardInActivePart(card));
+      const fields = state.template.fields.filter((field) => field.compare);
+      const text = [
+        ["卡片", "来源", ...fields.map((field) => field.name), "状态"].join("\t"),
+        ...rows.map((card) => {
+          const parent = card.parentId ? cardById(card.parentId)?.code || "" : "基准";
+          return [card.code, parent, ...fields.map((field) => fieldValue(card, field)), statusMeta[card.status]?.text || card.status].join("\t");
+        })
+      ].join("\n");
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch (error) {
+        console.warn("Clipboard unavailable", error);
+      }
     });
 
     document.getElementById("zoomIn").addEventListener("click", () => {
-      zoom = Math.min(1.2, zoom + 0.1);
-      treeCanvas.style.transform = `scale(${zoom})`;
+      state.zoom = Math.min(1.3, Number((state.zoom + 0.1).toFixed(2)));
+      renderAll();
     });
 
     document.getElementById("zoomOut").addEventListener("click", () => {
-      zoom = Math.max(0.75, zoom - 0.1);
-      treeCanvas.style.transform = `scale(${zoom})`;
+      state.zoom = Math.max(0.7, Number((state.zoom - 0.1).toFixed(2)));
+      renderAll();
     });
 
     document.getElementById("resetView").addEventListener("click", () => {
-      zoom = 1;
-      treeCanvas.style.transform = "scale(1)";
-      document.getElementById("treeStage").scrollTo({ left: 0, top: 0, behavior: "smooth" });
+      state.zoom = 1;
+      treeStage.scrollTo({ left: 0, top: 0, behavior: "smooth" });
+      renderAll();
     });
 
-    drawLinks();
-    renderNodes();
-    renderDetail();
-    renderCompare();
+    document.getElementById("exportData").addEventListener("click", () => {
+      const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "simulation-graph-data.json";
+      link.click();
+      URL.revokeObjectURL(url);
+    });
+
+    document.getElementById("importData").addEventListener("change", async (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+      try {
+        const imported = JSON.parse(await file.text());
+        if (Array.isArray(imported.cards) && Array.isArray(imported.edges)) {
+          state = { ...clone(defaultState), ...imported };
+          state.template = normalizeTemplate(state.template);
+          if (!state.parts?.length) state.parts = clone(defaultState.parts);
+          if (!state.activePartId) state.activePartId = "all";
+          state.cards = state.cards.map(normalizeCardRecord);
+          state.mode = "move";
+          state.pendingConnectId = null;
+          state.createChildMode = false;
+          templateDraft = null;
+          renderAll();
+        }
+      } catch (error) {
+        console.warn("Import failed", error);
+      } finally {
+        event.target.value = "";
+      }
+    });
+
+    // === 应用启动 ============================================================
+    async function initializeApp() {
+      if (serverMode) {
+        const loadedFromServer = await loadStateFromServer();
+        if (!loadedFromServer) {
+          serverMode = false;
+          state = loadState();
+        }
+      }
+      if (!serverMode) await loadAttachmentDirectoryHandle();
+      renderAll();
+    }
+
+    initializeApp();
   </script>
 </body>
 </html>
