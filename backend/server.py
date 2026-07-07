@@ -17,6 +17,7 @@ import tempfile
 import threading
 import time
 import urllib.parse
+from datetime import datetime, timedelta
 from email.parser import BytesParser
 from email.policy import default
 from http import HTTPStatus
@@ -43,7 +44,24 @@ SESSION_COOKIE = "simulation_session"
 SESSION_TTL_SECONDS = 12 * 60 * 60
 SESSIONS: dict[str, dict] = {}
 SESSIONS_LOCK = threading.Lock()
+STATE_LOCK = threading.Lock()
 VALID_ROLES = {"admin", "simulation", "structure"}
+DASHBOARD_STATS_HOUR = 3
+MODEL_ATTACHMENT_EXTENSIONS = {
+    ".step",
+    ".stp",
+    ".catpart",
+    ".catproduct",
+    ".x_t",
+    ".x_b",
+    ".prt",
+    ".asm",
+    ".sldprt",
+    ".sldasm",
+    ".igs",
+    ".iges",
+    ".parasolid",
+}
 
 # API contract used by frontend/index.html:
 # - GET /api/state -> {"state": object | null}
@@ -113,6 +131,87 @@ def write_json(
 
 def now_iso() -> str:
     return time.strftime("%Y-%m-%dT%H:%M:%S", time.localtime())
+
+
+def dashboard_period_at(now: datetime | None = None) -> datetime:
+    current = now or datetime.now()
+    run_at = current.replace(hour=DASHBOARD_STATS_HOUR, minute=0, second=0, microsecond=0)
+    if current < run_at:
+        run_at -= timedelta(days=1)
+    return run_at
+
+
+def next_dashboard_period_at(now: datetime | None = None) -> datetime:
+    current = now or datetime.now()
+    run_at = current.replace(hour=DASHBOARD_STATS_HOUR, minute=0, second=0, microsecond=0)
+    if current >= run_at:
+        run_at += timedelta(days=1)
+    return run_at
+
+
+def dashboard_period_key(now: datetime | None = None) -> str:
+    return dashboard_period_at(now).isoformat(timespec="seconds")
+
+
+def attachment_name(file: object) -> str:
+    if isinstance(file, dict):
+        return str(file.get("name") or file.get("storedName") or file.get("fileName") or "")
+    return str(file or "")
+
+
+def is_model_attachment(file: object) -> bool:
+    name = attachment_name(file).lower()
+    return any(name.endswith(extension) for extension in MODEL_ATTACHMENT_EXTENSIONS)
+
+
+def collect_dashboard_stats(state_payload: dict) -> dict:
+    cards = state_payload.get("cards") if isinstance(state_payload.get("cards"), list) else []
+    parts = state_payload.get("parts") if isinstance(state_payload.get("parts"), list) else []
+    model_attachment_count = 0
+    for card in cards:
+        if not isinstance(card, dict):
+            continue
+        files = card.get("files") if isinstance(card.get("files"), list) else []
+        model_attachment_count += sum(1 for file in files if is_model_attachment(file))
+    return {
+        "graphCount": len(parts),
+        "cardCount": len(cards),
+        "modelAttachmentCount": model_attachment_count,
+        "collectedAt": now_iso(),
+        "statsPeriodAt": dashboard_period_key(),
+    }
+
+
+def write_state_payload(state_payload: dict) -> None:
+    DATA_DIR.mkdir(parents=True, exist_ok=True)
+    fd, temp_name = tempfile.mkstemp(prefix="state-", suffix=".json", dir=str(DATA_DIR))
+    with os.fdopen(fd, "w", encoding="utf-8") as temp_file:
+        json.dump(state_payload, temp_file, ensure_ascii=False, separators=(",", ":"))
+    os.replace(temp_name, STATE_FILE)
+
+
+def update_dashboard_stats(force: bool = False) -> None:
+    if not STATE_FILE.exists():
+        return
+    with STATE_LOCK:
+        try:
+            state_payload = json.loads(STATE_FILE.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            return
+        if not isinstance(state_payload, dict):
+            return
+        current_period = state_payload.get("dashboardStats", {}).get("statsPeriodAt")
+        if not force and current_period == dashboard_period_key():
+            return
+        state_payload["dashboardStats"] = collect_dashboard_stats(state_payload)
+        write_state_payload(state_payload)
+
+
+def dashboard_stats_worker() -> None:
+    while True:
+        delay = max(1, (next_dashboard_period_at() - datetime.now()).total_seconds())
+        time.sleep(delay)
+        update_dashboard_stats(force=True)
 
 
 def default_users_payload() -> dict:
@@ -500,12 +599,9 @@ class SimulationHandler(SimpleHTTPRequestHandler):
         if not isinstance(state_payload, dict):
             self.send_error(HTTPStatus.BAD_REQUEST, "State payload must be a JSON object")
             return
-        DATA_DIR.mkdir(parents=True, exist_ok=True)
-        fd, temp_name = tempfile.mkstemp(prefix="state-", suffix=".json", dir=str(DATA_DIR))
-        with os.fdopen(fd, "w", encoding="utf-8") as temp_file:
-            json.dump(state_payload, temp_file, ensure_ascii=False, separators=(",", ":"))
-        os.replace(temp_name, STATE_FILE)
-        self.export_card_details(state_payload)
+        with STATE_LOCK:
+            write_state_payload(state_payload)
+            self.export_card_details(state_payload)
         write_json(self, {"ok": True})
 
     def handle_upload(self, parsed: urllib.parse.ParseResult) -> None:
@@ -739,6 +835,8 @@ def main() -> None:
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     ATTACHMENTS_DIR.mkdir(parents=True, exist_ok=True)
     load_users()
+    update_dashboard_stats(force=False)
+    threading.Thread(target=dashboard_stats_worker, daemon=True).start()
     try:
         server = ThreadingHTTPServer((host, port), SimulationHandler)
     except OSError as error:

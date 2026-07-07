@@ -250,6 +250,11 @@
       line-height: 1.45;
     }
 
+    #databaseSummary {
+      color: #344054;
+      font-weight: 700;
+    }
+
     .sidebar-body,
     .detail-body {
       min-height: 0;
@@ -352,11 +357,58 @@
       font-weight: 800;
     }
 
+    .create-menu {
+      position: relative;
+    }
+
+    .create-menu-popover {
+      position: absolute;
+      top: 42px;
+      right: 0;
+      z-index: 20;
+      min-width: 150px;
+      display: grid;
+      gap: 4px;
+      padding: 6px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+      box-shadow: 0 12px 30px rgba(24, 39, 75, 0.16);
+    }
+
+    .create-menu-popover[hidden] {
+      display: none;
+    }
+
+    .create-menu-popover button {
+      min-height: 32px;
+      border: 0;
+      border-radius: 6px;
+      color: var(--text);
+      background: transparent;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .create-menu-popover button:hover {
+      background: var(--panel-soft);
+    }
+
     .kpi-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
       gap: 7px;
       margin-bottom: 12px;
+    }
+
+    .kpi-grid[role="button"] {
+      cursor: pointer;
+      border-radius: 8px;
+    }
+
+    .kpi-grid.scope-active .kpi {
+      border-color: #b7d7c4;
+      background: #f0fdf4;
     }
 
     .kpi {
@@ -444,6 +496,11 @@
       text-align: left;
     }
 
+    .tree-root.create-target {
+      border-color: var(--green);
+      background: #f0fdf4;
+    }
+
     .part-item {
       margin-left: 14px;
       width: calc(100% - 14px);
@@ -461,6 +518,15 @@
       font-size: 13px;
       font-weight: 800;
       text-align: center;
+    }
+
+    .tree-root .tree-icon {
+      border-radius: 5px;
+    }
+
+    .tree-root .tree-icon:hover {
+      color: var(--text);
+      background: var(--panel-soft);
     }
 
     .tree-label {
@@ -1115,6 +1181,48 @@
       overflow: auto;
     }
 
+    #libraryModal .user-dialog {
+      width: min(1180px, 96vw);
+    }
+
+    #libraryModal table {
+      width: 100%;
+      table-layout: fixed;
+    }
+
+    #libraryModal th:nth-child(1) {
+      width: 84px;
+    }
+
+    #libraryModal th:nth-child(2) {
+      width: 140px;
+    }
+
+    #libraryModal th:nth-child(4) {
+      width: 220px;
+    }
+
+    #libraryModal th:nth-child(5) {
+      width: 230px;
+    }
+
+    #libraryModal th:nth-child(6) {
+      width: 148px;
+    }
+
+    #libraryModal td input,
+    #libraryModal td select {
+      min-width: 0;
+    }
+
+    #libraryModal td:nth-child(4) input + input {
+      margin-top: 6px;
+    }
+
+    #libraryModal .button-row {
+      flex-wrap: nowrap;
+    }
+
     .login-card h2,
     .user-dialog h2 {
       margin: 0;
@@ -1248,13 +1356,14 @@
       </div>
       <div class="top-actions">
         <button class="ghost-btn active" id="graphTop" type="button" data-panel="detail">仿真结果图谱</button>
+        <button class="ghost-btn" id="libraryManageTop" type="button">库管理</button>
         <button class="ghost-btn" id="templateTop" type="button" data-panel="template">模板</button>
+        <button class="ghost-btn" id="userManage" type="button" hidden>用户管理</button>
         <label class="search">
           <span aria-hidden="true">⌕</span>
           <input id="searchInput" type="search" placeholder="搜索方案、变更、结论、负责人">
         </label>
         <div class="user-chip" id="userChip"></div>
-        <button class="ghost-btn" id="userManage" type="button" hidden>用户管理</button>
         <button class="ghost-btn" id="logoutBtn" type="button">退出</button>
         <button class="ghost-btn" id="exportData" type="button">导出</button>
         <label class="ghost-btn" for="importData">导入</label>
@@ -1267,10 +1376,11 @@
         <div class="panel-head">
           <h2>仿真数据库</h2>
           <p>按仿真零件组织结果卡片、附件和图谱节点。</p>
+          <p id="databaseSummary">共 0 个零件图谱 · 0 张卡片 · 0 个仿真模型附件</p>
         </div>
         <div class="sidebar-body">
           <div class="section-title">项目总览</div>
-          <div class="kpi-grid">
+          <div class="kpi-grid" id="overviewScope" role="button" tabindex="0" title="查看全部数据库范围">
             <div class="kpi"><span>图谱节点</span><strong id="kpiNodes">0</strong></div>
             <div class="kpi"><span>未布置卡片</span><strong id="kpiLibrary">0</strong></div>
             <div class="kpi"><span>最高一阶模态</span><strong id="kpiBest">0Hz</strong></div>
@@ -1279,7 +1389,13 @@
 
           <div class="section-title">
             <span>仿真零件库</span>
-            <button class="ghost-btn" id="newPart" type="button">新建零件</button>
+            <div class="create-menu">
+              <button class="ghost-btn" id="newLibraryItem" type="button">新建</button>
+              <div class="create-menu-popover" id="newLibraryMenu" hidden>
+                <button type="button" data-create-library="database">新建仿真数据库</button>
+                <button type="button" data-create-library="graph">新建图谱</button>
+              </div>
+            </div>
           </div>
           <div class="part-tree" id="partTree"></div>
 
@@ -1289,8 +1405,8 @@
           </div>
           <div class="library-list" id="libraryList"></div>
 
-          <div class="section-title">图谱关系</div>
-          <div class="mini-list" id="edgeList"></div>
+          <div class="section-title" hidden>图谱关系</div>
+          <div class="mini-list" id="edgeList" hidden></div>
         </div>
       </aside>
 
@@ -1416,6 +1532,34 @@
     </div>
   </div>
 
+  <div class="user-modal" id="libraryModal" hidden>
+    <div class="user-dialog">
+      <div class="selected-heading">
+        <div>
+          <h2>库管理</h2>
+          <p>维护一级仿真数据库，以及数据库下的零件图谱。</p>
+        </div>
+        <button class="icon-btn" type="button" id="closeLibraryModal" title="关闭">×</button>
+      </div>
+      <div class="auth-error" id="libraryManageError"></div>
+      <div class="user-table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>层级</th>
+              <th>编号</th>
+              <th>名称</th>
+              <th>类型/负责人</th>
+              <th>所属数据库</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="libraryManageBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
   <div class="image-modal" id="imageModal" hidden>
     <div class="image-modal-backdrop" data-close-image-modal></div>
     <div class="image-modal-dialog" role="dialog" aria-modal="true" aria-label="图片预览">
@@ -1449,6 +1593,8 @@
     const RELATION_TYPES = ["结构迭代", "材料替换", "减重优化", "参数调整", "横向对比", "复核结果", "推荐路径"];
     const IMAGE_EXTENSIONS = [".jpg", ".jpeg", ".gif", ".png", ".bmp"];
     const IMAGE_ACCEPT = "image/jpeg,image/gif,image/png,image/bmp,.jpg,.jpeg,.gif,.png,.bmp";
+    const DEFAULT_DATABASE_ID = "db-fsw";
+    const DASHBOARD_STATS_HOUR = 3;
 
     const statusMeta = {
       recommended: { text: "推荐", className: "green" },
@@ -1465,15 +1611,20 @@
       filter: "all",
       zoom: 1,
       createChildMode: false,
+      createGraphMode: false,
       attachmentDirectoryName: "",
       activePartId: "all",
       activeCardId: "c2",
       pendingConnectId: null,
       selectedIds: ["v1", "a1", "c", "c2"],
+      dashboardStats: null,
+      databases: [
+        { id: DEFAULT_DATABASE_ID, code: "FSW", name: "FSW 仿真数据库", owner: "结构工程组", expanded: true }
+      ],
       parts: [
-        { id: "part-steering", code: "FSW-01", name: "折叠方向盘总成", type: "总成", owner: "结构工程组" },
-        { id: "part-lock", code: "FSW-LOCK", name: "锁止结构", type: "子系统", owner: "陈工" },
-        { id: "part-bracket", code: "FSW-BRACKET", name: "连接支架", type: "零件", owner: "赵工" }
+        { id: "part-steering", databaseId: DEFAULT_DATABASE_ID, code: "FSW-01", name: "折叠方向盘总成", type: "总成", owner: "结构工程组" },
+        { id: "part-lock", databaseId: DEFAULT_DATABASE_ID, code: "FSW-LOCK", name: "锁止结构", type: "子系统", owner: "陈工" },
+        { id: "part-bracket", databaseId: DEFAULT_DATABASE_ID, code: "FSW-BRACKET", name: "连接支架", type: "零件", owner: "赵工" }
       ],
       template: {
         name: "模态分析卡片",
@@ -1692,6 +1843,7 @@
     let attachmentRootHandle = null;
     let templateDraft = null;
     let serverSaveTimer = null;
+    let dashboardStatsTimer = null;
     let serverSaveQueued = false;
     let serverSaveInFlight = false;
     let objectUrlCache = new Map();
@@ -1707,6 +1859,12 @@
     const userForm = document.getElementById("userForm");
     const userTableBody = document.getElementById("userTableBody");
     const userManageError = document.getElementById("userManageError");
+    const libraryManageTop = document.getElementById("libraryManageTop");
+    const libraryModal = document.getElementById("libraryModal");
+    const libraryManageBody = document.getElementById("libraryManageBody");
+    const libraryManageError = document.getElementById("libraryManageError");
+    const newLibraryItem = document.getElementById("newLibraryItem");
+    const newLibraryMenu = document.getElementById("newLibraryMenu");
     const layout = document.querySelector(".layout");
     const workspace = document.querySelector(".workspace");
     const workspaceTemplate = document.getElementById("workspaceTemplate");
@@ -1799,6 +1957,7 @@
         }
       }
       currentUser = null;
+      clearTimeout(dashboardStatsTimer);
       showLogin();
     }
 
@@ -1806,6 +1965,8 @@
     // 旧版本数据可能缺少模板字段、附件服务端标记或结论字段，加载时统一补齐。
     function normalizedDefaultState() {
       const fresh = clone(defaultState);
+      fresh.databases = normalizeDatabases(fresh.databases);
+      fresh.parts = normalizeParts(fresh.parts, fresh.databases);
       fresh.template = normalizeTemplate(fresh.template);
       fresh.cards = fresh.cards.map((card) => normalizeCardRecord(card, fresh.parts));
       return fresh;
@@ -1822,23 +1983,64 @@
           ...clone(defaultState),
           ...parsed,
           template: { ...clone(defaultState.template), ...(parsed.template || {}) },
+          databases: Array.isArray(parsed.databases) ? parsed.databases : clone(defaultState.databases),
           parts: Array.isArray(parsed.parts) ? parsed.parts : clone(defaultState.parts),
           cards: Array.isArray(parsed.cards) ? parsed.cards : clone(defaultState.cards),
           edges: Array.isArray(parsed.edges) ? parsed.edges : clone(defaultState.edges),
           selectedIds: Array.isArray(parsed.selectedIds) ? parsed.selectedIds : clone(defaultState.selectedIds)
         };
+        next.databases = normalizeDatabases(next.databases);
+        next.parts = normalizeParts(next.parts, next.databases);
         next.template = normalizeTemplate(next.template);
-        if (!next.parts.length) next.parts = clone(defaultState.parts);
+        if (!next.parts.length) next.parts = normalizeParts(clone(defaultState.parts), next.databases);
         if (!next.activePartId) next.activePartId = "all";
         next.cards = next.cards.map((card) => normalizeCardRecord(card, next.parts));
         next.mode = "move";
         next.pendingConnectId = null;
         next.createChildMode = false;
+        next.createGraphMode = false;
         return next;
       } catch (error) {
         console.warn("Failed to load saved state", error);
         return normalizedDefaultState();
       }
+    }
+
+    function normalizeDatabases(databases) {
+      const source = Array.isArray(databases) && databases.length ? databases : clone(defaultState.databases);
+      const seen = new Set();
+      const normalized = source
+        .map((database, index) => {
+          const id = database.id || `db-${Date.now()}-${index}`;
+          if (seen.has(id)) return null;
+          seen.add(id);
+          return {
+            id,
+            code: database.code || `DB-${String(index + 1).padStart(2, "0")}`,
+            name: database.name || `仿真数据库 ${index + 1}`,
+            owner: database.owner || "未设置",
+            expanded: Object.prototype.hasOwnProperty.call(database, "expanded") ? Boolean(database.expanded) : true
+          };
+        })
+        .filter(Boolean);
+      return normalized.length ? normalized : clone(defaultState.databases);
+    }
+
+    function normalizeParts(parts, databases = defaultState.databases) {
+      const source = Array.isArray(parts) && parts.length ? parts : clone(defaultState.parts);
+      const fallbackDatabaseId = databases[0]?.id || DEFAULT_DATABASE_ID;
+      const databaseIds = new Set(databases.map((database) => database.id));
+      return source.map((part, index) => {
+        const databaseId = databaseIds.has(part.databaseId) ? part.databaseId : fallbackDatabaseId;
+        return {
+          id: part.id || `part-${Date.now()}-${index}`,
+          databaseId,
+          code: part.code || `GRAPH-${String(index + 1).padStart(2, "0")}`,
+          name: part.name || `零件图谱 ${index + 1}`,
+          type: part.type || "零件图谱",
+          owner: part.owner || "未设置"
+        };
+      });
     }
 
     function normalizeCardRecord(card, parts = defaultState.parts) {
@@ -1962,6 +2164,65 @@
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     }
 
+    function lastDashboardStatsRunAt(now = new Date()) {
+      const runAt = new Date(now);
+      runAt.setHours(DASHBOARD_STATS_HOUR, 0, 0, 0);
+      if (now < runAt) runAt.setDate(runAt.getDate() - 1);
+      return runAt;
+    }
+
+    function nextDashboardStatsRunAt(now = new Date()) {
+      const runAt = new Date(now);
+      runAt.setHours(DASHBOARD_STATS_HOUR, 0, 0, 0);
+      if (now >= runAt) runAt.setDate(runAt.getDate() + 1);
+      return runAt;
+    }
+
+    function localIso(date = new Date()) {
+      const pad = (value) => String(value).padStart(2, "0");
+      return [
+        date.getFullYear(),
+        pad(date.getMonth() + 1),
+        pad(date.getDate())
+      ].join("-") + `T${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+    }
+
+    function isSimulationModelAttachment(file) {
+      const name = attachmentName(file).toLowerCase();
+      return [".step", ".stp", ".catpart", ".catproduct", ".x_t", ".x_b", ".prt", ".asm", ".sldprt", ".sldasm", ".igs", ".iges", ".parasolid"]
+        .some((extension) => name.endsWith(extension));
+    }
+
+    function collectDashboardStats(now = new Date()) {
+      return {
+        graphCount: state.parts.length,
+        cardCount: state.cards.length,
+        modelAttachmentCount: state.cards.reduce((sum, card) => {
+          return sum + (card.files || []).filter(isSimulationModelAttachment).length;
+        }, 0),
+        collectedAt: localIso(now),
+        statsPeriodAt: localIso(lastDashboardStatsRunAt(now))
+      };
+    }
+
+    function ensureDashboardStats(force = false) {
+      const latestRunAt = lastDashboardStatsRunAt();
+      const currentPeriodAt = state.dashboardStats?.statsPeriodAt ? new Date(state.dashboardStats.statsPeriodAt) : null;
+      if (!force && currentPeriodAt && currentPeriodAt >= latestRunAt) return false;
+      state.dashboardStats = collectDashboardStats();
+      return true;
+    }
+
+    function scheduleDashboardStatsRefresh() {
+      clearTimeout(dashboardStatsTimer);
+      const delay = Math.max(1000, nextDashboardStatsRunAt().getTime() - Date.now());
+      dashboardStatsTimer = setTimeout(() => {
+        ensureDashboardStats(true);
+        renderAll();
+        scheduleDashboardStatsRefresh();
+      }, delay);
+    }
+
     // 服务端保存必须串行化，避免旧请求晚返回时覆盖新状态。
     function scheduleServerSave() {
       serverSaveQueued = true;
@@ -2003,19 +2264,23 @@
           ...clone(defaultState),
           ...payload.state,
           template: { ...clone(defaultState.template), ...(payload.state.template || {}) },
+          databases: Array.isArray(payload.state.databases) ? payload.state.databases : clone(defaultState.databases),
           parts: Array.isArray(payload.state.parts) ? payload.state.parts : clone(defaultState.parts),
           cards: payload.state.cards,
           edges: Array.isArray(payload.state.edges) ? payload.state.edges : clone(defaultState.edges),
           selectedIds: Array.isArray(payload.state.selectedIds) ? payload.state.selectedIds : clone(defaultState.selectedIds)
         };
+        next.databases = normalizeDatabases(next.databases);
+        next.parts = normalizeParts(next.parts, next.databases);
         next.template = normalizeTemplate(next.template);
-        if (!next.parts.length) next.parts = clone(defaultState.parts);
+        if (!next.parts.length) next.parts = normalizeParts(clone(defaultState.parts), next.databases);
         if (!next.activePartId) next.activePartId = "all";
-        next.cards = next.cards.map(normalizeCardRecord);
+        next.cards = next.cards.map((card) => normalizeCardRecord(card, next.parts));
         next.mode = "move";
         next.role = currentUser?.role || next.role;
         next.pendingConnectId = null;
         next.createChildMode = false;
+        next.createGraphMode = false;
         state = next;
         return true;
       } catch (error) {
@@ -2167,7 +2432,7 @@
         const stored = await storeLocalFile(card, file);
         if (stored) card.files.push(stored);
       }
-      renderAll();
+      refreshAfterAttachmentChange(card);
     }
 
     async function storeLocalFile(card, file) {
@@ -2197,7 +2462,7 @@
     async function uploadAttachmentsToServer(card, fileList) {
       const files = await uploadFilesToServer(card, fileList);
       files.forEach((file) => card.files.push(file));
-      if (files.length) renderAll();
+      if (files.length) refreshAfterAttachmentChange(card);
     }
 
     async function uploadFilesToServer(card, fileList) {
@@ -2353,14 +2618,32 @@
       return state.parts.find((part) => part.id === id);
     }
 
+    function databaseById(id) {
+      return state.databases.find((database) => database.id === id);
+    }
+
     function cardInActivePart(card) {
-      return state.activePartId === "all" || card.partId === state.activePartId;
+      if (state.activePartId === "all") return true;
+      if (state.activePartId?.startsWith("db:")) {
+        const databaseId = state.activePartId.slice(3);
+        return partById(card.partId)?.databaseId === databaseId;
+      }
+      return card.partId === state.activePartId;
     }
 
     function activeScopedCard() {
       const active = cardById(state.activeCardId);
       if (active && cardInActivePart(active)) return active;
       return state.cards.find(cardInActivePart) || null;
+    }
+
+    function selectAllScope() {
+      state.activePartId = "all";
+      const firstCard = state.cards.find((card) => card.placed) || state.cards[0];
+      if (firstCard) state.activeCardId = firstCard.id;
+      state.createChildMode = false;
+      state.createGraphMode = false;
+      renderAll();
     }
 
     function placedCards() {
@@ -2419,6 +2702,10 @@
     }
 
     function canEditTemplate() {
+      return state.role === "admin";
+    }
+
+    function canEditLibrary() {
       return state.role === "admin";
     }
 
@@ -2526,6 +2813,7 @@
         templateDraft = null;
       }
       refreshCardLookup();
+      ensureDashboardStats();
       saveState();
       renderRoleAndMode();
       renderKpis();
@@ -2565,6 +2853,8 @@
       const templateTop = document.getElementById("templateTop");
       templateTop.disabled = !canEditTemplate();
       templateTop.title = canEditTemplate() ? "编辑卡片模板" : "仅管理员可编辑模板";
+      libraryManageTop.disabled = !canEditLibrary();
+      libraryManageTop.title = canEditLibrary() ? "管理仿真数据库和零件图谱" : "仅管理员可管理库";
       userChip.innerHTML = currentUser
         ? `<strong>${escapeHtml(currentUser.displayName || currentUser.username)}</strong><span>${escapeHtml(roleLabel(currentUser.role))}</span>`
         : `<strong>未登录</strong>`;
@@ -2575,14 +2865,23 @@
           ? "管理员可编辑模板、图谱和卡片内容。"
           : state.createChildMode
             ? "新建卡片模式：点击图谱中的父卡片，在其子集中创建新卡片。"
+            : state.createGraphMode
+              ? "新建图谱模式：点击左侧一个仿真数据库，在其下创建零件图谱。"
             : "当前角色可编辑图谱和卡片内容。"
         : "结构工程师角色仅查看图谱、结果和附件元数据。";
       treeStage.classList.toggle("create-child", Boolean(state.createChildMode && canEditGraph()));
+      newLibraryItem.disabled = !canEditLibrary();
+      newLibraryItem.textContent = state.createGraphMode ? "选择数据库" : "新建";
       const newCardButton = document.getElementById("newCard");
       if (newCardButton) {
         newCardButton.classList.toggle("primary-btn", !state.createChildMode);
         newCardButton.classList.toggle("ghost-btn", Boolean(state.createChildMode));
         newCardButton.textContent = state.createChildMode ? "取消新建" : "新建卡片";
+      }
+      const overviewScope = document.getElementById("overviewScope");
+      if (overviewScope) {
+        overviewScope.classList.toggle("scope-active", state.activePartId === "all");
+        overviewScope.setAttribute("aria-pressed", state.activePartId === "all" ? "true" : "false");
       }
       treeCanvas.style.transform = `scale(${state.zoom})`;
     }
@@ -2599,39 +2898,78 @@
 
     function renderPartTree() {
       const tree = document.getElementById("partTree");
-      const totalCards = state.cards.length;
-      const totalAttachments = state.cards.reduce((sum, card) => sum + (card.files || []).length, 0);
       const partStats = new Map(state.parts.map((part) => [part.id, { cards: 0, recommended: 0, attachments: 0 }]));
+      const databaseStats = new Map(state.databases.map((database) => [database.id, { cards: 0, attachments: 0, graphs: 0 }]));
+      state.parts.forEach((part) => {
+        const stats = databaseStats.get(part.databaseId);
+        if (stats) stats.graphs += 1;
+      });
       state.cards.forEach((card) => {
         const stats = partStats.get(card.partId);
         if (!stats) return;
         stats.cards += 1;
         if (card.status === "recommended") stats.recommended += 1;
         stats.attachments += (card.files || []).length;
+        const databaseStatsItem = databaseStats.get(partById(card.partId)?.databaseId);
+        if (databaseStatsItem) {
+          databaseStatsItem.cards += 1;
+          databaseStatsItem.attachments += (card.files || []).length;
+        }
       });
+      const summary = state.dashboardStats || collectDashboardStats();
+      document.getElementById("databaseSummary").textContent = `共 ${summary.graphCount} 个零件图谱 · ${summary.cardCount} 张卡片 · ${summary.modelAttachmentCount} 个仿真模型附件`;
       tree.innerHTML = `
-        <button class="tree-root ${state.activePartId === "all" ? "active" : ""}" type="button" data-part-id="all">
-          <span class="tree-icon">▾</span>
-          <span class="tree-label"><strong>FSW 仿真数据库</strong><span>${totalCards} 张卡片 · ${totalAttachments} 个附件</span></span>
-          <span class="badge gray">全部</span>
-        </button>
-        ${state.parts.map((part) => {
-          const stats = partStats.get(part.id) || { cards: 0, recommended: 0, attachments: 0 };
+        ${state.databases.map((database) => {
+          const stats = databaseStats.get(database.id) || { cards: 0, attachments: 0, graphs: 0 };
+          const activeDatabase = state.activePartId === `db:${database.id}`;
           return `
-            <button class="part-item ${state.activePartId === part.id ? "active" : ""}" type="button" data-part-id="${escapeHtml(part.id)}">
-              <span class="tree-icon">□</span>
-              <span class="tree-label"><strong>${escapeHtml(part.code)} · ${escapeHtml(part.name)}</strong><span>${escapeHtml(part.type)} · ${stats.cards} 张卡片 · ${stats.attachments} 个附件</span></span>
-              <span class="badge ${stats.recommended ? "green" : "gray"}">${stats.recommended ? `${stats.recommended} 推荐` : "零件"}</span>
+            <button class="tree-root ${activeDatabase ? "active" : ""} ${state.createGraphMode ? "create-target" : ""}" type="button" data-database-id="${escapeHtml(database.id)}">
+              <span class="tree-icon" data-toggle-db="${escapeHtml(database.id)}">${database.expanded ? "▾" : "▸"}</span>
+              <span class="tree-label"><strong>${escapeHtml(database.code)} · ${escapeHtml(database.name)}</strong><span>${stats.graphs} 个图谱 · ${stats.cards} 张卡片 · ${stats.attachments} 个附件</span></span>
+              <span class="badge ${state.createGraphMode ? "green" : "gray"}">${state.createGraphMode ? "选择" : "数据库"}</span>
             </button>
+            ${database.expanded ? state.parts.filter((part) => part.databaseId === database.id).map((part) => {
+              const partItemStats = partStats.get(part.id) || { cards: 0, recommended: 0, attachments: 0 };
+              return `
+                <button class="part-item ${state.activePartId === part.id ? "active" : ""}" type="button" data-part-id="${escapeHtml(part.id)}">
+                  <span class="tree-icon">□</span>
+                  <span class="tree-label"><strong>${escapeHtml(part.code)} · ${escapeHtml(part.name)}</strong><span>${escapeHtml(part.type)} · ${partItemStats.cards} 张卡片 · ${partItemStats.attachments} 个附件</span></span>
+                  <span class="badge ${partItemStats.recommended ? "green" : "gray"}">${partItemStats.recommended ? `${partItemStats.recommended} 推荐` : "图谱"}</span>
+                </button>
+              `;
+            }).join("") : ""}
           `;
         }).join("")}
       `;
+      tree.querySelectorAll("[data-database-id]").forEach((button) => {
+        button.addEventListener("click", (event) => {
+          const toggleTarget = event.target.closest("[data-toggle-db]");
+          const databaseId = button.dataset.databaseId;
+          const database = databaseById(databaseId);
+          if (!database) return;
+          if (toggleTarget) {
+            database.expanded = !database.expanded;
+            renderAll();
+            return;
+          }
+          if (state.createGraphMode) {
+            createPart(databaseId);
+            return;
+          }
+          state.activePartId = `db:${databaseId}`;
+          const firstCard = state.cards.find((card) => cardInActivePart(card));
+          if (firstCard) state.activeCardId = firstCard.id;
+          state.createChildMode = false;
+          renderAll();
+        });
+      });
       tree.querySelectorAll("[data-part-id]").forEach((button) => {
         button.addEventListener("click", () => {
           state.activePartId = button.dataset.partId;
           const firstCard = state.cards.find((card) => cardInActivePart(card));
           if (firstCard) state.activeCardId = firstCard.id;
           state.createChildMode = false;
+          state.createGraphMode = false;
           renderAll();
         });
       });
@@ -3217,6 +3555,33 @@
       });
     }
 
+    function bindAttachmentControls(container, card) {
+      container.querySelectorAll("[data-delete-attachment]").forEach((button) => {
+        button.addEventListener("click", async () => {
+          if (!canEditCards()) return;
+          await deleteAttachment(card, button.dataset.deleteAttachment);
+        });
+      });
+      bindAttachmentDownloadButtons(container, card);
+    }
+
+    function refreshAttachmentList(card) {
+      const status = document.getElementById("attachmentStatus");
+      if (status) status.textContent = attachmentStorageStatus();
+      const list = detailBody.querySelector(".file-list");
+      if (!list) return;
+      list.innerHTML = (card.files || []).map((file) => attachmentItemHtml(file, canEditCards())).join("")
+        || `<div class="empty">还没有附件。上传后会复制到归档目录。</div>`;
+      bindAttachmentControls(list, card);
+    }
+
+    function refreshAfterAttachmentChange(card) {
+      saveState();
+      renderKpis();
+      renderPartTree();
+      refreshAttachmentList(card);
+    }
+
     async function loadUsersForManage() {
       userManageError.textContent = "";
       try {
@@ -3294,6 +3659,132 @@
       await loadUsersForManage();
     }
 
+    function databaseOptionsHtml(selectedId = "") {
+      return state.databases.map((database) => `
+        <option value="${escapeHtml(database.id)}" ${database.id === selectedId ? "selected" : ""}>
+          ${escapeHtml(database.code)} · ${escapeHtml(database.name)}
+        </option>
+      `).join("");
+    }
+
+    function renderLibraryManageTable() {
+      const databaseRows = state.databases.map((database) => `
+        <tr data-library-db="${escapeHtml(database.id)}">
+          <td><strong>数据库</strong></td>
+          <td><input value="${escapeHtml(database.code)}" data-db-prop="code"></td>
+          <td><input value="${escapeHtml(database.name)}" data-db-prop="name"></td>
+          <td><input value="${escapeHtml(database.owner || "")}" data-db-prop="owner" placeholder="负责人"></td>
+          <td>
+            <select data-db-prop="expanded">
+              <option value="true" ${database.expanded ? "selected" : ""}>默认展开</option>
+              <option value="false" ${!database.expanded ? "selected" : ""}>默认折叠</option>
+            </select>
+          </td>
+          <td>
+            <div class="button-row">
+              <button class="ghost-btn" type="button" data-save-db="${escapeHtml(database.id)}">保存</button>
+              <button class="danger-btn" type="button" data-delete-db="${escapeHtml(database.id)}">删除</button>
+            </div>
+          </td>
+        </tr>
+      `).join("");
+      const partRows = state.parts.map((part) => `
+        <tr data-library-part="${escapeHtml(part.id)}">
+          <td><span class="badge gray">图谱</span></td>
+          <td><input value="${escapeHtml(part.code)}" data-part-prop="code"></td>
+          <td><input value="${escapeHtml(part.name)}" data-part-prop="name"></td>
+          <td>
+            <input value="${escapeHtml(part.type || "")}" data-part-prop="type" placeholder="类型">
+            <input value="${escapeHtml(part.owner || "")}" data-part-prop="owner" placeholder="负责人">
+          </td>
+          <td>
+            <select data-part-prop="databaseId">
+              ${databaseOptionsHtml(part.databaseId)}
+            </select>
+          </td>
+          <td>
+            <div class="button-row">
+              <button class="ghost-btn" type="button" data-save-part="${escapeHtml(part.id)}">保存</button>
+              <button class="danger-btn" type="button" data-delete-part="${escapeHtml(part.id)}">删除</button>
+            </div>
+          </td>
+        </tr>
+      `).join("");
+      libraryManageBody.innerHTML = databaseRows + partRows || `<tr><td colspan="6">暂无库数据</td></tr>`;
+
+      libraryManageBody.querySelectorAll("[data-save-db]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const database = databaseById(button.dataset.saveDb);
+          const row = button.closest("[data-library-db]");
+          if (!database || !row) return;
+          row.querySelectorAll("[data-db-prop]").forEach((input) => {
+            const prop = input.dataset.dbProp;
+            database[prop] = prop === "expanded" ? input.value === "true" : input.value.trim();
+          });
+          libraryManageError.textContent = "";
+          renderAll();
+          renderLibraryManageTable();
+        });
+      });
+
+      libraryManageBody.querySelectorAll("[data-delete-db]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const databaseId = button.dataset.deleteDb;
+          if (state.parts.some((part) => part.databaseId === databaseId)) {
+            libraryManageError.textContent = "该数据库下还有零件图谱，不能删除。";
+            return;
+          }
+          if (!window.confirm("确定删除该仿真数据库吗？")) return;
+          state.databases = state.databases.filter((database) => database.id !== databaseId);
+          if (!state.databases.length) state.databases = normalizeDatabases([]);
+          if (state.activePartId === `db:${databaseId}`) state.activePartId = "all";
+          libraryManageError.textContent = "";
+          renderAll();
+          renderLibraryManageTable();
+        });
+      });
+
+      libraryManageBody.querySelectorAll("[data-save-part]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const part = partById(button.dataset.savePart);
+          const row = button.closest("[data-library-part]");
+          if (!part || !row) return;
+          row.querySelectorAll("[data-part-prop]").forEach((input) => {
+            part[input.dataset.partProp] = input.value.trim();
+          });
+          if (!databaseById(part.databaseId)) part.databaseId = state.databases[0]?.id || DEFAULT_DATABASE_ID;
+          const database = databaseById(part.databaseId);
+          if (database) database.expanded = true;
+          libraryManageError.textContent = "";
+          renderAll();
+          renderLibraryManageTable();
+        });
+      });
+
+      libraryManageBody.querySelectorAll("[data-delete-part]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const partId = button.dataset.deletePart;
+          if (state.cards.some((card) => card.partId === partId)) {
+            libraryManageError.textContent = "该零件图谱下还有卡片，不能删除。";
+            return;
+          }
+          if (!window.confirm("确定删除该零件图谱吗？")) return;
+          state.parts = state.parts.filter((part) => part.id !== partId);
+          if (state.activePartId === partId) state.activePartId = "all";
+          libraryManageError.textContent = "";
+          renderAll();
+          renderLibraryManageTable();
+        });
+      });
+    }
+
+    function openLibraryManage() {
+      if (!canEditLibrary()) return;
+      libraryManageError.textContent = "";
+      renderLibraryManageTable();
+      libraryModal.hidden = false;
+    }
+
     function attachmentStorageStatus() {
       if (serverMode) {
         return "服务器模式：附件统一保存到工作站 server_data/attachments 目录，并按零件库和卡片分层归档。";
@@ -3353,7 +3844,11 @@
             <div class="field">
               <label for="cardPart">所属零件</label>
               <select id="cardPart" name="partId" ${disabled}>
-                ${state.parts.map((part) => `<option value="${part.id}" ${card.partId === part.id ? "selected" : ""}>${escapeHtml(part.code)} · ${escapeHtml(part.name)}</option>`).join("")}
+                ${state.databases.map((database) => `
+                  <optgroup label="${escapeHtml(database.code)} · ${escapeHtml(database.name)}">
+                    ${state.parts.filter((part) => part.databaseId === database.id).map((part) => `<option value="${part.id}" ${card.partId === part.id ? "selected" : ""}>${escapeHtml(part.code)} · ${escapeHtml(part.name)}</option>`).join("")}
+                  </optgroup>
+                `).join("")}
               </select>
             </div>
             <div class="field">
@@ -3509,13 +4004,7 @@
           if (field) await clearImageField(card, field);
         });
       });
-      detailBody.querySelectorAll("[data-delete-attachment]").forEach((button) => {
-        button.addEventListener("click", async () => {
-          if (!canEditCards()) return;
-          await deleteAttachment(card, button.dataset.deleteAttachment);
-        });
-      });
-      bindAttachmentDownloadButtons(detailBody, card);
+      bindAttachmentControls(detailBody, card);
       hydrateImageThumbnails(detailBody);
     }
 
@@ -3779,9 +4268,10 @@
       document.getElementById("resetData").addEventListener("click", () => {
         if (!canEditTemplate()) return;
         state = normalizedDefaultState();
-        if (!state.parts?.length) state.parts = clone(defaultState.parts);
+        if (!state.parts?.length) state.parts = normalizeParts(clone(defaultState.parts), state.databases);
         state.activePartId = "all";
         state.createChildMode = false;
+        state.createGraphMode = false;
         templateDraft = null;
         localStorage.removeItem(STORAGE_KEY);
         renderAll();
@@ -3819,7 +4309,14 @@
       });
       const parent = cardById(parentId);
       const siblingCount = parent ? state.cards.filter((item) => item.parentId === parent.id && item.placed).length : 0;
-      const partId = parent?.partId || (state.activePartId !== "all" ? state.activePartId : state.parts[0]?.id || "part-steering");
+      const activeDatabaseId = state.activePartId?.startsWith("db:") ? state.activePartId.slice(3) : "";
+      const activePart = partById(state.activePartId);
+      const firstPartInDatabase = activeDatabaseId ? state.parts.find((part) => part.databaseId === activeDatabaseId) : null;
+      const partId = parent?.partId || activePart?.id || firstPartInDatabase?.id || state.parts[0]?.id || "";
+      if (!partId) {
+        alert("请先新建一个零件图谱，再创建仿真结果卡片。");
+        return;
+      }
       const card = {
         id,
         parentId: parent?.id || "",
@@ -3848,50 +4345,127 @@
       renderAll();
     }
 
-    function createPart() {
-      if (!canEditCards()) return;
-      const name = window.prompt("请输入仿真零件名称", `新仿真零件 ${state.parts.length + 1}`);
+    function createDatabase() {
+      if (!canEditLibrary()) return;
+      const name = window.prompt("请输入仿真数据库名称", `新仿真数据库 ${state.databases.length + 1}`);
       if (!name || !name.trim()) return;
-      const code = window.prompt("请输入零件编号", `PART-${String(state.parts.length + 1).padStart(2, "0")}`) || `PART-${state.parts.length + 1}`;
-      const part = {
-        id: `part-${Date.now()}`,
+      const code = window.prompt("请输入数据库编号", `DB-${String(state.databases.length + 1).padStart(2, "0")}`) || `DB-${state.databases.length + 1}`;
+      const database = {
+        id: `db-${Date.now()}`,
         code: code.trim(),
         name: name.trim(),
-        type: "零件",
+        owner: "未设置",
+        expanded: true
+      };
+      state.databases.push(database);
+      state.activePartId = `db:${database.id}`;
+      state.createChildMode = false;
+      state.createGraphMode = false;
+      renderAll();
+    }
+
+    function beginCreateGraph() {
+      if (!canEditLibrary()) return;
+      if (!state.databases.length) {
+        createDatabase();
+        return;
+      }
+      state.createGraphMode = true;
+      state.createChildMode = false;
+      newLibraryMenu.hidden = true;
+      renderAll();
+    }
+
+    function createPart(databaseId = "") {
+      if (!canEditLibrary()) return;
+      const database = databaseById(databaseId) || state.databases[0];
+      if (!database) return;
+      const name = window.prompt(`在“${database.name}”下新建零件图谱`, `新零件图谱 ${state.parts.length + 1}`);
+      if (!name || !name.trim()) return;
+      const code = window.prompt("请输入图谱编号", `GRAPH-${String(state.parts.length + 1).padStart(2, "0")}`) || `GRAPH-${state.parts.length + 1}`;
+      const part = {
+        id: `part-${Date.now()}`,
+        databaseId: database.id,
+        code: code.trim(),
+        name: name.trim(),
+        type: "零件图谱",
         owner: "未设置"
       };
       state.parts.push(part);
+      database.expanded = true;
       state.activePartId = part.id;
       state.createChildMode = false;
+      state.createGraphMode = false;
       renderAll();
     }
 
     function autoLayout() {
       if (!canEditGraph()) return;
       const cards = placedCards();
-      const edges = graphEdges();
-      const childrenByParent = childIdMap(edges);
-      const roots = cards.filter((card) => !card.parentId || !cardById(card.parentId)?.placed);
-      const levels = new Map();
-      const visited = new Set();
-      const visit = (card, level) => {
-        if (visited.has(card.id)) return;
-        visited.add(card.id);
-        if (!levels.has(level)) levels.set(level, []);
-        if (!levels.get(level).includes(card)) levels.get(level).push(card);
-        (childrenByParent.get(card.id) || [])
-          .map((childId) => cardById(childId))
-          .filter((child) => child && cardInActivePart(child))
-          .forEach((child) => visit(child, level + 1));
-      };
-      roots.forEach((root) => visit(root, 0));
-      cards.filter((card) => !visited.has(card.id)).forEach((card) => visit(card, 0));
-      levels.forEach((cards, level) => {
-        cards.forEach((card, index) => {
-          card.x = 70 + level * 370;
-          card.y = 80 + index * 210;
+      const visibleCardIds = new Set(cards.map((card) => card.id));
+      const childrenByParent = new Map();
+      const incomingIds = new Set();
+      graphEdges().forEach((edge) => {
+        if (!visibleCardIds.has(edge.from) || !visibleCardIds.has(edge.to)) return;
+        if (!childrenByParent.has(edge.from)) childrenByParent.set(edge.from, []);
+        childrenByParent.get(edge.from).push(edge.to);
+        incomingIds.add(edge.to);
+      });
+      childrenByParent.forEach((childIds) => {
+        childIds.sort((leftId, rightId) => {
+          const left = cardById(leftId);
+          const right = cardById(rightId);
+          return (left?.y || 0) - (right?.y || 0) || String(left?.code || "").localeCompare(String(right?.code || ""));
         });
       });
+
+      const roots = cards
+        .filter((card) => !incomingIds.has(card.id))
+        .sort((left, right) => (left.y || 0) - (right.y || 0) || String(left.code || "").localeCompare(String(right.code || "")));
+      const visited = new Set();
+      const startX = 70;
+      const startY = 90;
+      const horizontalGap = 390;
+      const verticalGap = 220;
+      const rootGap = 120;
+      let nextLeafY = startY;
+
+      const layoutSubtree = (card, depth, stack = new Set()) => {
+        if (!card || stack.has(card.id)) return nextLeafY;
+        if (visited.has(card.id)) return card.y || nextLeafY;
+        visited.add(card.id);
+        stack.add(card.id);
+        const children = (childrenByParent.get(card.id) || [])
+          .map((childId) => cardById(childId))
+          .filter((child) => child && visibleCardIds.has(child.id) && !stack.has(child.id));
+
+        let y;
+        if (children.length) {
+          const childYs = children.map((child) => layoutSubtree(child, depth + 1, stack));
+          y = (Math.min(...childYs) + Math.max(...childYs)) / 2;
+        } else {
+          y = nextLeafY;
+          nextLeafY += verticalGap;
+        }
+
+        card.x = startX + depth * horizontalGap;
+        card.y = Math.max(20, Math.round(y));
+        stack.delete(card.id);
+        return card.y;
+      };
+
+      const layoutRoots = roots.length ? roots : cards;
+      layoutRoots.forEach((root) => {
+        if (visited.has(root.id)) return;
+        layoutSubtree(root, 0);
+        nextLeafY += rootGap;
+      });
+      cards
+        .filter((card) => !visited.has(card.id))
+        .forEach((card) => {
+          layoutSubtree(card, 0);
+          nextLeafY += rootGap;
+        });
       updateCanvasBounds();
       renderAll();
     }
@@ -3932,6 +4506,7 @@
         const loadedFromServer = await loadStateFromServer();
         if (!loadedFromServer) state = normalizedDefaultState();
         showApp();
+        scheduleDashboardStatsRefresh();
         renderAll();
       } catch (error) {
         loginError.textContent = error.message;
@@ -3940,9 +4515,14 @@
 
     document.getElementById("logoutBtn").addEventListener("click", logout);
     userManage.addEventListener("click", openUserManage);
+    libraryManageTop.addEventListener("click", openLibraryManage);
     document.getElementById("closeUserModal").addEventListener("click", () => {
       userModal.hidden = true;
       userManageError.textContent = "";
+    });
+    document.getElementById("closeLibraryModal").addEventListener("click", () => {
+      libraryModal.hidden = true;
+      libraryManageError.textContent = "";
     });
     userForm.addEventListener("submit", async (event) => {
       event.preventDefault();
@@ -3971,6 +4551,7 @@
         state.mode = button.dataset.mode;
         state.pendingConnectId = null;
         state.createChildMode = false;
+        state.createGraphMode = false;
         renderAll();
       });
     });
@@ -3978,6 +4559,7 @@
     document.querySelectorAll("[data-filter]").forEach((button) => {
       button.addEventListener("click", () => {
         state.filter = button.dataset.filter;
+        state.createGraphMode = false;
         renderAll();
       });
     });
@@ -3986,6 +4568,7 @@
       button.addEventListener("click", () => {
         if (button.dataset.panel === "template" && !canEditTemplate()) return;
         state.panel = button.dataset.panel;
+        state.createGraphMode = false;
         renderAll();
       });
     });
@@ -3994,7 +4577,32 @@
       renderNodes();
     });
 
-    document.getElementById("newPart").addEventListener("click", createPart);
+    document.getElementById("overviewScope").addEventListener("click", selectAllScope);
+    document.getElementById("overviewScope").addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        selectAllScope();
+      }
+    });
+
+    newLibraryItem.addEventListener("click", (event) => {
+      event.stopPropagation();
+      if (!canEditLibrary()) return;
+      newLibraryMenu.hidden = !newLibraryMenu.hidden;
+    });
+    newLibraryMenu.querySelectorAll("[data-create-library]").forEach((button) => {
+      button.addEventListener("click", (event) => {
+        event.stopPropagation();
+        newLibraryMenu.hidden = true;
+        if (button.dataset.createLibrary === "database") createDatabase();
+        if (button.dataset.createLibrary === "graph") beginCreateGraph();
+      });
+    });
+    document.addEventListener("click", (event) => {
+      if (!newLibraryMenu.hidden && !event.target.closest(".create-menu")) {
+        newLibraryMenu.hidden = true;
+      }
+    });
     document.getElementById("newCard").addEventListener("click", () => {
       if (!canEditCards()) return;
       if (!placedCards().length) {
@@ -4006,13 +4614,15 @@
         state.mode = "move";
         state.pendingConnectId = null;
       }
+      state.createGraphMode = false;
       renderAll();
     });
     document.getElementById("autoLayout").addEventListener("click", autoLayout);
 
     document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape" && state.createChildMode) {
+      if (event.key === "Escape" && (state.createChildMode || state.createGraphMode)) {
         state.createChildMode = false;
+        state.createGraphMode = false;
         renderAll();
       }
     });
@@ -4082,13 +4692,16 @@
         const imported = JSON.parse(await file.text());
         if (Array.isArray(imported.cards) && Array.isArray(imported.edges)) {
           state = { ...clone(defaultState), ...imported };
+          state.databases = normalizeDatabases(state.databases);
+          state.parts = normalizeParts(state.parts, state.databases);
           state.template = normalizeTemplate(state.template);
-          if (!state.parts?.length) state.parts = clone(defaultState.parts);
+          if (!state.parts?.length) state.parts = normalizeParts(clone(defaultState.parts), state.databases);
           if (!state.activePartId) state.activePartId = "all";
-          state.cards = state.cards.map(normalizeCardRecord);
+          state.cards = state.cards.map((card) => normalizeCardRecord(card, state.parts));
           state.mode = "move";
           state.pendingConnectId = null;
           state.createChildMode = false;
+          state.createGraphMode = false;
           templateDraft = null;
           renderAll();
         }
@@ -4119,6 +4732,7 @@
       }
       if (!serverMode) await loadAttachmentDirectoryHandle();
       showApp();
+      scheduleDashboardStatsRefresh();
       renderAll();
     }
 
