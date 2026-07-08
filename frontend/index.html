@@ -140,6 +140,50 @@
       background: #fbfcfe;
     }
 
+    .status-filter {
+      position: relative;
+    }
+
+    .status-filter-menu {
+      position: absolute;
+      top: 42px;
+      left: 0;
+      z-index: 24;
+      width: 188px;
+      display: grid;
+      gap: 6px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+      box-shadow: 0 16px 36px rgba(24, 39, 75, 0.14);
+    }
+
+    .status-filter-menu[hidden] {
+      display: none;
+    }
+
+    .status-filter-menu label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 28px;
+      color: #344054;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .status-filter-menu input {
+      width: 14px;
+      height: 14px;
+      margin: 0;
+    }
+
+    .search-wrap {
+      position: relative;
+    }
+
     .search span {
       color: var(--muted);
       font-weight: 800;
@@ -151,6 +195,48 @@
       outline: 0;
       color: var(--text);
       background: transparent;
+    }
+
+    .search .icon-btn {
+      flex: 0 0 auto;
+      width: 28px;
+      height: 28px;
+      border: 0;
+      background: transparent;
+    }
+
+    .search .icon-btn.active {
+      color: var(--blue);
+      background: var(--blue-soft);
+    }
+
+    .date-popover {
+      position: absolute;
+      top: 44px;
+      right: 0;
+      z-index: 30;
+      width: 268px;
+      display: grid;
+      gap: 10px;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+      box-shadow: 0 16px 36px rgba(24, 39, 75, 0.14);
+    }
+
+    .date-popover[hidden] {
+      display: none;
+    }
+
+    .date-popover .field {
+      gap: 4px;
+    }
+
+    .date-popover-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: flex-end;
     }
 
     .layout {
@@ -202,7 +288,7 @@
 
     .workspace.template-mode [aria-label="图谱编辑模式"],
     .workspace.template-mode [aria-label="关系类型"],
-    .workspace.template-mode [aria-label="过滤方案状态"],
+    .workspace.template-mode [aria-label="过滤结论状态"],
     .workspace.template-mode #zoomOut,
     .workspace.template-mode #zoomIn,
     .workspace.template-mode #autoLayout,
@@ -441,6 +527,17 @@
       margin-bottom: 12px;
     }
 
+    .library-actions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+      margin: -2px 0 12px;
+    }
+
+    .library-actions button {
+      width: 100%;
+    }
+
     .library-card {
       border: 1px solid var(--line);
       border-left: 5px solid var(--blue);
@@ -452,6 +549,26 @@
 
     .library-card:active {
       cursor: grabbing;
+    }
+
+    .library-card.status-green {
+      border-left-color: var(--green);
+    }
+
+    .library-card.status-red {
+      border-left-color: var(--red);
+    }
+
+    .library-card.status-amber {
+      border-left-color: var(--amber);
+    }
+
+    .library-card.status-blue {
+      border-left-color: var(--blue);
+    }
+
+    .library-card.status-gray {
+      border-left-color: #7c8794;
     }
 
     .library-card strong {
@@ -616,6 +733,199 @@
       background: var(--gray-soft);
     }
 
+    .task-board {
+      display: grid;
+      grid-template-columns: 270px minmax(0, 1fr);
+      gap: 12px;
+      min-height: 100%;
+    }
+
+    .task-rail,
+    .task-main,
+    .task-detail-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #ffffff;
+    }
+
+    .task-rail {
+      display: grid;
+      grid-template-rows: auto auto minmax(0, 1fr);
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .task-rail-head,
+    .task-main-head,
+    .task-detail-head {
+      padding: 12px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .task-rail-head h3,
+    .task-main-head h3,
+    .task-detail-head h3 {
+      margin: 0;
+      font-size: 15px;
+    }
+
+    .task-rail-head p,
+    .task-main-head p,
+    .task-detail-head p {
+      margin: 5px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .task-filter-list {
+      display: grid;
+      gap: 6px;
+      padding: 10px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .task-filter-list button,
+    .task-row {
+      width: 100%;
+      border: 1px solid transparent;
+      border-radius: 7px;
+      background: transparent;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .task-filter-list button {
+      min-height: 34px;
+      padding: 0 10px;
+      color: #344054;
+      font-weight: 800;
+    }
+
+    .task-filter-list button.active,
+    .task-row.active {
+      border-color: #b9cdf8;
+      background: #eef4ff;
+    }
+
+    .task-list {
+      min-height: 0;
+      overflow: auto;
+      padding: 10px;
+    }
+
+    .task-row {
+      display: grid;
+      gap: 6px;
+      padding: 10px;
+      margin-bottom: 8px;
+      background: #fbfcfe;
+    }
+
+    .task-row strong {
+      font-size: 12px;
+    }
+
+    .task-row span {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.35;
+    }
+
+    .task-main {
+      min-width: 0;
+      min-height: 0;
+      overflow: auto;
+    }
+
+    .task-main-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .task-stats,
+    .task-detail-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      padding: 12px;
+    }
+
+    .task-stat,
+    .task-info-card {
+      min-height: 70px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfcfe;
+    }
+
+    .task-stat span,
+    .task-info-card span {
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .task-stat strong,
+    .task-info-card strong {
+      display: block;
+      margin-top: 7px;
+      font-size: 18px;
+    }
+
+    .task-detail-card {
+      margin: 0 12px 12px;
+      overflow: hidden;
+    }
+
+    .task-form {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      padding: 12px;
+    }
+
+    .task-form .field.full {
+      grid-column: 1 / -1;
+    }
+
+    .task-flow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 0 12px 12px;
+    }
+
+    .task-table-wrap {
+      margin: 0 12px 12px;
+      overflow: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+
+    .task-table-wrap table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+
+    .task-table-wrap th,
+    .task-table-wrap td {
+      padding: 9px;
+      border-bottom: 1px solid var(--line);
+      font-size: 12px;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .task-table-wrap th {
+      color: #344054;
+      background: #f8fafc;
+    }
+
     .tree-stage {
       position: relative;
       min-height: 0;
@@ -635,6 +945,15 @@
       cursor: crosshair;
       outline: 3px solid rgba(22, 138, 74, 0.18);
       outline-offset: -3px;
+    }
+
+    .tree-stage.pan-ready {
+      cursor: grab;
+    }
+
+    .tree-stage.panning {
+      cursor: grabbing;
+      user-select: none;
     }
 
     .tree-canvas {
@@ -677,7 +996,7 @@
       position: absolute;
       width: 206px;
       min-height: 126px;
-      padding: 11px 11px 10px;
+      padding: 11px 11px 18px;
       border: 1px solid var(--line);
       border-left: 5px solid var(--blue);
       border-radius: 8px;
@@ -714,19 +1033,23 @@
       opacity: 0.24;
     }
 
-    .node.recommended {
+    .node.status-green {
       border-left-color: var(--green);
     }
 
-    .node.failed {
+    .node.status-red {
       border-left-color: var(--red);
     }
 
-    .node.running {
+    .node.status-amber {
       border-left-color: var(--amber);
     }
 
-    .node.archived {
+    .node.status-blue {
+      border-left-color: var(--blue);
+    }
+
+    .node.status-gray {
       border-left-color: #7c8794;
     }
 
@@ -784,6 +1107,24 @@
       align-items: center;
       justify-content: space-between;
       gap: 7px;
+    }
+
+    .node-attachment-indicator {
+      position: absolute;
+      left: 50%;
+      bottom: 3px;
+      transform: translateX(-50%);
+      width: 18px;
+      height: 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      color: #53606f;
+      background: #f3f6fa;
+      font-size: 13px;
+      line-height: 1;
+      pointer-events: auto;
     }
 
     .delta {
@@ -1190,37 +1531,58 @@
       table-layout: fixed;
     }
 
+    #libraryModal th,
+    #libraryModal td {
+      overflow: hidden;
+      vertical-align: middle;
+    }
+
     #libraryModal th:nth-child(1) {
-      width: 84px;
+      width: 76px;
     }
 
     #libraryModal th:nth-child(2) {
-      width: 140px;
+      width: 118px;
     }
 
     #libraryModal th:nth-child(4) {
-      width: 220px;
+      width: 190px;
     }
 
     #libraryModal th:nth-child(5) {
-      width: 230px;
+      width: 260px;
     }
 
     #libraryModal th:nth-child(6) {
-      width: 148px;
+      width: 128px;
     }
 
     #libraryModal td input,
     #libraryModal td select {
+      width: 100%;
       min-width: 0;
+      max-width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      padding: 6px 7px;
+      color: var(--text);
+      background: #ffffff;
     }
 
-    #libraryModal td:nth-child(4) input + input {
-      margin-top: 6px;
+    #libraryModal .stacked-fields {
+      display: grid;
+      gap: 6px;
+      min-width: 0;
     }
 
     #libraryModal .button-row {
       flex-wrap: nowrap;
+      gap: 6px;
+    }
+
+    #libraryModal .button-row button {
+      min-width: 0;
+      padding: 0 9px;
     }
 
     .login-card h2,
@@ -1356,13 +1718,31 @@
       </div>
       <div class="top-actions">
         <button class="ghost-btn active" id="graphTop" type="button" data-panel="detail">仿真结果图谱</button>
+        <button class="ghost-btn" id="taskTop" type="button" data-panel="tasks">任务下发</button>
         <button class="ghost-btn" id="libraryManageTop" type="button">库管理</button>
         <button class="ghost-btn" id="templateTop" type="button" data-panel="template">模板</button>
         <button class="ghost-btn" id="userManage" type="button" hidden>用户管理</button>
-        <label class="search">
-          <span aria-hidden="true">⌕</span>
-          <input id="searchInput" type="search" placeholder="搜索方案、变更、结论、负责人">
-        </label>
+        <div class="search-wrap">
+          <label class="search">
+            <span aria-hidden="true">⌕</span>
+            <input id="searchInput" type="search" placeholder="搜索方案、变更、结论、负责人、日期">
+            <button class="icon-btn" id="dateFilterToggle" type="button" title="按日期筛选">日</button>
+          </label>
+          <div class="date-popover" id="dateFilterPopover" hidden>
+            <div class="field">
+              <label for="dateFilterStart">开始日期</label>
+              <input id="dateFilterStart" type="date">
+            </div>
+            <div class="field">
+              <label for="dateFilterEnd">结束日期</label>
+              <input id="dateFilterEnd" type="date">
+            </div>
+            <div class="date-popover-actions">
+              <button class="ghost-btn" id="clearDateFilter" type="button">清空</button>
+              <button class="primary-btn" id="applyDateFilter" type="button">应用</button>
+            </div>
+          </div>
+        </div>
         <div class="user-chip" id="userChip"></div>
         <button class="ghost-btn" id="logoutBtn" type="button">退出</button>
         <button class="ghost-btn" id="exportData" type="button">导出</button>
@@ -1404,6 +1784,10 @@
             <button class="primary-btn" id="newCard" type="button">新建卡片</button>
           </div>
           <div class="library-list" id="libraryList"></div>
+          <div class="library-actions">
+            <button class="ghost-btn" id="copyLibraryCard" type="button">复制卡片</button>
+            <button class="ghost-btn" id="mirrorLibraryCard" type="button">镜像卡片</button>
+          </div>
 
           <div class="section-title" hidden>图谱关系</div>
           <div class="mini-list" id="edgeList" hidden></div>
@@ -1427,11 +1811,9 @@
               <option>复核结果</option>
               <option>推荐路径</option>
             </select>
-            <div class="segmented" aria-label="过滤方案状态">
-              <button class="active" type="button" data-filter="all">全部</button>
-              <button type="button" data-filter="recommended">推荐</button>
-              <button type="button" data-filter="failed">淘汰</button>
-              <button type="button" data-filter="running">仿真中</button>
+            <div class="status-filter" aria-label="过滤结论状态">
+              <button class="ghost-btn" id="statusFilterToggle" type="button">结论状态：全部</button>
+              <div class="status-filter-menu" id="statusFilterMenu" hidden></div>
             </div>
           </div>
           <div class="toolbar-left">
@@ -1595,13 +1977,39 @@
     const IMAGE_ACCEPT = "image/jpeg,image/gif,image/png,image/bmp,.jpg,.jpeg,.gif,.png,.bmp";
     const DEFAULT_DATABASE_ID = "db-fsw";
     const DASHBOARD_STATS_HOUR = 3;
+    const MIN_ZOOM = 0.25;
+    const MAX_ZOOM = 1.8;
 
-    const statusMeta = {
-      recommended: { text: "推荐", className: "green" },
-      done: { text: "已完成", className: "blue" },
-      running: { text: "仿真中", className: "amber" },
-      failed: { text: "淘汰", className: "red" },
-      archived: { text: "归档", className: "gray" }
+    const DEFAULT_STATUS_OPTIONS = [
+      { code: "recommended", text: "推荐", className: "green" },
+      { code: "done", text: "已完成", className: "blue" },
+      { code: "running", text: "仿真中", className: "amber" },
+      { code: "failed", text: "淘汰", className: "red" },
+      { code: "archived", text: "归档", className: "gray" }
+    ];
+    const STATUS_CLASS_OPTIONS = [
+      { value: "green", label: "绿色" },
+      { value: "blue", label: "蓝色" },
+      { value: "amber", label: "橙色" },
+      { value: "red", label: "红色" },
+      { value: "gray", label: "灰色" }
+    ];
+
+    const taskStatusMeta = {
+      draft: { text: "草稿", className: "gray" },
+      published: { text: "已发布", className: "blue" },
+      accepted: { text: "已承接", className: "green" },
+      simulating: { text: "仿真中", className: "amber" },
+      confirming: { text: "待确认", className: "blue" },
+      returned: { text: "退回修改", className: "red" },
+      completed: { text: "已完成", className: "green" },
+      cancelled: { text: "已取消", className: "gray" }
+    };
+
+    const taskPriorityMeta = {
+      high: { text: "高", className: "red" },
+      medium: { text: "中", className: "amber" },
+      low: { text: "低", className: "gray" }
     };
 
     const defaultState = {
@@ -1609,12 +2017,17 @@
       mode: "move",
       panel: "detail",
       filter: "all",
+      statusFilters: [],
       zoom: 1,
+      dateRange: { start: "", end: "" },
       createChildMode: false,
       createGraphMode: false,
+      cardPickMode: "",
       attachmentDirectoryName: "",
       activePartId: "all",
       activeCardId: "c2",
+      activeTaskId: "task-lock-material",
+      taskFilter: "all",
       pendingConnectId: null,
       selectedIds: ["v1", "a1", "c", "c2"],
       dashboardStats: null,
@@ -1628,6 +2041,7 @@
       ],
       template: {
         name: "模态分析卡片",
+        statusOptions: clone(DEFAULT_STATUS_OPTIONS),
         fields: [
           { code: "first", name: "一阶模态", type: "number", unit: "Hz", required: true, showOnNode: true, detailSummary: true, compare: true, keyMetric: true, conclusionField: false },
           { code: "second", name: "二阶模态", type: "number", unit: "Hz", required: true, showOnNode: true, detailSummary: true, compare: true, keyMetric: true, conclusionField: false },
@@ -1821,6 +2235,31 @@
           files: ["FSW_D_LOCK_LIGHTER.step"]
         }
       ],
+      tasks: [
+        {
+          id: "task-lock-material",
+          code: "SIM-TASK-20260707-001",
+          title: "锁止结构材料替换模态复核",
+          databaseId: DEFAULT_DATABASE_ID,
+          partId: "part-lock",
+          sourceCardId: "c2",
+          status: "published",
+          priority: "high",
+          simulationType: "模态分析",
+          creator: "structure_user",
+          assignee: "",
+          deadline: "2026-07-15",
+          objective: "验证锁止结构材料替换后，一阶模态和质量指标是否仍满足结构冻结要求。",
+          changeDescription: "锁止块材料由当前钢材切换为候选轻量化材料，保持 C2 结构边界。",
+          workingCondition: "沿用 C2 约束、装配连接和求解器设置，输出前三阶模态和关键变形云图。",
+          expectedOutput: "模态频率表、质量变化、风险结论、推荐是否进入下一轮结构冻结。",
+          feedback: "",
+          resultCardIds: [],
+          files: [],
+          createdAt: "2026-07-07T09:00:00",
+          updatedAt: "2026-07-07T09:00:00"
+        }
+      ],
       edges: [
         { id: "e-v1-a", from: "v1", to: "a", type: "结构迭代" },
         { id: "e-a-a1", from: "a", to: "a1", type: "结构迭代" },
@@ -1839,6 +2278,7 @@
     let state = serverMode ? normalizedDefaultState() : loadState();
     let cardLookup = new Map();
     let dragState = null;
+    let panState = null;
     let suppressedNodeClickId = "";
     let attachmentRootHandle = null;
     let templateDraft = null;
@@ -1865,6 +2305,8 @@
     const libraryManageError = document.getElementById("libraryManageError");
     const newLibraryItem = document.getElementById("newLibraryItem");
     const newLibraryMenu = document.getElementById("newLibraryMenu");
+    const copyLibraryCard = document.getElementById("copyLibraryCard");
+    const mirrorLibraryCard = document.getElementById("mirrorLibraryCard");
     const layout = document.querySelector(".layout");
     const workspace = document.querySelector(".workspace");
     const workspaceTemplate = document.getElementById("workspaceTemplate");
@@ -1873,6 +2315,14 @@
     const detailBody = document.getElementById("detailBody");
     const compareTable = document.getElementById("compareTable");
     const searchInput = document.getElementById("searchInput");
+    const statusFilterToggle = document.getElementById("statusFilterToggle");
+    const statusFilterMenu = document.getElementById("statusFilterMenu");
+    const dateFilterToggle = document.getElementById("dateFilterToggle");
+    const dateFilterPopover = document.getElementById("dateFilterPopover");
+    const dateFilterStart = document.getElementById("dateFilterStart");
+    const dateFilterEnd = document.getElementById("dateFilterEnd");
+    const applyDateFilter = document.getElementById("applyDateFilter");
+    const clearDateFilter = document.getElementById("clearDateFilter");
     const treeCanvas = document.getElementById("treeCanvas");
     const treeStage = document.getElementById("treeStage");
     const imageModal = document.getElementById("imageModal");
@@ -1889,6 +2339,89 @@
         simulation: "仿真工程师",
         structure: "结构工程师"
       }[role] || "未设置角色";
+    }
+
+    function todayDateTag() {
+      const now = new Date();
+      const pad = (value) => String(value).padStart(2, "0");
+      return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+    }
+
+    function normalizeDateTag(value) {
+      const text = String(value || "").trim();
+      const match = text.match(/^(\d{4})[-/.年](\d{1,2})[-/.月](\d{1,2})/);
+      if (!match) return todayDateTag();
+      const year = match[1];
+      const month = String(Number(match[2])).padStart(2, "0");
+      const day = String(Number(match[3])).padStart(2, "0");
+      return `${year}-${month}-${day}`;
+    }
+
+    function displayDateTag(value) {
+      const date = normalizeDateTag(value);
+      const [year, month, day] = date.split("-");
+      return `${year}年${month}月${day}日`;
+    }
+
+    function normalizeDateRange(range = {}) {
+      const start = range.start ? normalizeDateTag(range.start) : "";
+      const end = range.end ? normalizeDateTag(range.end) : "";
+      if (start && end && start > end) return { start: end, end: start };
+      return { start, end };
+    }
+
+    function slugifyStatusCode(value, fallbackIndex = 0) {
+      const text = String(value || "").trim();
+      const slug = text
+        .replace(/[^\w\u4e00-\u9fa5-]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+      return slug || `status-${fallbackIndex + 1}`;
+    }
+
+    function normalizeStatusOptions(options = DEFAULT_STATUS_OPTIONS) {
+      const seen = new Set();
+      const source = Array.isArray(options) && options.length ? options : DEFAULT_STATUS_OPTIONS;
+      const normalized = source
+        .map((option, index) => {
+          const text = String(option.text || option.label || option.name || "").trim() || `状态 ${index + 1}`;
+          let code = slugifyStatusCode(option.code || option.value || text, index);
+          while (seen.has(code)) code = `${code}-${index + 1}`;
+          seen.add(code);
+          const className = STATUS_CLASS_OPTIONS.some((item) => item.value === option.className)
+            ? option.className
+            : "gray";
+          return { code, text, className };
+        })
+        .filter((option) => option.code && option.text);
+      return normalized.length ? normalized : clone(DEFAULT_STATUS_OPTIONS);
+    }
+
+    function statusOptions() {
+      return normalizeStatusOptions(state.template?.statusOptions);
+    }
+
+    function statusMetaFor(code) {
+      return statusOptions().find((option) => option.code === code) || statusOptions()[0] || DEFAULT_STATUS_OPTIONS[0];
+    }
+
+    function statusCodeByTextOrFallback(text, fallbackCode = "") {
+      const options = statusOptions();
+      const match = options.find((option) => option.text === text || option.code === fallbackCode);
+      return match?.code || options[0]?.code || fallbackCode || DEFAULT_STATUS_OPTIONS[0].code;
+    }
+
+    function recommendedStatusCode() {
+      return statusCodeByTextOrFallback("推荐", "recommended");
+    }
+
+    function normalizeStatusFilters(filters, template = state.template) {
+      const validCodes = new Set(normalizeStatusOptions(template?.statusOptions).map((option) => option.code));
+      const source = Array.isArray(filters)
+        ? filters
+        : filters && filters !== "all"
+          ? [filters]
+          : [];
+      return source.filter((code) => validCodes.has(code));
     }
 
     function applyCurrentUser(user) {
@@ -1968,7 +2501,10 @@
       fresh.databases = normalizeDatabases(fresh.databases);
       fresh.parts = normalizeParts(fresh.parts, fresh.databases);
       fresh.template = normalizeTemplate(fresh.template);
+      fresh.statusFilters = normalizeStatusFilters(fresh.statusFilters, fresh.template);
       fresh.cards = fresh.cards.map((card) => normalizeCardRecord(card, fresh.parts));
+      normalizeMirrorGroups(fresh.cards);
+      fresh.tasks = normalizeTasks(fresh.tasks, fresh.parts);
       return fresh;
     }
 
@@ -1986,6 +2522,7 @@
           databases: Array.isArray(parsed.databases) ? parsed.databases : clone(defaultState.databases),
           parts: Array.isArray(parsed.parts) ? parsed.parts : clone(defaultState.parts),
           cards: Array.isArray(parsed.cards) ? parsed.cards : clone(defaultState.cards),
+          tasks: Array.isArray(parsed.tasks) ? parsed.tasks : clone(defaultState.tasks),
           edges: Array.isArray(parsed.edges) ? parsed.edges : clone(defaultState.edges),
           selectedIds: Array.isArray(parsed.selectedIds) ? parsed.selectedIds : clone(defaultState.selectedIds)
         };
@@ -1994,11 +2531,22 @@
         next.template = normalizeTemplate(next.template);
         if (!next.parts.length) next.parts = normalizeParts(clone(defaultState.parts), next.databases);
         if (!next.activePartId) next.activePartId = "all";
+        next.dateRange = normalizeDateRange(next.dateRange);
+        next.statusFilters = normalizeStatusFilters(
+          Array.isArray(parsed.statusFilters) ? parsed.statusFilters : parsed.filter,
+          next.template
+        );
+        next.filter = "all";
         next.cards = next.cards.map((card) => normalizeCardRecord(card, next.parts));
+        normalizeMirrorGroups(next.cards);
+        next.tasks = normalizeTasks(next.tasks, next.parts);
+        if (!next.activeTaskId) next.activeTaskId = next.tasks[0]?.id || "";
+        if (!next.taskFilter) next.taskFilter = "all";
         next.mode = "move";
         next.pendingConnectId = null;
         next.createChildMode = false;
         next.createGraphMode = false;
+        next.cardPickMode = "";
         return next;
       } catch (error) {
         console.warn("Failed to load saved state", error);
@@ -2043,6 +2591,35 @@
       });
     }
 
+    function normalizeTasks(tasks = [], parts = defaultState.parts) {
+      const source = Array.isArray(tasks) ? tasks : [];
+      const fallbackPartId = parts[0]?.id || "";
+      const fallbackDatabaseId = parts[0]?.databaseId || DEFAULT_DATABASE_ID;
+      return source.map((task, index) => ({
+        id: task.id || `task-${Date.now()}-${index}`,
+        code: task.code || `SIM-TASK-${todayDateTag().replaceAll("-", "")}-${String(index + 1).padStart(3, "0")}`,
+        title: task.title || `新仿真任务 ${index + 1}`,
+        databaseId: task.databaseId || parts.find((part) => part.id === task.partId)?.databaseId || fallbackDatabaseId,
+        partId: task.partId || fallbackPartId,
+        sourceCardId: task.sourceCardId || "",
+        status: taskStatusMeta[task.status] ? task.status : "draft",
+        priority: taskPriorityMeta[task.priority] ? task.priority : "medium",
+        simulationType: task.simulationType || "模态分析",
+        creator: task.creator || "structure_user",
+        assignee: task.assignee || "",
+        deadline: task.deadline || todayDateTag(),
+        objective: task.objective || "",
+        changeDescription: task.changeDescription || "",
+        workingCondition: task.workingCondition || "",
+        expectedOutput: task.expectedOutput || "",
+        feedback: task.feedback || "",
+        resultCardIds: Array.isArray(task.resultCardIds) ? task.resultCardIds : [],
+        files: Array.isArray(task.files) ? task.files : [],
+        createdAt: task.createdAt || localIso(),
+        updatedAt: task.updatedAt || localIso()
+      }));
+    }
+
     function normalizeCardRecord(card, parts = defaultState.parts) {
       const values = { ...(card.values || {}) };
       if (!Object.prototype.hasOwnProperty.call(values, "conclusion")) {
@@ -2054,12 +2631,33 @@
       return {
         ...card,
         partId: card.partId || inferPartId(card),
+        dateTag: normalizeDateTag(card.dateTag || card.createdAt || card.uploadedAt),
         relationType: card.relationType || "结构迭代",
         values,
         files: Array.isArray(card.files)
           ? card.files.map((file, index) => normalizeAttachment(file, card, index, parts))
           : []
       };
+    }
+
+    function normalizeMirrorGroups(cards) {
+      const groups = new Map();
+      cards.forEach((card) => {
+        if (!card.mirrorGroupId) return;
+        if (!groups.has(card.mirrorGroupId)) groups.set(card.mirrorGroupId, []);
+        groups.get(card.mirrorGroupId).push(card);
+      });
+      groups.forEach((items) => {
+        const source = items.find((card) => !card.mirrorSourceId) || items[0];
+        source.mirrorSourceId = "";
+        items
+          .filter((card) => card.id !== source.id)
+          .forEach((card) => {
+            if (!card.mirrorSourceId || !items.some((item) => item.id === card.mirrorSourceId)) {
+              card.mirrorSourceId = source.id;
+            }
+          });
+      });
     }
 
     function defaultConclusionField() {
@@ -2080,6 +2678,7 @@
     function normalizeTemplate(template) {
       const base = clone(defaultState.template);
       const next = { ...base, ...(template || {}) };
+      next.statusOptions = normalizeStatusOptions(next.statusOptions);
       const sourceFields = Array.isArray(next.fields) ? next.fields : base.fields;
       const normalizedFields = sourceFields.map((field) => {
         const type = ["text", "image"].includes(field.type) ? field.type : "number";
@@ -2267,6 +2866,7 @@
           databases: Array.isArray(payload.state.databases) ? payload.state.databases : clone(defaultState.databases),
           parts: Array.isArray(payload.state.parts) ? payload.state.parts : clone(defaultState.parts),
           cards: payload.state.cards,
+          tasks: Array.isArray(payload.state.tasks) ? payload.state.tasks : clone(defaultState.tasks),
           edges: Array.isArray(payload.state.edges) ? payload.state.edges : clone(defaultState.edges),
           selectedIds: Array.isArray(payload.state.selectedIds) ? payload.state.selectedIds : clone(defaultState.selectedIds)
         };
@@ -2275,12 +2875,23 @@
         next.template = normalizeTemplate(next.template);
         if (!next.parts.length) next.parts = normalizeParts(clone(defaultState.parts), next.databases);
         if (!next.activePartId) next.activePartId = "all";
+        next.dateRange = normalizeDateRange(next.dateRange);
+        next.statusFilters = normalizeStatusFilters(
+          Array.isArray(payload.state.statusFilters) ? payload.state.statusFilters : payload.state.filter,
+          next.template
+        );
+        next.filter = "all";
         next.cards = next.cards.map((card) => normalizeCardRecord(card, next.parts));
+        normalizeMirrorGroups(next.cards);
+        next.tasks = normalizeTasks(next.tasks, next.parts);
+        if (!next.activeTaskId) next.activeTaskId = next.tasks[0]?.id || "";
+        if (!next.taskFilter) next.taskFilter = "all";
         next.mode = "move";
         next.role = currentUser?.role || next.role;
         next.pendingConnectId = null;
         next.createChildMode = false;
         next.createGraphMode = false;
+        next.cardPickMode = "";
         state = next;
         return true;
       } catch (error) {
@@ -2432,6 +3043,7 @@
         const stored = await storeLocalFile(card, file);
         if (stored) card.files.push(stored);
       }
+      syncMirrorCards(card);
       refreshAfterAttachmentChange(card);
     }
 
@@ -2462,6 +3074,7 @@
     async function uploadAttachmentsToServer(card, fileList) {
       const files = await uploadFilesToServer(card, fileList);
       files.forEach((file) => card.files.push(file));
+      syncMirrorCards(card);
       if (files.length) refreshAfterAttachmentChange(card);
     }
 
@@ -2492,6 +3105,7 @@
       if (!attachment) return;
       await deleteStoredFile(card, attachment);
       card.files = card.files.filter((file) => file.id !== attachmentId);
+      syncMirrorCards(card);
       renderAll();
     }
 
@@ -2570,6 +3184,7 @@
         imageField: true,
         type: fileType(stored.name)
       };
+      syncMirrorCards(card);
       renderAll();
     }
 
@@ -2578,6 +3193,7 @@
       if (isImageValue(previous)) await deleteStoredFile(card, previous);
       card.values = card.values || {};
       card.values[field.code] = "";
+      syncMirrorCards(card);
       renderAll();
     }
 
@@ -2637,12 +3253,78 @@
       return state.cards.find(cardInActivePart) || null;
     }
 
+    function mirrorGroupCards(card) {
+      if (!card?.mirrorGroupId) return [];
+      return state.cards.filter((item) => item.mirrorGroupId === card.mirrorGroupId);
+    }
+
+    function ensureMirrorGroup(card) {
+      if (!card.mirrorGroupId) card.mirrorGroupId = `mirror-${card.id}-${Date.now()}`;
+      if (!Object.prototype.hasOwnProperty.call(card, "mirrorSourceId")) card.mirrorSourceId = "";
+      return card.mirrorGroupId;
+    }
+
+    function isMirrorCard(card) {
+      return Boolean(card?.mirrorSourceId);
+    }
+
+    function mirrorsOfSource(card) {
+      if (!card?.mirrorGroupId || isMirrorCard(card)) return [];
+      return state.cards.filter((item) => item.id !== card.id && item.mirrorGroupId === card.mirrorGroupId && item.mirrorSourceId === card.id);
+    }
+
+    function graphLibraryLabel(card) {
+      const part = partById(card.partId);
+      const database = databaseById(part?.databaseId);
+      const graphName = part ? `${part.code} · ${part.name}` : "未归属图谱";
+      return database ? `${database.code} · ${database.name} / ${graphName}` : graphName;
+    }
+
+    function mirrorSharedPayload(card) {
+      return {
+        partId: card.partId,
+        code: card.code,
+        title: card.title,
+        dateTag: card.dateTag,
+        status: card.status,
+        owner: card.owner,
+        task: card.task,
+        model: card.model,
+        report: card.report,
+        values: clone(card.values || {}),
+        change: card.change,
+        conclusion: card.conclusion,
+        files: clone(card.files || [])
+      };
+    }
+
+    function syncMirrorCards(source) {
+      if (!source?.mirrorGroupId) return;
+      const payload = mirrorSharedPayload(source);
+      state.cards
+        .filter((card) => card.id !== source.id && card.mirrorGroupId === source.mirrorGroupId)
+        .forEach((card) => Object.assign(card, clone(payload)));
+    }
+
+    function resetCardPickMode() {
+      state.cardPickMode = "";
+    }
+
+    function canvasPointFromEvent(event) {
+      const rect = treeCanvas.getBoundingClientRect();
+      return {
+        x: Math.max(20, (event.clientX - rect.left) / state.zoom),
+        y: Math.max(20, (event.clientY - rect.top) / state.zoom)
+      };
+    }
+
     function selectAllScope() {
       state.activePartId = "all";
       const firstCard = state.cards.find((card) => card.placed) || state.cards[0];
       if (firstCard) state.activeCardId = firstCard.id;
       state.createChildMode = false;
       state.createGraphMode = false;
+      resetCardPickMode();
       renderAll();
     }
 
@@ -2693,6 +3375,29 @@
       return map;
     }
 
+    function primaryDepth(cardId) {
+      let depth = 0;
+      let current = cardById(cardId);
+      const visited = new Set();
+      while (current?.parentId && !visited.has(current.id)) {
+        visited.add(current.id);
+        current = cardById(current.parentId);
+        if (current) depth += 1;
+      }
+      return depth;
+    }
+
+    function incomingParentLevelError(from, to) {
+      const source = cardById(from);
+      const target = cardById(to);
+      if (!source || !target) return "连线卡片不存在。";
+      if (!target.parentId || target.parentId === from) return "";
+      const primaryParent = cardById(target.parentId);
+      if (!primaryParent) return "";
+      if (primaryDepth(from) <= primaryDepth(primaryParent.id)) return "";
+      return "该卡片已有第一父级，新增上级连线只能连接第一父级同级或更高级的卡片。";
+    }
+
     function canEditGraph() {
       return state.role !== "structure";
     }
@@ -2707,6 +3412,20 @@
 
     function canEditLibrary() {
       return state.role === "admin";
+    }
+
+    function permissionNoteText() {
+      if (!canEditGraph()) {
+        return state.panel === "tasks"
+          ? "结构工程师可下发任务、查看进度并确认仿真结果。"
+          : "结构工程师角色仅查看图谱、结果和附件元数据。";
+      }
+      if (state.panel === "tasks") return "任务下发页面：结构工程师发布任务，仿真工程师承接并提交结果。";
+      if (state.cardPickMode === "copy") return "复制卡片模式：点击当前图谱中的卡片，将独立副本放入待布置卡片库。";
+      if (state.cardPickMode === "mirror") return "镜像卡片模式：点击当前图谱中的卡片，将共享内容的镜像放入待布置卡片库。";
+      if (state.createChildMode) return "新建卡片模式：点击空白处创建独立卡片，点击已有卡片创建子卡片。";
+      if (state.createGraphMode) return "新建图谱模式：点击左侧一个仿真数据库，在其下创建零件图谱。";
+      return canEditTemplate() ? "管理员可编辑模板、图谱和卡片内容。" : "当前角色可编辑图谱和卡片内容。";
     }
 
     function numericValue(card, code) {
@@ -2780,14 +3499,59 @@
       const hitSearch = !q || [
         card.code,
         card.title,
+        displayDateTag(card.dateTag),
+        card.dateTag,
         card.change,
         card.conclusion,
         card.owner,
         card.task,
         fieldText
       ].join(" ").toLowerCase().includes(q);
-      const hitFilter = state.filter === "all" || card.status === state.filter;
-      return hitSearch && hitFilter && cardInActivePart(card);
+      const selectedStatuses = state.statusFilters || [];
+      const hitFilter = !selectedStatuses.length || selectedStatuses.includes(card.status);
+      const hitDate = cardInDateRange(card);
+      return hitSearch && hitFilter && hitDate && cardInActivePart(card);
+    }
+
+    function cardInDateRange(card) {
+      const date = normalizeDateTag(card.dateTag);
+      const start = state.dateRange?.start || "";
+      const end = state.dateRange?.end || "";
+      if (start && date < start) return false;
+      if (end && date > end) return false;
+      return true;
+    }
+
+    function refreshDateFilterUi() {
+      dateFilterStart.value = state.dateRange?.start || "";
+      dateFilterEnd.value = state.dateRange?.end || "";
+      const hasDateFilter = Boolean(state.dateRange?.start || state.dateRange?.end);
+      dateFilterToggle.classList.toggle("active", hasDateFilter);
+      dateFilterToggle.title = hasDateFilter
+        ? `日期筛选：${state.dateRange.start || "不限"} 至 ${state.dateRange.end || "不限"}`
+        : "按日期筛选";
+    }
+
+    function refreshStatusFilterUi() {
+      const options = statusOptions();
+      const selected = new Set(normalizeStatusFilters(state.statusFilters, state.template));
+      state.statusFilters = [...selected];
+      statusFilterToggle.textContent = selected.size
+        ? `结论状态：${selected.size} 项`
+        : "结论状态：全部";
+      statusFilterToggle.classList.toggle("active", Boolean(selected.size));
+      statusFilterMenu.innerHTML = `
+        <label>
+          <input type="checkbox" data-status-filter="all" ${selected.size ? "" : "checked"}>
+          <span>全部</span>
+        </label>
+        ${options.map((option) => `
+          <label>
+            <input type="checkbox" data-status-filter="${escapeHtml(option.code)}" ${selected.has(option.code) ? "checked" : ""}>
+            <span>${escapeHtml(option.text)}</span>
+          </label>
+        `).join("")}
+      `;
     }
 
     function escapeHtml(value) {
@@ -2800,7 +3564,7 @@
     }
 
     function statusBadge(card) {
-      const meta = statusMeta[card.status] || statusMeta.done;
+      const meta = statusMetaFor(card.status);
       return `<span class="badge ${meta.className}">${meta.text}</span>`;
     }
 
@@ -2816,6 +3580,8 @@
       ensureDashboardStats();
       saveState();
       renderRoleAndMode();
+      refreshDateFilterUi();
+      refreshStatusFilterUi();
       renderKpis();
       renderPartTree();
       renderLibrary();
@@ -2827,10 +3593,16 @@
 
     function renderWorkspace() {
       const templateMode = state.panel === "template" && canEditTemplate();
-      layout.classList.toggle("template-mode", templateMode);
-      workspace.classList.toggle("template-mode", templateMode);
+      const taskMode = state.panel === "tasks";
+      const focusMode = templateMode || taskMode;
+      layout.classList.toggle("template-mode", focusMode);
+      workspace.classList.toggle("template-mode", focusMode);
       if (templateMode) {
         renderTemplatePanel(workspaceTemplate);
+        return;
+      }
+      if (taskMode) {
+        renderTaskPanel(workspaceTemplate);
         return;
       }
       workspaceTemplate.innerHTML = "";
@@ -2842,14 +3614,11 @@
       document.querySelectorAll("[data-mode]").forEach((button) => {
         button.classList.toggle("active", button.dataset.mode === state.mode);
       });
-      document.querySelectorAll("[data-filter]").forEach((button) => {
-        button.classList.toggle("active", button.dataset.filter === state.filter);
-      });
       document.querySelectorAll("[data-panel]").forEach((button) => {
         button.classList.toggle("active", button.dataset.panel === state.panel);
       });
       const graphTop = document.getElementById("graphTop");
-      graphTop.classList.toggle("active", state.panel !== "template");
+      graphTop.classList.toggle("active", !["template", "tasks"].includes(state.panel));
       const templateTop = document.getElementById("templateTop");
       templateTop.disabled = !canEditTemplate();
       templateTop.title = canEditTemplate() ? "编辑卡片模板" : "仅管理员可编辑模板";
@@ -2859,19 +3628,23 @@
         ? `<strong>${escapeHtml(currentUser.displayName || currentUser.username)}</strong><span>${escapeHtml(roleLabel(currentUser.role))}</span>`
         : `<strong>未登录</strong>`;
       userManage.hidden = !canEditTemplate();
-      document.querySelector(".toolbar-title").textContent = state.panel === "template" ? "卡片模板" : "仿真结果图谱";
-      document.getElementById("permissionNote").textContent = canEditGraph()
-        ? canEditTemplate()
-          ? "管理员可编辑模板、图谱和卡片内容。"
-          : state.createChildMode
-            ? "新建卡片模式：点击图谱中的父卡片，在其子集中创建新卡片。"
-            : state.createGraphMode
-              ? "新建图谱模式：点击左侧一个仿真数据库，在其下创建零件图谱。"
-            : "当前角色可编辑图谱和卡片内容。"
-        : "结构工程师角色仅查看图谱、结果和附件元数据。";
-      treeStage.classList.toggle("create-child", Boolean(state.createChildMode && canEditGraph()));
+      document.querySelector(".toolbar-title").textContent = state.panel === "template" ? "卡片模板" : state.panel === "tasks" ? "任务下发" : "仿真结果图谱";
+      document.getElementById("permissionNote").textContent = permissionNoteText();
+      treeStage.classList.toggle("create-child", Boolean((state.createChildMode || state.cardPickMode) && canEditGraph()));
+      treeStage.classList.toggle("pan-ready", Boolean(
+        !["template", "tasks"].includes(state.panel)
+        && ["move", "connect"].includes(state.mode)
+        && !state.createChildMode
+        && !state.cardPickMode
+      ));
       newLibraryItem.disabled = !canEditLibrary();
       newLibraryItem.textContent = state.createGraphMode ? "选择数据库" : "新建";
+      copyLibraryCard.disabled = !canEditCards();
+      mirrorLibraryCard.disabled = !canEditCards();
+      copyLibraryCard.classList.toggle("active", state.cardPickMode === "copy");
+      mirrorLibraryCard.classList.toggle("active", state.cardPickMode === "mirror");
+      copyLibraryCard.textContent = state.cardPickMode === "copy" ? "取消复制" : "复制卡片";
+      mirrorLibraryCard.textContent = state.cardPickMode === "mirror" ? "取消镜像" : "镜像卡片";
       const newCardButton = document.getElementById("newCard");
       if (newCardButton) {
         newCardButton.classList.toggle("primary-btn", !state.createChildMode);
@@ -2889,15 +3662,17 @@
     function renderKpis() {
       const cards = placedCards();
       const scopedCards = state.cards.filter(cardInActivePart);
+      const recommendedCode = recommendedStatusCode();
       const best = Math.max(0, ...scopedCards.map((card) => numericValue(card, "first")));
       document.getElementById("kpiNodes").textContent = cards.length;
       document.getElementById("kpiLibrary").textContent = scopedCards.filter((card) => !card.placed).length;
       document.getElementById("kpiBest").textContent = best ? `${best.toFixed(1)}Hz` : "待录入";
-      document.getElementById("kpiRecommended").textContent = scopedCards.filter((card) => card.status === "recommended").length;
+      document.getElementById("kpiRecommended").textContent = scopedCards.filter((card) => card.status === recommendedCode).length;
     }
 
     function renderPartTree() {
       const tree = document.getElementById("partTree");
+      const recommendedCode = recommendedStatusCode();
       const partStats = new Map(state.parts.map((part) => [part.id, { cards: 0, recommended: 0, attachments: 0 }]));
       const databaseStats = new Map(state.databases.map((database) => [database.id, { cards: 0, attachments: 0, graphs: 0 }]));
       state.parts.forEach((part) => {
@@ -2908,7 +3683,7 @@
         const stats = partStats.get(card.partId);
         if (!stats) return;
         stats.cards += 1;
-        if (card.status === "recommended") stats.recommended += 1;
+        if (card.status === recommendedCode) stats.recommended += 1;
         stats.attachments += (card.files || []).length;
         const databaseStatsItem = databaseStats.get(partById(card.partId)?.databaseId);
         if (databaseStatsItem) {
@@ -2960,6 +3735,7 @@
           const firstCard = state.cards.find((card) => cardInActivePart(card));
           if (firstCard) state.activeCardId = firstCard.id;
           state.createChildMode = false;
+          resetCardPickMode();
           renderAll();
         });
       });
@@ -2970,6 +3746,7 @@
           if (firstCard) state.activeCardId = firstCard.id;
           state.createChildMode = false;
           state.createGraphMode = false;
+          resetCardPickMode();
           renderAll();
         });
       });
@@ -2977,16 +3754,17 @@
 
     function renderLibrary() {
       const list = document.getElementById("libraryList");
-      const items = state.cards.filter((card) => !card.placed && cardInActivePart(card));
+      const query = searchInput.value.trim().toLowerCase();
+      const items = state.cards.filter((card) => !card.placed && nodeMatches(card, query));
       if (!items.length) {
         list.innerHTML = `<div class="empty">卡片库为空。新建卡片后可拖入图谱画布。</div>`;
         return;
       }
       list.innerHTML = items.map((card) => `
-        <article class="library-card ${card.status}" draggable="${canEditGraph()}" data-library-card="${card.id}">
+        <article class="library-card status-${statusMetaFor(card.status).className}" draggable="${canEditGraph()}" data-library-card="${card.id}">
           <strong>${escapeHtml(card.code)} · ${escapeHtml(card.title)}</strong>
           <p>${escapeHtml(card.change)}</p>
-          <div class="node-footer">${statusBadge(card)}<span class="delta">${escapeHtml(card.owner)}</span></div>
+          <div class="node-footer">${statusBadge(card)}${isMirrorCard(card) ? `<span class="badge gray">镜像</span>` : ""}<span class="delta">${escapeHtml(card.owner)}</span></div>
         </article>
       `).join("");
       list.querySelectorAll("[data-library-card]").forEach((item) => {
@@ -3046,6 +3824,59 @@
       linkSvg.setAttribute("viewBox", `0 0 ${width} ${height}`);
     }
 
+    function clampZoom(value) {
+      return Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, Number(value.toFixed(2))));
+    }
+
+    function refreshZoomView() {
+      treeCanvas.style.transform = `scale(${state.zoom})`;
+      renderLinks();
+      saveState();
+    }
+
+    function applyZoomAt(stageX, stageY, nextZoom) {
+      const previousZoom = state.zoom;
+      const zoom = clampZoom(nextZoom);
+      if (zoom === previousZoom) return;
+      const contentX = (treeStage.scrollLeft + stageX) / previousZoom;
+      const contentY = (treeStage.scrollTop + stageY) / previousZoom;
+      state.zoom = zoom;
+      refreshZoomView();
+      treeStage.scrollLeft = Math.max(0, contentX * zoom - stageX);
+      treeStage.scrollTop = Math.max(0, contentY * zoom - stageY);
+    }
+
+    function zoomAtStageCenter(nextZoom) {
+      applyZoomAt(treeStage.clientWidth / 2, treeStage.clientHeight / 2, nextZoom);
+    }
+
+    function cardBounds(cards = placedCards()) {
+      if (!cards.length) return null;
+      const minX = Math.min(...cards.map((card) => Number(card.x) || 0));
+      const minY = Math.min(...cards.map((card) => Number(card.y) || 0));
+      const maxX = Math.max(...cards.map((card) => (Number(card.x) || 0) + 206));
+      const maxY = Math.max(...cards.map((card) => (Number(card.y) || 0) + 126));
+      return { minX, minY, maxX, maxY, width: maxX - minX, height: maxY - minY };
+    }
+
+    function fitCardsToView() {
+      const bounds = cardBounds();
+      if (!bounds) {
+        state.zoom = 1;
+        refreshZoomView();
+        treeStage.scrollTo({ left: 0, top: 0, behavior: "smooth" });
+        return;
+      }
+      const padding = 72;
+      const fitX = (treeStage.clientWidth - padding * 2) / Math.max(bounds.width, 1);
+      const fitY = (treeStage.clientHeight - padding * 2) / Math.max(bounds.height, 1);
+      state.zoom = clampZoom(Math.min(fitX, fitY, MAX_ZOOM));
+      refreshZoomView();
+      const targetLeft = Math.max(0, (bounds.minX - padding) * state.zoom);
+      const targetTop = Math.max(0, (bounds.minY - padding) * state.zoom);
+      treeStage.scrollTo({ left: targetLeft, top: targetTop, behavior: "smooth" });
+    }
+
     function renderNodes() {
       nodesLayer.innerHTML = "";
       const summaryFields = state.template.fields.filter((field) => field.showOnNode).slice(0, 2);
@@ -3053,9 +3884,11 @@
       const query = searchInput.value.trim().toLowerCase();
       placedCards().forEach((card) => {
         const node = document.createElement("article");
+        const hasAttachments = Boolean((card.files || []).length);
+        const statusMeta = statusMetaFor(card.status);
         node.className = [
           "node",
-          card.status,
+          `status-${statusMeta.className}`,
           card.id === state.activeCardId ? "active" : "",
           card.id === state.pendingConnectId ? "pending" : "",
           nodeMatches(card, query) ? "" : "dimmed"
@@ -3083,6 +3916,7 @@
             ${statusBadge(card)}
             <span class="delta">${escapeHtml(deltaText(card))}</span>
           </div>
+          ${hasAttachments ? `<span class="node-attachment-indicator" title="该卡片有关联文件" aria-hidden="true">📎</span>` : ""}
         `;
 
         node.addEventListener("click", () => {
@@ -3110,6 +3944,14 @@
     }
 
     function handleNodeClick(id) {
+      if (state.cardPickMode === "copy" && canEditCards()) {
+        createLibraryCopyFromGraph(id);
+        return;
+      }
+      if (state.cardPickMode === "mirror" && canEditCards()) {
+        createLibraryMirrorFromGraph(id);
+        return;
+      }
       if (state.createChildMode && canEditGraph()) {
         createCard(id);
         return;
@@ -3130,7 +3972,7 @@
     }
 
     function startNodeDrag(event, node, card) {
-      if (!canEditGraph() || state.createChildMode || state.mode !== "move" || event.target.closest("input, button, select, textarea")) return;
+      if (!canEditGraph() || state.createChildMode || state.cardPickMode || state.mode !== "move" || event.target.closest("input, button, select, textarea")) return;
       event.preventDefault();
       node.setPointerCapture(event.pointerId);
       dragState = {
@@ -3185,12 +4027,78 @@
       }
     }
 
+    function isBlankCanvasTarget(target) {
+      if (!(target instanceof Element)) return false;
+      if (target.closest(".node, input, button, select, textarea, a")) return false;
+      return target === treeStage || Boolean(target.closest("#treeCanvas"));
+    }
+
+    function isPointerOnStageScrollbar(event) {
+      const rect = treeStage.getBoundingClientRect();
+      const hasVerticalScrollbar = treeStage.scrollHeight > treeStage.clientHeight;
+      const hasHorizontalScrollbar = treeStage.scrollWidth > treeStage.clientWidth;
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+      return (hasVerticalScrollbar && x >= treeStage.clientWidth)
+        || (hasHorizontalScrollbar && y >= treeStage.clientHeight);
+    }
+
+    function canStartCanvasPan(event) {
+      if (event.button !== 0) return false;
+      if (state.panel === "template" || state.panel === "tasks") return false;
+      if (!["move", "connect"].includes(state.mode)) return false;
+      if (state.createChildMode || state.cardPickMode) return false;
+      if (isPointerOnStageScrollbar(event)) return false;
+      return isBlankCanvasTarget(event.target);
+    }
+
+    function startCanvasPan(event) {
+      if (!canStartCanvasPan(event)) return;
+      event.preventDefault();
+      treeStage.setPointerCapture(event.pointerId);
+      panState = {
+        pointerId: event.pointerId,
+        startX: event.clientX,
+        startY: event.clientY,
+        scrollLeft: treeStage.scrollLeft,
+        scrollTop: treeStage.scrollTop
+      };
+      treeStage.classList.add("panning");
+    }
+
+    function dragCanvasPan(event) {
+      if (!panState || event.pointerId !== panState.pointerId) return;
+      event.preventDefault();
+      const dx = event.clientX - panState.startX;
+      const dy = event.clientY - panState.startY;
+      treeStage.scrollLeft = panState.scrollLeft - dx;
+      treeStage.scrollTop = panState.scrollTop - dy;
+    }
+
+    function endCanvasPan(event) {
+      if (!panState || event.pointerId !== panState.pointerId) return;
+      panState = null;
+      treeStage.classList.remove("panning");
+      if (treeStage.hasPointerCapture(event.pointerId)) {
+        treeStage.releasePointerCapture(event.pointerId);
+      }
+    }
+
     function addEdge(from, to) {
       const exists = graphEdges().some((edge) => edge.from === from && edge.to === to);
-      if (exists || wouldCreateCycle(from, to)) return;
       const toCard = cardById(to);
+      if (exists || !toCard) return;
+      if (wouldCreateCycle(from, to)) {
+        alert("不能连接当前卡片的下游节点。");
+        return;
+      }
+      const levelError = incomingParentLevelError(from, to);
+      if (levelError) {
+        alert(levelError);
+        return;
+      }
       const relationType = document.getElementById("relationType").value;
-      if (toCard) {
+      if (!toCard.parentId || toCard.parentId === from) {
         toCard.parentId = from;
         toCard.relationType = relationType;
       }
@@ -3308,7 +4216,7 @@
 
     function updateEdgeType(edge, type) {
       const to = cardById(edge.to);
-      if (to) to.relationType = type;
+      if (to && to.parentId === edge.from) to.relationType = type;
       const explicit = state.edges.find((item) => item.from === edge.from && item.to === edge.to);
       if (explicit) {
         explicit.type = type;
@@ -3330,7 +4238,345 @@
       state.edges = state.edges.filter((item) => item.id !== edge.id && !(item.from === edge.from && item.to === edge.to));
     }
 
+    function currentUsername() {
+      return currentUser?.username || currentUser?.displayName || roleLabel(state.role);
+    }
+
+    function taskStatusBadge(task) {
+      const meta = taskStatusMeta[task.status] || taskStatusMeta.draft;
+      return `<span class="badge ${meta.className}">${meta.text}</span>`;
+    }
+
+    function taskPriorityBadge(task) {
+      const meta = taskPriorityMeta[task.priority] || taskPriorityMeta.medium;
+      return `<span class="badge ${meta.className}">优先级 ${meta.text}</span>`;
+    }
+
+    function taskById(id) {
+      return state.tasks.find((task) => task.id === id);
+    }
+
+    function taskPartLabel(task) {
+      const part = partById(task.partId);
+      const database = databaseById(part?.databaseId || task.databaseId);
+      return `${database?.code || "DB"} / ${part?.code || "GRAPH"} · ${part?.name || "未指定图谱"}`;
+    }
+
+    function taskVisible(task) {
+      const user = currentUsername();
+      if (state.taskFilter === "created") return task.creator === user;
+      if (state.taskFilter === "assigned") return task.assignee === user;
+      if (state.taskFilter === "todo") return ["published", "returned"].includes(task.status) || task.assignee === user;
+      if (state.taskFilter === "confirming") return task.status === "confirming";
+      if (state.taskFilter === "completed") return task.status === "completed";
+      return true;
+    }
+
+    function taskFormOptions(selected = "") {
+      return state.databases.map((database) => `
+        <optgroup label="${escapeHtml(database.code)} · ${escapeHtml(database.name)}">
+          ${state.parts.filter((part) => part.databaseId === database.id).map((part) => `
+            <option value="${escapeHtml(part.id)}" ${part.id === selected ? "selected" : ""}>${escapeHtml(part.code)} · ${escapeHtml(part.name)}</option>
+          `).join("")}
+        </optgroup>
+      `).join("");
+    }
+
+    function sourceCardOptions(task) {
+      const cards = state.cards.filter((card) => !task?.partId || card.partId === task.partId);
+      return `<option value="">不关联来源卡片</option>` + cards.map((card) => `
+        <option value="${escapeHtml(card.id)}" ${card.id === task.sourceCardId ? "selected" : ""}>${escapeHtml(card.code)} · ${escapeHtml(card.title)}</option>
+      `).join("");
+    }
+
+    function nextTaskCode() {
+      const today = todayDateTag().replaceAll("-", "");
+      const count = state.tasks.filter((task) => task.code.includes(today)).length + 1;
+      return `SIM-TASK-${today}-${String(count).padStart(3, "0")}`;
+    }
+
+    function createTaskDraft() {
+      const part = partById(state.activePartId) || state.parts[0];
+      const task = {
+        id: `task-${Date.now()}`,
+        code: nextTaskCode(),
+        title: "新仿真任务",
+        databaseId: part?.databaseId || state.databases[0]?.id || DEFAULT_DATABASE_ID,
+        partId: part?.id || "",
+        sourceCardId: activeScopedCard()?.id || "",
+        status: "draft",
+        priority: "medium",
+        simulationType: "模态分析",
+        creator: currentUsername(),
+        assignee: "",
+        deadline: todayDateTag(),
+        objective: "填写本次仿真需要验证的结构目标。",
+        changeDescription: "填写结构变更、材料替换或参数调整说明。",
+        workingCondition: "填写工况、边界条件、材料参数和求解设置。",
+        expectedOutput: "填写期望输出的报告、云图、关键数值和结论。",
+        feedback: "",
+        resultCardIds: [],
+        files: [],
+        createdAt: localIso(),
+        updatedAt: localIso()
+      };
+      state.tasks.unshift(task);
+      state.activeTaskId = task.id;
+      state.taskFilter = "all";
+      renderAll();
+    }
+
+    function updateTaskStatus(task, status) {
+      task.status = status;
+      if (["accepted", "simulating"].includes(status) && !task.assignee) task.assignee = currentUsername();
+      task.updatedAt = localIso();
+      renderAll();
+    }
+
+    function createResultCardFromTask(task) {
+      const id = `card-${Date.now()}`;
+      const values = {};
+      state.template.fields.forEach((field) => {
+        values[field.code] = field.code === "conclusion" ? "由任务生成，等待仿真结果补充。" : field.type === "number" ? 0 : "";
+      });
+      const card = {
+        id,
+        parentId: task.sourceCardId || "",
+        partId: task.partId,
+        relationType: "结构迭代",
+        code: `TASK-${task.code.split("-").slice(-1)[0]}`,
+        title: task.title,
+        dateTag: todayDateTag(),
+        status: statusCodeByTextOrFallback("仿真中", "running"),
+        owner: task.assignee || currentUsername(),
+        task: task.code,
+        model: "",
+        report: "",
+        placed: false,
+        x: 940,
+        y: 300,
+        values,
+        change: task.changeDescription,
+        conclusion: values.conclusion || "",
+        files: clone(task.files || [])
+      };
+      state.cards.push(card);
+      task.resultCardIds = Array.from(new Set([...(task.resultCardIds || []), id]));
+      task.updatedAt = localIso();
+      state.activeCardId = id;
+      state.panel = "edit";
+      renderAll();
+    }
+
+    function renderTaskPanel(target = workspaceTemplate) {
+      const tasks = state.tasks.filter(taskVisible);
+      const activeTask = taskById(state.activeTaskId) || tasks[0] || state.tasks[0] || null;
+      if (activeTask) state.activeTaskId = activeTask.id;
+      const counts = {
+        published: state.tasks.filter((task) => task.status === "published").length,
+        simulating: state.tasks.filter((task) => ["accepted", "simulating", "returned"].includes(task.status)).length,
+        confirming: state.tasks.filter((task) => task.status === "confirming").length,
+        completed: state.tasks.filter((task) => task.status === "completed").length
+      };
+      target.innerHTML = `
+        <div class="task-board">
+          <aside class="task-rail">
+            <div class="task-rail-head">
+              <h3>任务池</h3>
+              <p>结构工程师发布任务，仿真工程师承接执行。</p>
+            </div>
+            <div class="task-filter-list">
+              ${[["all", "全部任务"], ["todo", "待处理"], ["created", "我发起的"], ["assigned", "我承接的"], ["confirming", "待确认"], ["completed", "已完成"]]
+                .map(([key, label]) => `<button type="button" data-task-filter="${key}" class="${state.taskFilter === key ? "active" : ""}">${label}</button>`).join("")}
+            </div>
+            <div class="task-list">
+              ${tasks.map((task) => `
+                <button class="task-row ${task.id === activeTask?.id ? "active" : ""}" type="button" data-task-id="${escapeHtml(task.id)}">
+                  <strong>${escapeHtml(task.code)} · ${escapeHtml(task.title)}</strong>
+                  <span>${taskStatusBadge(task)} ${taskPriorityBadge(task)}</span>
+                  <span>${escapeHtml(taskPartLabel(task))}</span>
+                  <span>截止 ${escapeHtml(task.deadline || "未设置")} · 承接 ${escapeHtml(task.assignee || "待承接")}</span>
+                </button>
+              `).join("") || `<div class="empty">当前筛选下没有任务。</div>`}
+            </div>
+          </aside>
+          <section class="task-main">
+            <div class="task-main-head">
+              <div>
+                <h3>仿真任务工作台</h3>
+                <p>轻量 SPDM 流程：需求下发、任务承接、结果卡片、结构确认。</p>
+              </div>
+              ${["structure", "admin"].includes(state.role) ? `<button class="primary-btn" id="newTask" type="button">新建任务</button>` : ""}
+            </div>
+            <div class="task-stats">
+              <div class="task-stat"><span>待承接</span><strong>${counts.published}</strong></div>
+              <div class="task-stat"><span>执行中</span><strong>${counts.simulating}</strong></div>
+              <div class="task-stat"><span>待确认</span><strong>${counts.confirming}</strong></div>
+              <div class="task-stat"><span>已完成</span><strong>${counts.completed}</strong></div>
+            </div>
+            ${activeTask ? renderTaskDetail(activeTask) : `<div class="task-detail-card"><div class="empty">暂无任务。结构工程师可新建任务。</div></div>`}
+          </section>
+        </div>
+      `;
+      target.querySelectorAll("[data-task-filter]").forEach((button) => {
+        button.addEventListener("click", () => {
+          state.taskFilter = button.dataset.taskFilter;
+          renderAll();
+        });
+      });
+      target.querySelectorAll("[data-task-id]").forEach((button) => {
+        button.addEventListener("click", () => {
+          state.activeTaskId = button.dataset.taskId;
+          renderAll();
+        });
+      });
+      const newTask = document.getElementById("newTask");
+      if (newTask) newTask.addEventListener("click", createTaskDraft);
+      bindTaskDetailEvents(activeTask);
+    }
+
+    function renderTaskDetail(task) {
+      const source = cardById(task.sourceCardId);
+      const resultCards = (task.resultCardIds || []).map(cardById).filter(Boolean);
+      const canEditTask = state.role === "admin" || task.creator === currentUsername() || (state.role === "structure" && ["draft", "returned"].includes(task.status));
+      const disabled = canEditTask ? "" : "disabled";
+      return `
+        <div class="task-detail-card">
+          <div class="task-detail-head">
+            <h3>${escapeHtml(task.code)} · ${escapeHtml(task.title)}</h3>
+            <p>${taskStatusBadge(task)} ${taskPriorityBadge(task)} · ${escapeHtml(taskPartLabel(task))}</p>
+          </div>
+          <div class="task-detail-grid">
+            <div class="task-info-card"><span>发起人</span><strong>${escapeHtml(task.creator || "未设置")}</strong></div>
+            <div class="task-info-card"><span>承接人</span><strong>${escapeHtml(task.assignee || "待承接")}</strong></div>
+            <div class="task-info-card"><span>仿真类型</span><strong>${escapeHtml(task.simulationType)}</strong></div>
+            <div class="task-info-card"><span>截止日期</span><strong>${escapeHtml(task.deadline)}</strong></div>
+          </div>
+          <form class="task-form" id="taskForm">
+            <div class="field">
+              <label for="taskTitle">任务名称</label>
+              <input id="taskTitle" name="title" value="${escapeHtml(task.title)}" ${disabled}>
+            </div>
+            <div class="field">
+              <label for="taskPriority">优先级</label>
+              <select id="taskPriority" name="priority" ${disabled}>
+                ${Object.entries(taskPriorityMeta).map(([key, meta]) => `<option value="${key}" ${task.priority === key ? "selected" : ""}>${meta.text}</option>`).join("")}
+              </select>
+            </div>
+            <div class="field">
+              <label for="taskPart">所属零件图谱</label>
+              <select id="taskPart" name="partId" ${disabled}>${taskFormOptions(task.partId)}</select>
+            </div>
+            <div class="field">
+              <label for="taskSource">来源卡片</label>
+              <select id="taskSource" name="sourceCardId" ${disabled}>${sourceCardOptions(task)}</select>
+            </div>
+            <div class="field">
+              <label for="taskType">仿真类型</label>
+              <input id="taskType" name="simulationType" value="${escapeHtml(task.simulationType)}" ${disabled}>
+            </div>
+            <div class="field">
+              <label for="taskDeadline">截止日期</label>
+              <input id="taskDeadline" name="deadline" type="date" value="${escapeHtml(task.deadline)}" ${disabled}>
+            </div>
+            <div class="field full">
+              <label for="taskObjective">仿真目标</label>
+              <textarea id="taskObjective" name="objective" ${disabled}>${escapeHtml(task.objective)}</textarea>
+            </div>
+            <div class="field full">
+              <label for="taskChange">结构变更说明</label>
+              <textarea id="taskChange" name="changeDescription" ${disabled}>${escapeHtml(task.changeDescription)}</textarea>
+            </div>
+            <div class="field full">
+              <label for="taskCondition">工况与边界条件</label>
+              <textarea id="taskCondition" name="workingCondition" ${disabled}>${escapeHtml(task.workingCondition)}</textarea>
+            </div>
+            <div class="field full">
+              <label for="taskOutput">期望输出</label>
+              <textarea id="taskOutput" name="expectedOutput" ${disabled}>${escapeHtml(task.expectedOutput)}</textarea>
+            </div>
+            <div class="field full">
+              <label for="taskFeedback">执行反馈</label>
+              <textarea id="taskFeedback" name="feedback">${escapeHtml(task.feedback || "")}</textarea>
+            </div>
+            <div class="field full">
+              <label for="taskFiles">任务附件清单</label>
+              <textarea id="taskFiles" name="files" ${disabled}>${escapeHtml((task.files || []).join("\n"))}</textarea>
+            </div>
+            <div class="field full">
+              <label>关联结果</label>
+              <div class="kv">
+                <div class="kv-row"><span>来源卡片</span><strong>${source ? `${escapeHtml(source.code)} · ${escapeHtml(source.title)}` : "未关联"}</strong></div>
+                <div class="kv-row"><span>结果卡片</span><strong>${resultCards.map((card) => `${escapeHtml(card.code)} · ${escapeHtml(card.title)}`).join("；") || "尚未生成"}</strong></div>
+              </div>
+            </div>
+            <div class="field full">
+              <button class="primary-btn" id="saveTask" type="submit">保存任务</button>
+            </div>
+          </form>
+          <div class="task-flow">
+            ${task.status === "draft" && canEditTask ? `<button class="primary-btn" type="button" data-task-action="publish">发布任务</button>` : ""}
+            ${["published", "returned"].includes(task.status) && ["simulation", "admin"].includes(state.role) ? `<button class="primary-btn" type="button" data-task-action="accept">承接任务</button>` : ""}
+            ${["accepted", "returned"].includes(task.status) && (task.assignee === currentUsername() || state.role === "admin") ? `<button class="ghost-btn" type="button" data-task-action="start">开始仿真</button>` : ""}
+            ${task.status === "simulating" && (task.assignee === currentUsername() || state.role === "admin") ? `<button class="ghost-btn" type="button" data-task-action="card">生成结果卡片</button><button class="primary-btn" type="button" data-task-action="submit">提交确认</button>` : ""}
+            ${task.status === "confirming" && (task.creator === currentUsername() || ["structure", "admin"].includes(state.role)) ? `<button class="primary-btn" type="button" data-task-action="complete">确认完成</button><button class="danger-btn" type="button" data-task-action="return">退回修改</button>` : ""}
+            ${!["completed", "cancelled"].includes(task.status) && (task.creator === currentUsername() || state.role === "admin") ? `<button class="ghost-btn" type="button" data-task-action="cancel">取消任务</button>` : ""}
+          </div>
+          <div class="task-table-wrap">
+            <table>
+              <thead><tr><th>流程节点</th><th>负责人</th><th>状态说明</th><th>更新时间</th></tr></thead>
+              <tbody>
+                <tr><td>需求下发</td><td>${escapeHtml(task.creator)}</td><td>${escapeHtml(task.objective)}</td><td>${escapeHtml(task.createdAt)}</td></tr>
+                <tr><td>仿真执行</td><td>${escapeHtml(task.assignee || "待承接")}</td><td>${escapeHtml(task.feedback || "等待仿真工程师反馈")}</td><td>${escapeHtml(task.updatedAt)}</td></tr>
+                <tr><td>结构确认</td><td>${escapeHtml(task.creator)}</td><td>${task.status === "completed" ? "已确认完成" : task.status === "returned" ? "已退回修改" : "等待结果提交"}</td><td>${escapeHtml(task.updatedAt)}</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      `;
+    }
+
+    function bindTaskDetailEvents(task) {
+      if (!task) return;
+      const form = document.getElementById("taskForm");
+      if (form) {
+        form.addEventListener("submit", (event) => {
+          event.preventDefault();
+          const data = new FormData(form);
+          task.title = data.get("title").trim() || task.title;
+          task.priority = data.get("priority") || task.priority;
+          task.partId = data.get("partId") || task.partId;
+          task.databaseId = partById(task.partId)?.databaseId || task.databaseId;
+          task.sourceCardId = data.get("sourceCardId") || "";
+          task.simulationType = data.get("simulationType").trim() || task.simulationType;
+          task.deadline = data.get("deadline") || task.deadline;
+          task.objective = data.get("objective").trim();
+          task.changeDescription = data.get("changeDescription").trim();
+          task.workingCondition = data.get("workingCondition").trim();
+          task.expectedOutput = data.get("expectedOutput").trim();
+          task.feedback = data.get("feedback").trim();
+          task.files = data.get("files").split("\n").map((line) => line.trim()).filter(Boolean);
+          task.updatedAt = localIso();
+          renderAll();
+        });
+      }
+      document.querySelectorAll("[data-task-action]").forEach((button) => {
+        button.addEventListener("click", () => {
+          const action = button.dataset.taskAction;
+          if (action === "publish") updateTaskStatus(task, "published");
+          if (action === "accept") updateTaskStatus(task, "accepted");
+          if (action === "start") updateTaskStatus(task, "simulating");
+          if (action === "submit") updateTaskStatus(task, "confirming");
+          if (action === "complete") updateTaskStatus(task, "completed");
+          if (action === "return") updateTaskStatus(task, "returned");
+          if (action === "cancel") updateTaskStatus(task, "cancelled");
+          if (action === "card") createResultCardFromTask(task);
+        });
+      });
+    }
+
     function renderPanel() {
+      if (state.panel === "tasks") return;
       if (state.panel === "edit") renderEditPanel();
       else renderDetailPanel();
     }
@@ -3408,6 +4654,7 @@
           <div class="kv">
             <div class="kv-row"><span>来源卡片</span><strong>${parent ? `${escapeHtml(parent.code)} · ${escapeHtml(parent.title)}` : "无，项目基准结构"}</strong></div>
             <div class="kv-row"><span>关系类型</span><strong>${escapeHtml(parent ? parentRelationType(card) : "基准")}</strong></div>
+            <div class="kv-row"><span>时间标签</span><strong>${escapeHtml(displayDateTag(card.dateTag))}</strong></div>
             <div class="kv-row"><span>变更说明</span><strong>${escapeHtml(card.change)}</strong></div>
             <div class="kv-row"><span>仿真任务</span><strong>${escapeHtml(card.task || "未关联")}</strong></div>
             <div class="kv-row"><span>负责人</span><strong>${escapeHtml(card.owner || "未设置")}</strong></div>
@@ -3694,8 +4941,10 @@
           <td><input value="${escapeHtml(part.code)}" data-part-prop="code"></td>
           <td><input value="${escapeHtml(part.name)}" data-part-prop="name"></td>
           <td>
-            <input value="${escapeHtml(part.type || "")}" data-part-prop="type" placeholder="类型">
-            <input value="${escapeHtml(part.owner || "")}" data-part-prop="owner" placeholder="负责人">
+            <div class="stacked-fields">
+              <input value="${escapeHtml(part.type || "")}" data-part-prop="type" placeholder="类型">
+              <input value="${escapeHtml(part.owner || "")}" data-part-prop="owner" placeholder="负责人">
+            </div>
           </td>
           <td>
             <select data-part-prop="databaseId">
@@ -3826,12 +5075,16 @@
             <div class="field">
               <label for="cardStatus">结论状态</label>
               <select id="cardStatus" name="status" ${disabled}>
-                ${Object.entries(statusMeta).map(([key, meta]) => `<option value="${key}" ${card.status === key ? "selected" : ""}>${meta.text}</option>`).join("")}
+                ${statusOptions().map((option) => `<option value="${escapeHtml(option.code)}" ${card.status === option.code ? "selected" : ""}>${escapeHtml(option.text)}</option>`).join("")}
               </select>
             </div>
             <div class="field full">
               <label for="cardTitle">卡片名称</label>
               <input id="cardTitle" name="title" value="${escapeHtml(card.title)}" ${disabled}>
+            </div>
+            <div class="field">
+              <label for="cardDateTag">时间标签</label>
+              <input id="cardDateTag" name="dateTag" type="date" value="${escapeHtml(normalizeDateTag(card.dateTag))}" ${disabled}>
             </div>
             <div class="field">
               <label for="cardOwner">负责人</label>
@@ -3917,7 +5170,8 @@
         const previousRelationType = parentRelationType(card);
         card.code = data.get("code").trim() || card.code;
         card.title = data.get("title").trim() || card.title;
-        card.status = data.get("status");
+        card.status = statusMetaFor(data.get("status")).code;
+        card.dateTag = normalizeDateTag(data.get("dateTag"));
         card.owner = data.get("owner").trim();
         card.task = data.get("task").trim();
         card.partId = data.get("partId") || card.partId;
@@ -3965,6 +5219,7 @@
         card.values = { ...(card.values || {}), ...nextValues };
         card.conclusion = card.values.conclusion || "";
         syncParentEdge(card, previousParentId, previousRelationType);
+        syncMirrorCards(card);
         renderAll();
       });
       document.getElementById("removeFromGraph").addEventListener("click", () => {
@@ -3975,10 +5230,20 @@
       });
       document.getElementById("deleteCard").addEventListener("click", async () => {
         if (!canEditCards()) return;
-        await deleteCardAttachmentFolder(card);
-        state.cards = state.cards.filter((item) => item.id !== card.id);
-        state.edges = state.edges.filter((edge) => edge.from !== card.id && edge.to !== card.id);
-        state.selectedIds = state.selectedIds.filter((id) => id !== card.id);
+        const mirroredCards = mirrorsOfSource(card);
+        const cardsToDelete = [card, ...mirroredCards];
+        if (mirroredCards.length) {
+          const libraryLines = mirroredCards
+            .map((item) => `- ${item.code} · ${item.title}：${graphLibraryLabel(item)}`)
+            .join("\n");
+          const confirmed = window.confirm(`该卡片存在 ${mirroredCards.length} 张镜像卡片，删除主卡片会同步删除以下镜像卡片：\n${libraryLines}\n\n是否确认删除？`);
+          if (!confirmed) return;
+        }
+        if (!isMirrorCard(card)) await deleteCardAttachmentFolder(card);
+        const deleteIds = new Set(cardsToDelete.map((item) => item.id));
+        state.cards = state.cards.filter((item) => !deleteIds.has(item.id));
+        state.edges = state.edges.filter((edge) => !deleteIds.has(edge.from) && !deleteIds.has(edge.to));
+        state.selectedIds = state.selectedIds.filter((id) => !deleteIds.has(id));
         state.activeCardId = state.cards[0]?.id || "";
         renderAll();
       });
@@ -4025,7 +5290,16 @@
         alert("不能把来源卡片设置为当前卡片的下游节点。");
         return;
       }
-      state.edges = state.edges.filter((edge) => edge.to !== card.id);
+      const preservedEdges = previousEdges.filter((edge) => edge.from !== previousParentId && edge.from !== nextParentId);
+      const invalidPreservedEdge = preservedEdges.find((edge) => incomingParentLevelError(edge.from, card.id));
+      if (invalidPreservedEdge) {
+        const previousEdge = previousEdges.find((edge) => edge.from === previousParentId) || previousEdges[0];
+        card.parentId = previousParentId || previousEdge?.from || "";
+        card.relationType = previousRelationType || previousEdge?.type || card.relationType || "结构迭代";
+        alert("修改第一父级后，已有上级连线不再满足层级规则，请先删除不合法的上级连线。");
+        return;
+      }
+      state.edges = state.edges.filter((edge) => edge.to !== card.id || (edge.from !== previousParentId && edge.from !== nextParentId));
       if (card.placed && cardById(nextParentId)?.placed) {
         state.edges.push({
           id: existingRelation?.id || `e-${nextParentId}-${card.id}-${Date.now()}`,
@@ -4040,6 +5314,10 @@
       if (!templateDraft) {
         templateDraft = {
           name: state.template.name,
+          statusOptions: statusOptions().map((option) => ({
+            ...clone(option),
+            originalCode: option.code
+          })),
           fields: state.template.fields.map((field) => ({
             ...clone(field),
             keyMetric: isKeyMetricField(field),
@@ -4059,6 +5337,29 @@
 
     function applyTemplateDraft() {
       const draft = getTemplateDraft();
+      const rawStatusOptions = (draft.statusOptions || [])
+        .map((option, index) => ({
+          code: String(option.code || "").trim(),
+          text: String(option.text || "").trim(),
+          className: STATUS_CLASS_OPTIONS.some((item) => item.value === option.className) ? option.className : "gray",
+          originalCode: option.originalCode || option.code || `status-${index + 1}`
+        }))
+        .filter((option) => option.code && option.text);
+      if (!rawStatusOptions.length) {
+        alert("至少需要保留一个结论状态。");
+        return false;
+      }
+      const duplicateStatus = rawStatusOptions.find((option, index) => rawStatusOptions.findIndex((item) => item.code === option.code) !== index);
+      if (duplicateStatus) {
+        alert(`结论状态编码不能重复：${duplicateStatus.code}`);
+        return false;
+      }
+      const statusOptions = normalizeStatusOptions(rawStatusOptions);
+      const statusMigration = new Map();
+      rawStatusOptions.forEach((option, index) => {
+        statusMigration.set(option.originalCode, statusOptions[index].code);
+      });
+      const validStatusCodes = new Set(statusOptions.map((option) => option.code));
       const fields = draft.fields
         .map((field) => ({
           code: String(field.code || "").trim(),
@@ -4081,6 +5382,8 @@
       }
       const nextCodes = new Set(fields.map((field) => field.code));
       state.cards.forEach((card) => {
+        if (statusMigration.has(card.status)) card.status = statusMigration.get(card.status);
+        if (!validStatusCodes.has(card.status)) card.status = statusOptions[0].code;
         card.values = card.values || {};
         fields.forEach((field) => {
           const oldCode = field.originalCode;
@@ -4103,8 +5406,13 @@
       });
       state.template = {
         name: draft.name || "仿真结果卡片",
+        statusOptions,
         fields: fields.map(({ originalCode, ...field }) => field)
       };
+      state.statusFilters = normalizeStatusFilters(
+        (state.statusFilters || []).map((code) => statusMigration.get(code) || code),
+        state.template
+      );
       templateDraft = null;
       return true;
     }
@@ -4125,6 +5433,57 @@
             <label for="templateName">模板名称</label>
             <input id="templateName" value="${escapeHtml(draft.name)}" ${disabled}>
           </div>
+        </section>
+
+        <section class="detail-section">
+          <h4>结论状态</h4>
+          <table class="template-table">
+            <thead>
+              <tr>
+                <th>状态名称</th>
+                <th>编码</th>
+                <th>颜色</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              ${draft.statusOptions.map((option, index) => `
+                <tr>
+                  <td><input value="${escapeHtml(option.text)}" data-status-index="${index}" data-status-prop="text" ${disabled}></td>
+                  <td><input value="${escapeHtml(option.code)}" data-status-index="${index}" data-status-prop="code" ${disabled}></td>
+                  <td>
+                    <select data-status-index="${index}" data-status-prop="className" ${disabled}>
+                      ${STATUS_CLASS_OPTIONS.map((classOption) => `<option value="${classOption.value}" ${option.className === classOption.value ? "selected" : ""}>${classOption.label}</option>`).join("")}
+                    </select>
+                  </td>
+                  <td><button class="icon-btn" type="button" data-delete-status="${index}" ${disabled} title="删除状态">×</button></td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>
+          <form id="statusForm" class="form-grid">
+            <div class="field">
+              <label for="newStatusText">状态名称</label>
+              <input id="newStatusText" name="text" placeholder="待复核" ${disabled}>
+            </div>
+            <div class="field">
+              <label for="newStatusCode">状态编码</label>
+              <input id="newStatusCode" name="code" placeholder="review" ${disabled}>
+            </div>
+            <div class="field">
+              <label for="newStatusClass">颜色</label>
+              <select id="newStatusClass" name="className" ${disabled}>
+                ${STATUS_CLASS_OPTIONS.map((option) => `<option value="${option.value}">${option.label}</option>`).join("")}
+              </select>
+            </div>
+            <div class="field">
+              <button class="primary-btn" type="submit" ${disabled}>添加状态</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="detail-section">
+          <h4>模板字段</h4>
           <table class="template-table">
             <thead>
               <tr>
@@ -4211,6 +5570,43 @@
         if (!canEditTemplate()) return;
         draft.name = event.target.value.trim();
       });
+      target.querySelectorAll("[data-status-prop]").forEach((input) => {
+        const updateDraftStatus = () => {
+          if (!canEditTemplate()) return;
+          const option = draft.statusOptions[Number(input.dataset.statusIndex)];
+          if (!option) return;
+          const prop = input.dataset.statusProp;
+          option[prop] = input.value.trim();
+        };
+        input.addEventListener("input", updateDraftStatus);
+        input.addEventListener("change", updateDraftStatus);
+      });
+      target.querySelectorAll("[data-delete-status]").forEach((button) => {
+        button.addEventListener("click", () => {
+          if (!canEditTemplate()) return;
+          if (draft.statusOptions.length <= 1) {
+            alert("至少需要保留一个结论状态。");
+            return;
+          }
+          draft.statusOptions.splice(Number(button.dataset.deleteStatus), 1);
+          renderTemplatePanel(target);
+        });
+      });
+      document.getElementById("statusForm").addEventListener("submit", (event) => {
+        event.preventDefault();
+        if (!canEditTemplate()) return;
+        const data = new FormData(event.currentTarget);
+        const text = data.get("text").trim();
+        const code = data.get("code").trim() || slugifyStatusCode(text, draft.statusOptions.length);
+        if (!text || !code || draft.statusOptions.some((option) => option.code === code)) return;
+        draft.statusOptions.push({
+          text,
+          code,
+          className: data.get("className") || "gray",
+          originalCode: ""
+        });
+        renderTemplatePanel(target);
+      });
       target.querySelectorAll("[data-field-prop]").forEach((input) => {
         const updateDraftField = () => {
           if (!canEditTemplate()) return;
@@ -4272,6 +5668,7 @@
         state.activePartId = "all";
         state.createChildMode = false;
         state.createGraphMode = false;
+        state.cardPickMode = "";
         templateDraft = null;
         localStorage.removeItem(STORAGE_KEY);
         renderAll();
@@ -4279,6 +5676,88 @@
     }
 
     // === 业务动作：卡片、零件、布局 =========================================
+    function nextCopiedTitle(sourceTitle) {
+      const base = sourceTitle || "未命名卡片";
+      const existingTitles = new Set(state.cards.map((card) => card.title));
+      let index = 1;
+      let title = `${base}的复制`;
+      while (existingTitles.has(title)) {
+        index += 1;
+        title = `${base}的复制${index}`;
+      }
+      return title;
+    }
+
+    function nextCopiedCode(sourceCode) {
+      const base = sourceCode || "NEW";
+      const existingCodes = new Set(state.cards.map((card) => card.code));
+      let index = 1;
+      let code = `${base}-COPY`;
+      while (existingCodes.has(code)) {
+        index += 1;
+        code = `${base}-COPY${index}`;
+      }
+      return code;
+    }
+
+    function copyValuesForIndependentCard(source) {
+      const values = clone(source.values || {});
+      state.template.fields
+        .filter((field) => field.type === "image")
+        .forEach((field) => {
+          if (isImageValue(values[field.code])) values[field.code] = "";
+        });
+      return values;
+    }
+
+    function createLibraryCopyFromGraph(sourceId) {
+      if (!canEditCards()) return;
+      const source = cardById(sourceId);
+      if (!source) return;
+      const copy = clone(source);
+      copy.id = `card-${Date.now()}`;
+      copy.code = nextCopiedCode(source.code);
+      copy.title = nextCopiedTitle(source.title);
+      copy.dateTag = todayDateTag();
+      copy.placed = false;
+      copy.parentId = "";
+      copy.relationType = "结构迭代";
+      copy.x = source.x + 40;
+      copy.y = source.y + 40;
+      copy.values = copyValuesForIndependentCard(source);
+      copy.conclusion = copy.values.conclusion || source.conclusion || "";
+      copy.files = [];
+      delete copy.mirrorGroupId;
+      state.cards.push(copy);
+      state.activeCardId = copy.id;
+      state.panel = "edit";
+      resetCardPickMode();
+      renderAll();
+    }
+
+    function createLibraryMirrorFromGraph(sourceId) {
+      if (!canEditCards()) return;
+      const source = cardById(sourceId);
+      if (!source) return;
+      const mirrorGroupId = ensureMirrorGroup(source);
+      const mirror = clone(source);
+      mirror.id = `card-${Date.now()}`;
+      mirror.mirrorGroupId = mirrorGroupId;
+      mirror.mirrorSourceId = source.id;
+      mirror.dateTag = source.dateTag;
+      mirror.placed = false;
+      mirror.parentId = "";
+      mirror.relationType = "结构迭代";
+      mirror.x = source.x + 40;
+      mirror.y = source.y + 40;
+      state.cards.push(mirror);
+      syncMirrorCards(source);
+      state.activeCardId = mirror.id;
+      state.panel = "detail";
+      resetCardPickMode();
+      renderAll();
+    }
+
     function duplicateCard(id) {
       if (!canEditCards()) return;
       const source = cardById(id);
@@ -4287,7 +5766,8 @@
       copy.id = `card-${Date.now()}`;
       copy.code = `${source.code}-COPY`;
       copy.title = `${source.title} 副本`;
-      copy.status = "running";
+      copy.dateTag = todayDateTag();
+      copy.status = statusCodeByTextOrFallback("仿真中", "running");
       copy.placed = false;
       copy.parentId = source.id;
       copy.relationType = "结构迭代";
@@ -4300,7 +5780,7 @@
       renderAll();
     }
 
-    function createCard(parentId = state.activeCardId) {
+    function createCard(parentId = state.activeCardId, position = null) {
       if (!canEditCards()) return;
       const id = `card-${Date.now()}`;
       const values = {};
@@ -4312,11 +5792,13 @@
       const activeDatabaseId = state.activePartId?.startsWith("db:") ? state.activePartId.slice(3) : "";
       const activePart = partById(state.activePartId);
       const firstPartInDatabase = activeDatabaseId ? state.parts.find((part) => part.databaseId === activeDatabaseId) : null;
-      const partId = parent?.partId || activePart?.id || firstPartInDatabase?.id || state.parts[0]?.id || "";
+      const activeContextCard = activeScopedCard();
+      const partId = parent?.partId || activePart?.id || firstPartInDatabase?.id || activeContextCard?.partId || state.parts[0]?.id || "";
       if (!partId) {
         alert("请先新建一个零件图谱，再创建仿真结果卡片。");
         return;
       }
+      const placed = Boolean(parent?.placed || position);
       const card = {
         id,
         parentId: parent?.id || "",
@@ -4324,14 +5806,15 @@
         relationType: "结构迭代",
         code: `NEW-${state.cards.length + 1}`,
         title: "新仿真结果卡片",
-        status: "running",
+        dateTag: todayDateTag(),
+        status: statusCodeByTextOrFallback("仿真中", "running"),
         owner: "待分配",
         task: "",
         model: "",
         report: "",
-        placed: Boolean(parent?.placed),
-        x: parent?.placed ? parent.x + 360 : 940,
-        y: parent?.placed ? Math.max(20, parent.y + siblingCount * 190) : 300,
+        placed,
+        x: position ? position.x : parent?.placed ? parent.x + 360 : 940,
+        y: position ? position.y : parent?.placed ? Math.max(20, parent.y + siblingCount * 190) : 300,
         values,
         change: "填写结构变更说明。",
         conclusion: "填写仿真结论。",
@@ -4361,6 +5844,7 @@
       state.activePartId = `db:${database.id}`;
       state.createChildMode = false;
       state.createGraphMode = false;
+      resetCardPickMode();
       renderAll();
     }
 
@@ -4372,6 +5856,7 @@
       }
       state.createGraphMode = true;
       state.createChildMode = false;
+      resetCardPickMode();
       newLibraryMenu.hidden = true;
       renderAll();
     }
@@ -4396,6 +5881,7 @@
       state.activePartId = part.id;
       state.createChildMode = false;
       state.createGraphMode = false;
+      resetCardPickMode();
       renderAll();
     }
 
@@ -4488,14 +5974,30 @@
       const id = event.dataTransfer.getData("text/plain");
       const card = cardById(id);
       if (!card) return;
-      const rect = treeCanvas.getBoundingClientRect();
-      card.x = Math.max(20, (event.clientX - rect.left) / state.zoom);
-      card.y = Math.max(20, (event.clientY - rect.top) / state.zoom);
+      const point = canvasPointFromEvent(event);
+      card.x = point.x;
+      card.y = point.y;
       card.placed = true;
       state.activeCardId = id;
       syncParentEdge(card);
       renderAll();
     });
+
+    treeStage.addEventListener("click", (event) => {
+      if (!state.createChildMode || !canEditGraph()) return;
+      if (event.target.closest(".node, input, button, select, textarea")) return;
+      const point = canvasPointFromEvent(event);
+      createCard("", {
+        x: Math.max(20, point.x - 103),
+        y: Math.max(20, point.y - 63)
+      });
+    });
+
+    treeStage.addEventListener("pointerdown", startCanvasPan);
+    treeStage.addEventListener("pointermove", dragCanvasPan);
+    treeStage.addEventListener("pointerup", endCanvasPan);
+    treeStage.addEventListener("pointercancel", endCanvasPan);
+    treeStage.addEventListener("lostpointercapture", endCanvasPan);
 
     loginForm.addEventListener("submit", async (event) => {
       event.preventDefault();
@@ -4552,16 +6054,34 @@
         state.pendingConnectId = null;
         state.createChildMode = false;
         state.createGraphMode = false;
+        resetCardPickMode();
         renderAll();
       });
     });
 
-    document.querySelectorAll("[data-filter]").forEach((button) => {
-      button.addEventListener("click", () => {
-        state.filter = button.dataset.filter;
-        state.createGraphMode = false;
-        renderAll();
-      });
+    statusFilterToggle.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      refreshStatusFilterUi();
+      statusFilterMenu.hidden = !statusFilterMenu.hidden;
+    });
+
+    statusFilterMenu.addEventListener("change", (event) => {
+      const input = event.target.closest("[data-status-filter]");
+      if (!input) return;
+      if (input.dataset.statusFilter === "all") {
+        state.statusFilters = [];
+      } else {
+        const selected = new Set(state.statusFilters || []);
+        if (input.checked) selected.add(input.dataset.statusFilter);
+        else selected.delete(input.dataset.statusFilter);
+        state.statusFilters = normalizeStatusFilters([...selected], state.template);
+      }
+      state.filter = "all";
+      state.createGraphMode = false;
+      resetCardPickMode();
+      renderAll();
+      statusFilterMenu.hidden = false;
     });
 
     document.querySelectorAll("[data-panel]").forEach((button) => {
@@ -4569,12 +6089,42 @@
         if (button.dataset.panel === "template" && !canEditTemplate()) return;
         state.panel = button.dataset.panel;
         state.createGraphMode = false;
+        resetCardPickMode();
         renderAll();
       });
     });
 
     searchInput.addEventListener("input", () => {
       renderNodes();
+      renderLibrary();
+    });
+
+    dateFilterToggle.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      refreshDateFilterUi();
+      dateFilterPopover.hidden = !dateFilterPopover.hidden;
+    });
+    applyDateFilter.addEventListener("click", () => {
+      state.dateRange = normalizeDateRange({
+        start: dateFilterStart.value,
+        end: dateFilterEnd.value
+      });
+      dateFilterPopover.hidden = true;
+      renderAll();
+    });
+    clearDateFilter.addEventListener("click", () => {
+      state.dateRange = { start: "", end: "" };
+      dateFilterPopover.hidden = true;
+      renderAll();
+    });
+    document.addEventListener("click", (event) => {
+      if (!dateFilterPopover.hidden && !event.target.closest(".search-wrap")) {
+        dateFilterPopover.hidden = true;
+      }
+      if (!statusFilterMenu.hidden && !event.target.closest(".status-filter")) {
+        statusFilterMenu.hidden = true;
+      }
     });
 
     document.getElementById("overviewScope").addEventListener("click", selectAllScope);
@@ -4603,12 +6153,27 @@
         newLibraryMenu.hidden = true;
       }
     });
+    copyLibraryCard.addEventListener("click", () => {
+      if (!canEditCards()) return;
+      state.cardPickMode = state.cardPickMode === "copy" ? "" : "copy";
+      state.createChildMode = false;
+      state.createGraphMode = false;
+      state.pendingConnectId = null;
+      state.mode = "move";
+      renderAll();
+    });
+    mirrorLibraryCard.addEventListener("click", () => {
+      if (!canEditCards()) return;
+      state.cardPickMode = state.cardPickMode === "mirror" ? "" : "mirror";
+      state.createChildMode = false;
+      state.createGraphMode = false;
+      state.pendingConnectId = null;
+      state.mode = "move";
+      renderAll();
+    });
     document.getElementById("newCard").addEventListener("click", () => {
       if (!canEditCards()) return;
-      if (!placedCards().length) {
-        createCard("");
-        return;
-      }
+      resetCardPickMode();
       state.createChildMode = !state.createChildMode;
       if (state.createChildMode) {
         state.mode = "move";
@@ -4620,9 +6185,10 @@
     document.getElementById("autoLayout").addEventListener("click", autoLayout);
 
     document.addEventListener("keydown", (event) => {
-      if (event.key === "Escape" && (state.createChildMode || state.createGraphMode)) {
+      if (event.key === "Escape" && (state.createChildMode || state.createGraphMode || state.cardPickMode)) {
         state.createChildMode = false;
         state.createGraphMode = false;
+        resetCardPickMode();
         renderAll();
       }
     });
@@ -4645,7 +6211,7 @@
         ["卡片", "来源", ...fields.map((field) => field.name), "状态"].join("\t"),
         ...rows.map((card) => {
           const parent = card.parentId ? cardById(card.parentId)?.code || "" : "基准";
-          return [card.code, parent, ...fields.map((field) => fieldValue(card, field)), statusMeta[card.status]?.text || card.status].join("\t");
+          return [card.code, parent, ...fields.map((field) => fieldValue(card, field)), statusMetaFor(card.status).text].join("\t");
         })
       ].join("\n");
       try {
@@ -4660,20 +6226,26 @@
     });
 
     document.getElementById("zoomIn").addEventListener("click", () => {
-      state.zoom = Math.min(1.3, Number((state.zoom + 0.1).toFixed(2)));
-      renderAll();
+      zoomAtStageCenter(state.zoom + 0.1);
     });
 
     document.getElementById("zoomOut").addEventListener("click", () => {
-      state.zoom = Math.max(0.7, Number((state.zoom - 0.1).toFixed(2)));
-      renderAll();
+      zoomAtStageCenter(state.zoom - 0.1);
     });
 
     document.getElementById("resetView").addEventListener("click", () => {
-      state.zoom = 1;
-      treeStage.scrollTo({ left: 0, top: 0, behavior: "smooth" });
-      renderAll();
+      fitCardsToView();
     });
+
+    treeStage.addEventListener("wheel", (event) => {
+      if (state.panel === "template") return;
+      event.preventDefault();
+      const rect = treeStage.getBoundingClientRect();
+      const stageX = event.clientX - rect.left;
+      const stageY = event.clientY - rect.top;
+      const step = event.deltaY > 0 ? -0.08 : 0.08;
+      applyZoomAt(stageX, stageY, state.zoom + step);
+    }, { passive: false });
 
     document.getElementById("exportData").addEventListener("click", () => {
       const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
@@ -4697,11 +6269,19 @@
           state.template = normalizeTemplate(state.template);
           if (!state.parts?.length) state.parts = normalizeParts(clone(defaultState.parts), state.databases);
           if (!state.activePartId) state.activePartId = "all";
+          state.dateRange = normalizeDateRange(state.dateRange);
+          state.statusFilters = normalizeStatusFilters(
+            Array.isArray(imported.statusFilters) ? imported.statusFilters : imported.filter,
+            state.template
+          );
+          state.filter = "all";
           state.cards = state.cards.map((card) => normalizeCardRecord(card, state.parts));
+          normalizeMirrorGroups(state.cards);
           state.mode = "move";
           state.pendingConnectId = null;
           state.createChildMode = false;
           state.createGraphMode = false;
+          state.cardPickMode = "";
           templateDraft = null;
           renderAll();
         }
